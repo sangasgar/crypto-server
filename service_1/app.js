@@ -1,29 +1,36 @@
 const express = require('express');
-
-require('dotenv').config();
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
+const db = require('./db/models');
 const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
-const apiRouter = require('./routes/api');
 
-const { PORT } = process.env;
 const app = express();
-
+const { PORT } = process.env;
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true,
+}));
 app.use(logger('dev'));
-
-app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
-app.use('/api', apiRouter);
+
+async function dbConnect() {
+  try {
+    await db.sequelize.authenticate();
+    console.log('Connection has been established successfully.');
+  } catch (error) {
+    console.error('Unable to connect to the database:', error);
+  }
+}
+dbConnect();
 app.listen(PORT, () => {
-  console.log('Server запущен на порту ', PORT);
+  console.log('start server ', PORT);
 });
 module.exports = app;

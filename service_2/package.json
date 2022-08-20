@@ -9,10 +9,12 @@
     "axios": "^0.27.2",
     "cookie-parser": "~1.4.4",
     "cors": "^2.8.5",
+    "crypto-js": "^4.1.1",
     "debug": "~2.6.9",
     "dotenv": "^16.0.1",
     "express": "~4.16.1",
-    "morgan": "~1.9.1"
+    "morgan": "~1.9.1",
+    "time-stamp": "^2.2.0"
   },
   "main": "app.js",
   "keywords": [],
