@@ -1,0 +1,7 @@
+.ant-menu-horizontal {
+  width: 400px;
+}
+.menu {
+  display: flex;
+  justify-content: center;
+}

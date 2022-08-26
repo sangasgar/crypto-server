@@ -1,0 +1,14 @@
+.mainPage {
+  background-image: url(../../img/bg1.jpg);
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 2%;
+}
+.page {
+  display: flex;
+  text-align: justify;
+}
+.singinButton {
+  margin: 5%;
+}

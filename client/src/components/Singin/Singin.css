@@ -1,0 +1,7 @@
+.singin {
+  background-image: url(../../img/singin.jpg);
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  padding: 2%;
+}

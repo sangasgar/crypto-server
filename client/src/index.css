@@ -6,8 +6,25 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
-
+.footer {
+  background-color:black;
+  height: 50px;
+  color: azure;
+  display: flex;
+  justify-content: center;
+  padding: 1%;
+}
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
+}
+.intro {
+  background-color: white;
+  width: 40%;
+  height: 500px;
+  border-radius: 3%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 2%;
 }
