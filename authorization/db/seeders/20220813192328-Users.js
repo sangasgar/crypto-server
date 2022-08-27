@@ -12,16 +12,9 @@ module.exports = {
      * }], {});
     */
     await queryInterface.bulkInsert('Users', [{
-      name: 'Garegin',
-      email: 'sangas@yandex.ru',
-      password: await bcrypt.hash('123', Number(process.env.SALTROUNDS)),
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      name: 'Aik',
-      email: 'aikpapyan@mail.ru',
-      password: await bcrypt.hash('123', Number(process.env.SALTROUNDS)),
+      name: 'admin',
+      email: 'admin@crypto.io',
+      password: await bcrypt.hash('123qwe321', Number(process.env.SALTROUNDS)),
       createdAt: new Date(),
       updatedAt: new Date(),
     }], {});

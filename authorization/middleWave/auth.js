@@ -5,7 +5,7 @@ function auth(req, res, next) {
   if (token) {
     jwt.verify(token, process.env.TOKEN_SECRET, (err, decoded) => {
       if (err) {
-        return res.json({ error: 'invalid token' });
+        return res.json({ errorJwt: 'invalid token' });
       }
       req.user = { id: decoded.id, name: decoded.name, email: decoded.email };
       next();

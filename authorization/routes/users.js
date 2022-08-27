@@ -31,7 +31,7 @@ router.route('/')
         return res.json({ error: 'Connection error' });
       }
     }
-    return res.json({ error: 'not all fields are filled' });
+    return res.json({ error: 'wrong password' });
   })
   .put(async (req, res, next) => {
     const { id, name, email } = req.body;

@@ -3,10 +3,14 @@ import './Singin.css';
 import {
   Button, Checkbox, Form, Input,
 } from 'antd';
+import { useDispatch, useSelector } from 'react-redux';
+import { getUser } from '../../Redux/Actions/userAction';
 
 function Singin() {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state);
   const onFinish = (values) => {
-    console.log('Success:', values);
+    dispatch(getUser(values));
   };
 
   const onFinishFailed = (errorInfo) => {
@@ -16,6 +20,7 @@ function Singin() {
     <div className="singin">
       <div className="intro">
         <h1>ВХОД</h1>
+        {user.error ? user.error : null}
         <Form
           name="basic"
           labelCol={{
@@ -34,9 +39,9 @@ function Singin() {
           <Form.Item
             label="Email"
             name="email"
-            type="email"
             rules={[
               {
+                type: 'email',
                 required: true,
                 message: 'Please input your email!',
               },
