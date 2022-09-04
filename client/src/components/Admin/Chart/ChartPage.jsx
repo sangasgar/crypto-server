@@ -11,12 +11,6 @@ import { get6h } from '../../../Redux/Actions/data6hAction';
 
 function ChartPage() {
   const dispatch = useDispatch();
-  const { data5m } = useSelector((state) => state);
-  const { data15m } = useSelector((state) => state);
-  const { data30m } = useSelector((state) => state);
-  const { data1h } = useSelector((state) => state);
-  const { data2h } = useSelector((state) => state);
-  const { data6h } = useSelector((state) => state);
   const [value, setValue] = useState('stop');
 
   useEffect(() => {
@@ -36,11 +30,18 @@ function ChartPage() {
     return () => clearInterval(interval);
   }, [value]);
 
+  const { data5m } = useSelector((state) => state);
+  const { data15m } = useSelector((state) => state);
+  const { data30m } = useSelector((state) => state);
+  const { data1h } = useSelector((state) => state);
+  const { data2h } = useSelector((state) => state);
+  const { data6h } = useSelector((state) => state);
+
   const params = {
     options: {
       alignLabels: true,
       timeScale: {
-        rightOffset: 10,
+        rightOffset: 16,
         barSpacing: 7,
         fixLeftEdge: true,
         lockVisibleTimeRangeOnResize: true,
@@ -49,9 +50,10 @@ function ChartPage() {
         borderColor: '#fff000',
         visible: true,
         timeVisible: true,
-        secondsVisible: true,
+        secondsVisible: false,
       },
     },
+
     candlestickSeries: [{
       data: data5m.map((el) => ({
         time: el.time, open: el.open, high: el.high, low: el.low, close: el.close,
@@ -83,7 +85,7 @@ function ChartPage() {
       })),
     }],
   };
-  console.log(params.candlestickSeries);
+
   return (
     <div className="charts">
       <h1>График на 5 минут</h1>

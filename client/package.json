@@ -4,6 +4,7 @@
   "private": true,
   "homepage": ".",
   "dependencies": {
+    "@lenicdev/react-lightweight-charts": "^2.0.1",
     "@qognicafinance/react-lightweight-charts": "^1.0.5",
     "@reduxjs/toolkit": "^1.8.5",
     "@testing-library/jest-dom": "^5.16.5",
@@ -11,6 +12,7 @@
     "@testing-library/user-event": "^13.5.0",
     "antd": "^4.22.7",
     "axios": "^0.27.2",
+    "blockswords-lightweight-charts": "^3.8.0-blockswords-6",
     "gatsby-react-lightweight-charts": "^1.2.4",
     "kaktana-react-lightweight-charts": "^2.0.0",
     "lightweight-charts": "^3.8.0",
@@ -23,6 +25,7 @@
     "react-scripts": "5.0.1",
     "react-sparklines": "^1.7.0",
     "redux-saga": "^1.2.1",
+    "styled-components": "^5.3.5",
     "web-vitals": "^2.1.4"
   },
   "scripts": {
