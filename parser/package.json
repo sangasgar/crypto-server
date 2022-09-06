@@ -17,8 +17,13 @@
     "dotenv": "^16.0.2",
     "express": "^4.18.1",
     "heikinashi": "^1.0.6",
+    "map-cache": "^0.2.2",
     "morgan": "^1.10.0",
+    "node-localstorage": "^2.2.1",
     "node-sass": "^7.0.1",
+    "objstorage": "^1.0.0",
+    "store": "^2.0.12",
+    "store2": "^2.14.2",
     "tulind": "^0.8.20",
     "util.promisify": "^1.1.1"
   },
