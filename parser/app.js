@@ -33,5 +33,5 @@ app.listen(PORT, () => {
 });
 setInterval(async () => {
   await playBot();
-}, 42000);
+}, 25000);
 module.exports = app;
