@@ -5,7 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 const { Users } = require('../db/models');
-const auth = require('../middleWave/auth');
+const auth = require('../middleWare/auth');
 
 router.route('/')
   .get((req, res, next) => {

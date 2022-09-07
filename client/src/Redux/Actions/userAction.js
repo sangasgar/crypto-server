@@ -8,7 +8,7 @@ export const userAction = (value) => ({
 
 export const getUser = (value) => async (dispatch) => {
   try {
-    const user = await axios.post('http://localhost:3002/users', value);
+    const user = await axios.post('http://localhost:3010/users', value);
     localStorage.setItem('token', user.data.token);
     dispatch(userAction({ id: user.data.id, name: user.data.name }));
   } catch (error) {
@@ -23,7 +23,7 @@ export const checkUser = () => async (dispatch) => {
       authorization: `Bearer ${token}`,
     },
   };
-  const user = await axios.post('http://localhost:3002/users/check', {}, option);
+  const user = await axios.post('http://localhost:3010/users/check', {}, option);
   dispatch(userAction(user.data));
 };
 

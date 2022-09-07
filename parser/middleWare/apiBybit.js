@@ -1,26 +1,9 @@
 const axios = require('axios');
-const { LinearClient } = require('bybit-api');
 const HeikinAshi = require('heikinashi');
-const tulind = require('tulind');
 /* eslint-disable max-len */
 const cipherB = require('../indicators/cipherB');
 const bullTv = require('../indicators/bullTv');
 const storage = require('../storage/storage');
-
-const { API_KEY } = process.env;
-const { PRIVATE_KEY } = process.env;
-const useLivenet = false;
-
-const client = new LinearClient(
-  API_KEY,
-  PRIVATE_KEY,
-
-  // optional, uses testnet by default. Set to 'true' to use livenet.
-  useLivenet,
-
-  // restClientOptions,
-  // requestLibraryOptions
-);
 
 const period = {
   five: '5',

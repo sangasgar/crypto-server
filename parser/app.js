@@ -7,6 +7,8 @@ const cors = require('cors');
 const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
 const playBot = require('./middleWare/apiBybit');
+const logicBybit = require('./logic/logicBybit');
+const usersRouter = require('./routes/users');
 
 const { PORT } = process.env || 3011;
 
@@ -14,6 +16,7 @@ const app = express();
 const startBot = async () => {
   await playBot();
 };
+logicBybit();
 app.use(logger('dev'));
 app.use(logger('dev'));
 app.use((req, res, next) => {
@@ -28,6 +31,7 @@ app.use(express.static(path.join(__dirname)));
 startBot();
 app.use('/', indexRouter);
 app.use('/api', apiRouter);
+app.use('/users', usersRouter);
 app.listen(PORT, () => {
   console.log('Server запущен на порту ', PORT);
 });
