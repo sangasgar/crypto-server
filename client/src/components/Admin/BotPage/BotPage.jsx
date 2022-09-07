@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
 import { Typography, Button } from 'antd';
 import Bot from '../../../img/pngwing.png';
 import BotPrint from '../../../img/botprint.png';
@@ -7,8 +8,11 @@ import './BotPage.css';
 function BotPage() {
   const { Text } = Typography;
   const [value, setValue] = useState(false);
+  useEffect(() => {
+    axios.get('http://localhost:3010/users/bot-status-check').then((res) => setValue(res.data.botStatus));
+  }, []);
   const botHandler = () => {
-    setValue(!value);
+    axios.put('http://localhost:3010/users/bot-status', { botStatus: !value }).then((res) => setValue(res.data.botStatus));
   };
   return (
     <div className="bot">

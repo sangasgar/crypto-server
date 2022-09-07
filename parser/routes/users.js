@@ -21,9 +21,11 @@ router.route('/')
         }
         const userJson = JSON.parse(JSON.stringify(userReg));
         if (await bcrypt.compare(password, userJson.password)) {
-          const token = jwt.sign({ id: userJson.id, name: userJson.name, email: userJson.email }, process.env.TOKEN_SECRET, { expiresIn: '6h' });
+          const token = jwt.sign({
+            id: userJson.id, name: userJson.name, email: userJson.email, publicKey: userJson.publicKey, privateKey: userJson.privateKey,
+          }, process.env.TOKEN_SECRET, { expiresIn: '6h' });
           const user = {
-            id: userJson.id, name: userJson.name, email: userJson.email, token,
+            id: userJson.id, name: userJson.name, email: userJson.email, publicKey: userJson.publicKey, privateKey: userJson.privateKey, token,
           };
           return res.json(user);
         }
@@ -34,61 +36,62 @@ router.route('/')
     return res.json({ error: 'wrong password' });
   })
   .put(async (req, res, next) => {
-    const { id, name, email } = req.body;
-
-    if (id && name && email) {
-      try {
-        const userBd = await Users.update({ name, email }, { where: { id } });
-        const userFind = await Users.findOne({ where: { id } });
-        const userJson = JSON.parse(JSON.stringify(userFind));
-        const token = jwt.sign({ id: userJson.id, name: userJson.name, email: userJson.email }, process.env.TOKEN_SECRET, { expiresIn: '6h' });
-        const user = {
-          id: userJson.id, name: userJson.name, email: userJson.email, token,
-        };
-        return res.json(user);
-      } catch (error) {
-        return res.json({ error: 'Connection error' });
+    const {
+      name, email, publicKey, privateKey, password,
+    } = req.body;
+    try {
+      if (name) {
+        await Users.update({ name }, { where: { id: 1 } });
       }
-    }
-    res.json({ error: 'not all fields are filled' });
-  })
-  .delete(async (req, res, next) => {
-    const { id } = req.body;
-    if (id) {
-      try {
-        const user = await Users.create({ where: id });
-        await user.destroy();
-        return res.sendStatus(200);
-      } catch (error) {
-        return res.json({ error: 'Connection error' });
+      if (email) {
+        await Users.update({ email }, { where: { id: 1 } });
       }
-    }
-    return res.json({ error: 'error id' });
-  });
-router.route('/register')
-  .post(async (req, res, next) => {
-    const { email, name, password } = req.body;
-    if (email && name && password) {
-      try {
-        const userFind = await Users.findOne({ where: { email } });
-        if (userFind) {
-          return res.json({ error: 'User already register' });
-        }
-        const userReg = await Users.create({ email, name, password: await bcrypt.hash(password, Number(process.env.SALTROUNDS)) });
-        const token = jwt.sign({ id: userReg.id, name: userReg.name, email: userReg.email }, process.env.TOKEN_SECRET, { expiresIn: '6h' });
-        const userRegJson = JSON.parse(JSON.stringify(userReg));
-        const user = {
-          id: userRegJson.id, name: userRegJson.name, email: userRegJson.email, token,
-        };
-        return res.json(user);
-      } catch (error) {
-        return res.json({ error: 'Connection error' });
+      if (publicKey) {
+        await Users.update({ publicKey }, { where: { id: 1 } });
       }
+      if (privateKey) {
+        await Users.update({ privateKey }, { where: { id: 1 } });
+      }
+      if (password) {
+        await Users.update({ password: await bcrypt.hash(password, Number(process.env.SALTROUNDS)) }, { where: { id: 1 } });
+      }
+      const userFind = await Users.findOne({ where: { id: 1 } });
+      const userJson = JSON.parse(JSON.stringify(userFind));
+      const token = jwt.sign({
+        id: userJson.id, name: userJson.name, email: userJson.email, publicKey: userJson.publicKey, privateKey: userJson.privateKey,
+      }, process.env.TOKEN_SECRET, { expiresIn: '6h' });
+      const user = {
+        id: userJson.id, name: userJson.name, email: userJson.email, publicKey: userJson.publicKey, privateKey: userJson.privateKey, token,
+      };
+      return res.json(user);
+    } catch (error) {
+      return res.json({ error: 'Connection error' });
     }
-    return res.json({ error: 'not all fields are filled' });
   });
 router.route('/check')
   .post(auth, (req, res) => {
     res.json(req.user);
+  });
+router.route('/bot-status')
+  .put(async (req, res) => {
+    const { botStatus } = req.body;
+    try {
+      await Users.update({ botStatus }, { where: { id: 1 } });
+      const user = await Users.findOne({ where: { id: 1 } });
+      const userJson = JSON.parse(JSON.stringify(user));
+      res.json(userJson);
+    } catch (error) {
+      res.json({ error: 'connection error' });
+    }
+  });
+router.route('/bot-status-check')
+  .get(async (req, res) => {
+    try {
+      const user = await Users.findOne({ where: { id: 1 } });
+      const userJson = JSON.parse(JSON.stringify(user));
+      res.json(userJson);
+    } catch (error) {
+      res.json({ error: 'connection error' });
+    }
   });
 module.exports = router;

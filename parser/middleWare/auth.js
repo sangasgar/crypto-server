@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 const jwt = require('jsonwebtoken');
 
 function auth(req, res, next) {
@@ -7,7 +8,9 @@ function auth(req, res, next) {
       if (err) {
         return res.json({ errorJwt: 'invalid token' });
       }
-      req.user = { id: decoded.id, name: decoded.name, email: decoded.email };
+      req.user = {
+        id: decoded.id, name: decoded.name, publicKey: decoded.publicKey, privateKey: decoded.privateKey, email: decoded.email,
+      };
       next();
     });
   }

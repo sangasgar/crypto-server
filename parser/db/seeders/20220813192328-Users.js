@@ -15,6 +15,9 @@ module.exports = {
       name: 'admin',
       email: 'admin@crypto.io',
       password: await bcrypt.hash('123qwe321', Number(process.env.SALTROUNDS)),
+      privateKey: 'privateKey',
+      publicKey: 'publicKey',
+      botStatus: false,
       createdAt: new Date(),
       updatedAt: new Date(),
     }], {});
