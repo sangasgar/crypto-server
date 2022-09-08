@@ -20,19 +20,14 @@ async function logicBybit() {
   // restClientOptions,
   // requestLibraryOptions
   );
-  client.getWalletBalance({ coin: 'ADA' })
-    .then((result) => {
-      console.log(result);
-    })
-    .catch((err) => {
-      console.error(err);
-    });
-  client.getMarkPriceKline('BTCUSDT')
-    .then((result) => {
-      console.log(result.result);
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+
+  // client.getMarkPriceKline({
+  //   symbol: 'BTCUSDT', interval: 5, from: 1662662104, limit: 200,
+  // }).then((result) => {
+  //   console.log(result);
+  // })
+  //   .catch((err) => {
+  //     console.error(err);
+  //   });
 }
 module.exports = logicBybit;
