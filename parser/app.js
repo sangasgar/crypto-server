@@ -8,16 +8,16 @@ const cors = require('cors');
 const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
 const playBot = require('./middleWare/apiBybit');
-const logicBybit = require('./logic/logicBybit');
 const usersRouter = require('./routes/users');
+const logicTradingBybit = require('./logic/logicTradingBybit');
 
 const { PORT } = process.env || 3011;
 
 const app = express();
 const startBot = async () => {
   await playBot();
+  await logicTradingBybit();
 };
-logicBybit();
 app.use(logger('dev'));
 app.use(logger('dev'));
 app.use((req, res, next) => {
@@ -38,5 +38,6 @@ app.listen(PORT, () => {
 });
 setInterval(async () => {
   await playBot();
+  await logicTradingBybit();
 }, 25000);
 module.exports = app;

@@ -42,8 +42,13 @@ async function bullTv(arrayValue, HMA_Length = 21, lookback = 2, ShowHullSupResL
       const deltaPerBar = delta / look;
       const nextBar = data[i - 1] + deltaPerBar;
       // concavity = HMA > next_bar ? 1 : -1;
-      const OR = data[i] > data[i - 1] ? 'оранжевый' : 'красный';
-      const DG_G = data[i] < data[i - 1] ? 'темно зеленый' : 'салатовый';
+      // значения чисел/цветов
+      // 1 - салатовый
+      // 2 - темно зеленый
+      // 3 - оранжевый
+      // 4 - красный
+      const OR = data[i] > data[i - 1] ? 3 : 4;
+      const DG_G = data[i] < data[i - 1] ? 2 : 1;
       const concavity = data[i] > nextBar ? 1 : -1;
       // plot(HMA, "HMA", color=concavity != -1 ? DG_G : O_R, linewidth=3)
       result.push(concavity !== -1 ? DG_G : OR);
