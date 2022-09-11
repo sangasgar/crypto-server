@@ -12,11 +12,15 @@ module.exports = {
      * }], {});
     */
     await queryInterface.bulkInsert('Users', [{
-      name: 'admin',
-      email: 'admin@crypto.io',
-      password: await bcrypt.hash('123qwe321', Number(process.env.SALTROUNDS)),
+      name: 'Garegin',
+      email: 'sangas@yandex.ru',
+      password: await bcrypt.hash('123', Number(process.env.SALTROUNDS)),
       privateKey: 'privateKey',
       publicKey: 'publicKey',
+      symbol: 'BTCUSDT',
+      sizeDeposit: 10,
+      leverage: 1,
+      stoploss: 5,
       botStatus: false,
       createdAt: new Date(),
       updatedAt: new Date(),

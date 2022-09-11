@@ -19,6 +19,10 @@ module.exports = (sequelize, DataTypes) => {
     password: DataTypes.STRING,
     publicKey: DataTypes.STRING,
     privateKey: DataTypes.STRING,
+    symbol: DataTypes.STRING,
+    sizeDeposit: DataTypes.INTEGER,
+    leverage: DataTypes.INTEGER,
+    stoploss: DataTypes.INTEGER,
     botStatus: DataTypes.BOOLEAN,
   }, {
     sequelize,

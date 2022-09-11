@@ -84,6 +84,50 @@ router.route('/bot-status')
       res.json({ error: 'connection error' });
     }
   });
+router.route('/settings')
+  .get(async (req, res) => {
+    try {
+      const user = await Users.findOne({ where: { id: 1 } });
+      const userJson = JSON.parse(JSON.stringify(user));
+      res.json(userJson);
+    } catch (error) {
+      res.json({ error: 'connection error' });
+    }
+  })
+  .put(async (req, res) => {
+    const {
+      symbol, leverage, sizeDeposit, stoploss,
+    } = req.body;
+    try {
+      if (symbol) {
+        await Users.update({ symbol }, { where: { id: 1 } });
+        const user = await Users.findOne({ where: { id: 1 } });
+        const userJson = JSON.parse(JSON.stringify(user));
+        return res.json(userJson);
+      }
+      if (leverage) {
+        await Users.update({ leverage }, { where: { id: 1 } });
+        const user = await Users.findOne({ where: { id: 1 } });
+        const userJson = JSON.parse(JSON.stringify(user));
+        return res.json(userJson);
+      }
+      if (sizeDeposit) {
+        await Users.update({ sizeDeposit }, { where: { id: 1 } });
+        const user = await Users.findOne({ where: { id: 1 } });
+        const userJson = JSON.parse(JSON.stringify(user));
+        return res.json(userJson);
+      }
+      if (stoploss) {
+        await Users.update({ stoploss }, { where: { id: 1 } });
+        const user = await Users.findOne({ where: { id: 1 } });
+        const userJson = JSON.parse(JSON.stringify(user));
+        return res.json(userJson);
+      }
+      return res.json({ error: 'Database error' });
+    } catch (error) {
+      return res.json({ error: 'Database connection error' });
+    }
+  });
 router.route('/bot-status-check')
   .get(async (req, res) => {
     try {
