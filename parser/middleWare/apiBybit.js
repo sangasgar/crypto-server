@@ -20,7 +20,7 @@ async function playBot() {
     const userJson = JSON.parse(JSON.stringify(user));
     const API_KEY = userJson.publicKey;
     const PRIVATE_KEY = userJson.privateKey;
-
+    const { symbol } = userJson;
     const client = new LinearClient(
       API_KEY,
       PRIVATE_KEY,
@@ -34,7 +34,7 @@ async function playBot() {
     const today = Date.now();
     console.log('bot start');
     const data5Period = await client.getKline({
-      symbol: 'BTCUSDT', interval: period.five, from: Math.floor((today - Number(period.five) * 200 * 60 * 1000) / 1000), limit: 200,
+      symbol, interval: period.five, from: Math.floor((today - Number(period.five) * 200 * 60 * 1000) / 1000), limit: 200,
     });
     const data5periodData = data5Period.result;
     const period5Data = HeikinAshi(data5periodData.map((el) => ({
@@ -47,7 +47,7 @@ async function playBot() {
     });
     storage.addItem('period5Data', period5Data);
     const data15Period = await client.getKline({
-      symbol: 'BTCUSDT', interval: period.fifteen, from: Math.floor((today - Number(period.fifteen) * 200 * 60 * 1000) / 1000), limit: 200,
+      symbol, interval: period.fifteen, from: Math.floor((today - Number(period.fifteen) * 200 * 60 * 1000) / 1000), limit: 200,
     });
     const data15periodData = data15Period.result;
     const period15Data = HeikinAshi(data15periodData.map((el) => ({
@@ -60,7 +60,7 @@ async function playBot() {
     });
     storage.addItem('period15Data', period15Data);
     const data30mPeriod = await client.getKline({
-      symbol: 'BTCUSDT', interval: period.firteen, from: Math.floor((today - Number(period.firteen) * 200 * 60 * 1000) / 1000), limit: 200,
+      symbol, interval: period.firteen, from: Math.floor((today - Number(period.firteen) * 200 * 60 * 1000) / 1000), limit: 200,
     });
 
     const data30mperiodData = data30mPeriod.result;
@@ -74,7 +74,7 @@ async function playBot() {
     });
     storage.addItem('period30mData', period30mData);
     const data1hPeriod = await client.getKline({
-      symbol: 'BTCUSDT', interval: period.onehour, from: Math.floor((today - Number(period.onehour) * 200 * 60 * 1000) / 1000), limit: 200,
+      symbol, interval: period.onehour, from: Math.floor((today - Number(period.onehour) * 200 * 60 * 1000) / 1000), limit: 200,
     });
     const data1hperiodData = data1hPeriod.result;
     const period1hData = HeikinAshi(data1hperiodData.map((el) => ({
@@ -87,7 +87,7 @@ async function playBot() {
     });
     storage.addItem('period1hData', period1hData);
     const data2hPeriod = await client.getKline({
-      symbol: 'BTCUSDT', interval: period.twohour, from: Math.floor((today - Number(period.twohour) * 200 * 60 * 1000) / 1000), limit: 200,
+      symbol, interval: period.twohour, from: Math.floor((today - Number(period.twohour) * 200 * 60 * 1000) / 1000), limit: 200,
     });
     const data2hperiodData = data2hPeriod.result;
     const period2hData = HeikinAshi(data2hperiodData.map((el) => ({
@@ -100,7 +100,7 @@ async function playBot() {
     });
     storage.addItem('period2hData', period2hData);
     const data6hPeriod = await client.getKline({
-      symbol: 'BTCUSDT', interval: period.sixhour, from: Math.floor((today - Number(period.sixhour) * 200 * 60 * 1000) / 1000), limit: 200,
+      symbol, interval: period.sixhour, from: Math.floor((today - Number(period.sixhour) * 200 * 60 * 1000) / 1000), limit: 200,
     });
     const data6hperiodData = data6hPeriod.result;
     const period6hData = HeikinAshi(data6hperiodData.map((el) => ({

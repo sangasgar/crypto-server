@@ -70,13 +70,39 @@ function BotPage() {
       setSave(true);
       setTimeout(() => {
         setSave(false);
-      }, 3000);
+      }, 2000);
     });
   };
   return (
     <div className="bot">
       <h1>Управление ботом</h1>
-      {save ? 'Сохранено' : null}
+      {save ? <Text type="success">Сохранено</Text> : null}
+      <Text code>
+        Торговая пара:
+        {' '}
+        {symbol}
+        {' '}
+        /
+        {' '}
+        Размер % стоимости ордера от депозита:
+        {' '}
+        {sizeDeposit}
+        %
+        {' '}
+        /
+        {' '}
+        Кредитное плечо:
+        {' '}
+        {leverage}
+        x
+        {' '}
+        /
+        {' '}
+        Размер % стоп-лоса от стоимости:
+        {' '}
+        {stoploss}
+        %
+      </Text>
       <div className="name">
         Торговая пара:
         <select onChange={symbolChangeHandler} name="symbol">
@@ -116,6 +142,7 @@ function BotPage() {
         Размер % стоп-лоса от стоимости
         <select name="stoploss" onChange={stoplossChangeHandler}>
           <option disabled>{stoploss}</option>
+          <option value="5">5%</option>
           <option value="10">10%</option>
           <option value="25">25%</option>
           <option value="50">50%</option>

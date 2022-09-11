@@ -30,16 +30,16 @@ async function logicBybit() {
     .catch((err) => {
       console.error(err);
     });
-  // client.setMarginSwitch({
-  //   symbol: 'BTCUSDT', buy_leverage: 10, sell_leverage: 8, is_isolated: false,
-  // }).then((result) => {
-  //   console.log(result);
-  //   client.setMarginSwitch({
-  //     symbol: 'BTCUSDT', buy_leverage: 10, sell_leverage: 15, is_isolated: true,
-  //   }).then((result) => {
-  //     console.log(result);
-  //   });
-  // })
+  client.setMarginSwitch({
+    symbol: 'BTCUSDT', buy_leverage: 10, sell_leverage: 8, is_isolated: false,
+  }).then((result) => {
+    console.log(result);
+    client.setMarginSwitch({
+      symbol: 'BTCUSDT', buy_leverage: 10, sell_leverage: 15, is_isolated: true,
+    }).then((result) => {
+      console.log(result);
+    });
+  });
   //   .catch((err) => {
   //     console.error(err);
   //   });
