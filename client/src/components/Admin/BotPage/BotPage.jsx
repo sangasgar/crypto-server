@@ -136,6 +136,7 @@ function BotPage() {
             <>
               {' '}
               {sizeDeposit}
+              %
             </>
           ) }
         {!value ? <button onClick={clickDepositChangeHandler} type="button">Сох.</button> : null}
