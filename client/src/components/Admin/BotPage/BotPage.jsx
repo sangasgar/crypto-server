@@ -105,50 +105,84 @@ function BotPage() {
       </Text>
       <div className="name">
         Торговая пара:
-        <select onChange={symbolChangeHandler} name="symbol">
-          <option disabled>{symbol}</option>
-          <option value="BTCUSDT">BTCUSDT</option>
-          <option value="ETHUSDT">ETHUSDT</option>
-        </select>
+        {!value
+          ? (
+            <select onChange={symbolChangeHandler} name="symbol">
+              <option disabled>{symbol}</option>
+              <option value="BTCUSDT">BTCUSDT</option>
+              <option value="ETHUSDT">ETHUSDT</option>
+            </select>
+          ) : (
+            <>
+              {' '}
+              {symbol}
+            </>
+          ) }
         {!value ? <button onClick={clickSymbolHandler} type="button">Сох.</button> : null}
       </div>
       <div className="name">
-        Размер % стоимости ордера от депозита
-        <select onChange={sizeDepositChangeHandler} name="sizeDeposit">
-          <option disabled>{sizeDeposit}</option>
-          <option value="10">10</option>
-          <option value="25">25</option>
-          <option value="50">50</option>
-          <option value="75">75</option>
-          <option value="100">100</option>
-        </select>
+        Размер % стоимости ордера от депозита:
+        {!value
+          ? (
+            <select onChange={sizeDepositChangeHandler} name="sizeDeposit">
+              <option disabled>{sizeDeposit}</option>
+              <option value="10">10</option>
+              <option value="25">25</option>
+              <option value="50">50</option>
+              <option value="75">75</option>
+              <option value="100">100</option>
+            </select>
+          ) : (
+            <>
+              {' '}
+              {sizeDeposit}
+            </>
+          ) }
         {!value ? <button onClick={clickDepositChangeHandler} type="button">Сох.</button> : null}
       </div>
       <div className="name">
-        Кредитное плечо
-        <select onChange={leverageChangeHandler} name="leverage">
-          <option disabled>{leverage}</option>
-          <option value="1">1x</option>
-          <option value="3">3x</option>
-          <option value="5">5x</option>
-          <option value="10">10x</option>
-          <option value="25">25x</option>
-          <option value="50">50x</option>
-          <option value="100">100x</option>
-        </select>
+        Кредитное плечо:
+        {!value
+          ? (
+            <select onChange={leverageChangeHandler} name="leverage">
+              <option disabled>{leverage}</option>
+              <option value="1">1x</option>
+              <option value="3">3x</option>
+              <option value="5">5x</option>
+              <option value="10">10x</option>
+              <option value="25">25x</option>
+              <option value="50">50x</option>
+              <option value="100">100x</option>
+            </select>
+          ) : (
+            <>
+              {' '}
+              {leverage}
+              x
+            </>
+          ) }
         {!value ? <button onClick={clickLeverageHandler} type="button">Сох.</button> : null}
       </div>
       <div className="name">
-        Размер % стоп-лоса от стоимости
-        <select name="stoploss" onChange={stoplossChangeHandler}>
-          <option disabled>{stoploss}</option>
-          <option value="5">5%</option>
-          <option value="10">10%</option>
-          <option value="25">25%</option>
-          <option value="50">50%</option>
-          <option value="75">75%</option>
-          <option value="95">95%</option>
-        </select>
+        Размер % стоп-лоса от стоимости:
+        {!value
+          ? (
+            <select name="stoploss" onChange={stoplossChangeHandler}>
+              <option disabled>{stoploss}</option>
+              <option value="5">5%</option>
+              <option value="10">10%</option>
+              <option value="25">25%</option>
+              <option value="50">50%</option>
+              <option value="75">75%</option>
+              <option value="95">95%</option>
+            </select>
+          ) : (
+            <>
+              {' '}
+              {stoploss}
+              %
+            </>
+          ) }
         {!value ? <button onClick={clickStopLossHandler} type="button">Сох.</button> : null}
       </div>
       {!value ? <img src={Bot} alt="Бот" width={200} /> : <img src={BotPrint} alt="Бот" width={200} />}

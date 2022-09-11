@@ -31,7 +31,7 @@ async function logicTradingLongBybit() {
       const { leverage } = userJson;
       const { stoploss } = userJson;
       const { sizeDeposit } = userJson;
-      const restClientOptions = { recv_window: 10000 };
+      const restClientOptions = { recv_window: 20000 };
       const client = new LinearClient(
         API_KEY,
         PRIVATE_KEY,
@@ -44,17 +44,18 @@ async function logicTradingLongBybit() {
       );
       console.log(await client.getApiKeyInfo());
       // Получение данных о балансе
-      const balance = await client.getWalletBalance({ symbol: 'BTCUSDT' });
+      const balance = await client.getWalletBalance({ symbol });
       const balanceUSDT = Number(balance.result.USDT.available_balance);
       const longDeposit = (balanceUSDT * sizeDeposit) / 100;
-      console.log('----', longDeposit);
+
       // Получение данных о последней цене
-      const priceBybit = await client.getTickers({ symbol: 'BTCUSDT' });
+      const priceBybit = await client.getTickers({ symbol });
       const lastPrice = Number(priceBybit.result[0].last_price);
       // Количество покупаемого актива
-      const countActive = Math.floor(longDeposit / lastPrice);
+      const countActive = (longDeposit / lastPrice).toFixed(2);
+
       // Расчет стоп-лоса
-      const stopLossTrade = Math.floor(lastPrice - (lastPrice * stoploss) / 100);
+      const stopLossTrade = (lastPrice - (lastPrice * stoploss) / 100).toFixed(2);
 
       const period6hData = storage.getItem('period6hData');
       const period6hDataCipherB = await cipherB(period6hData);
@@ -117,9 +118,14 @@ async function logicTradingLongBybit() {
             const longPosition = await client.placeActiveOrder({
               symbol, side: 'Buy', qty: countActive, order_type: 'Market', close_on_trigger: false, reduce_only: false, stop_loss: stopLossTrade, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
             });
+            console.log(longPosition);
             if (longPosition.ret_msg === 'OK') {
               console.log('Позиция открыта');
               storage.addItem('Position', 'long');
+              const vwapLogic = Number(period5DataCipherBwithTime[period5DataCipherBwithTime.length - 1].vwap);
+              console.log(period5DataCipherBwithTime[period5DataCipherBwithTime.length - 1]);
+              console.log(vwapLogic);
+              storage.addItem('vwap', vwapLogic);
             } else {
               console.log('Не вошла в позицию лонг, так как возможно существует уже открыта позиция');
             }

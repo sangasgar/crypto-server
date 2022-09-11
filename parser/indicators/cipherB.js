@@ -13,6 +13,7 @@ const array = require('./data');
 
 async function cipherB(arrayValue, timeframe, useCurrentRes = true, customRes = 60, obLevel1 = 60, trigger1 = 53, osLevel1 = -60, trigger2 = -53) {
   const emaAsync = promisify(tulind.indicators.ema.indicator);
+  const smaAsync = promisify(tulind.indicators.sma.indicator);
   const o = [];
   const h = [];
   const l = [];
@@ -63,8 +64,10 @@ async function cipherB(arrayValue, timeframe, useCurrentRes = true, customRes = 
       return d2;
     };
     const bw2Func = async (data, len) => {
-      const results = await emaAsync([data], [len]);
-      const d2 = results[0];
+      const results = await smaAsync([data], [len]);
+      const countLen = data.length - results[0].length;
+
+      const d2 = [...Array(countLen).fill(null), ...results[0]];
       return d2;
     };
 
