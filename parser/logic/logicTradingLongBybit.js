@@ -42,7 +42,12 @@ async function logicTradingLongBybit() {
         restClientOptions,
       // requestLibraryOptions
       );
-      console.log(await client.getApiKeyInfo());
+      const getapikey = await client.getApiKeyInfo();
+      if (getapikey.ret_msg === 'OK') {
+        console.log('Ключи подтверждены');
+      } else {
+        console.log('Ошибка верификации ключей на бирже');
+      }
       // Получение данных о балансе
       const balance = await client.getWalletBalance({ symbol });
       const balanceUSDT = Number(balance.result.USDT.available_balance);
@@ -93,6 +98,7 @@ async function logicTradingLongBybit() {
       const period5DataCipherBwithTime = await period5Data.map((el, i) => ({
         time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period5DataCipherB[0][i], bw2: period5DataCipherB[1][i], vwap: period5DataCipherB[2][i], bullTV: period5DataBullTv[i],
       }));
+      console.log(period5DataCipherBwithTime[198]);
       const period5result = await longTrade(period5DataCipherBwithTime);
       await storage.addItem('period5LongBoolean', period5result);
       console.log('Проверка входа на 5 минут', storage.getItem('period5LongBoolean'));
@@ -103,7 +109,7 @@ async function logicTradingLongBybit() {
       const Long5Boolean = storage.getItem('period5LongBoolean');
       // Вход в позицию
       // Long6hBoolean && Long1hBoolean && Long15Boolean && Long5Boolean
-      if (BOT_STATUS) {
+      if (Long6hBoolean && Long1hBoolean && Long15Boolean && Long5Boolean) {
         console.log('Проверка возможности входа в позицию');
         await client.setMarginSwitch({
           symbol, buy_leverage: leverage, sell_leverage: leverage, is_isolated: false,
@@ -112,15 +118,16 @@ async function logicTradingLongBybit() {
           symbol, buy_leverage: leverage, sell_leverage: leverage, is_isolated: true,
         });
         if (isIsolated.ret_msg === 'OK') {
-          const position = await client.getPosition({ symbol });
-          if (Number(position.result[0].size) === 0) {
-            console.log('Вход в позицию');
+          const positionBTCUSDT = await client.getPosition({ symbol: 'BTCUSDT' });
+          const positionETHUSDT = await client.getPosition({ symbol: 'ETHUSDT' });
+          if (Number(positionBTCUSDT.result[0].size) === 0 && Number(positionETHUSDT.result[0].size) === 0) {
+            console.log('Вход в позицию лонг');
             const longPosition = await client.placeActiveOrder({
               symbol, side: 'Buy', qty: countActive, order_type: 'Market', close_on_trigger: false, reduce_only: false, stop_loss: stopLossTrade, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
             });
             console.log(longPosition);
             if (longPosition.ret_msg === 'OK') {
-              console.log('Позиция открыта');
+              console.log('Позиция лонг открыта');
               storage.addItem('Position', 'long');
               const vwapLogic = Number(period5DataCipherBwithTime[period5DataCipherBwithTime.length - 1].vwap);
               console.log(period5DataCipherBwithTime[period5DataCipherBwithTime.length - 1]);
@@ -134,6 +141,8 @@ async function logicTradingLongBybit() {
             console.log('Не вошла в позицию лонг, так как возможно существует уже открыта позиция');
           }
         }
+      } else {
+        console.log('Не подтверждены условия для входа в лонг');
       }
     } catch (error) {
       console.log('Ошибка расчетов');
