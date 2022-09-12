@@ -44,7 +44,7 @@ async function bullTv(arrayValue, HMA_Length = 21, lookback = 2, ShowHullSupResL
       // concavity = HMA > next_bar ? 1 : -1;
       // значения чисел/цветов
       // 1 - салатовый
-      // 2 - темно зеленый
+      // 2 - темно-зеленый
       // 3 - оранжевый
       // 4 - красный
       const OR = data[i] > data[i - 1] ? 3 : 4;

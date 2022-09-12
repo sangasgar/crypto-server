@@ -20,7 +20,7 @@ module.exports = {
       symbol: 'BTCUSDT',
       sizeDeposit: 10,
       leverage: 1,
-      stoploss: 5,
+      stoploss: 10,
       botStatus: false,
       createdAt: new Date(),
       updatedAt: new Date(),
