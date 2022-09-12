@@ -164,7 +164,7 @@ async function logicTradingShortBybit() {
         }
       } else {
         console.log('Не подтверждены условия для входа в шорт');
-        console.log('Проверка на возможность закрытия позиции');
+        console.log('Проверка на возможность закрытия позиции шорт');
         const vwapLast = Number(period15DataCipherBwithTime[period15DataCipherBwithTime.length - 1].vwap);
         // vwapLast === 0 || vwapLast < 0
         const closeBw1 = Number(period15DataCipherBwithTime[period15DataCipherBwithTime.length - 1].bw1);
