@@ -23,6 +23,7 @@ module.exports = (sequelize, DataTypes) => {
     sizeDeposit: DataTypes.INTEGER,
     leverage: DataTypes.INTEGER,
     stoploss: DataTypes.INTEGER,
+    balance: DataTypes.INTEGER,
     botStatus: DataTypes.BOOLEAN,
   }, {
     sequelize,

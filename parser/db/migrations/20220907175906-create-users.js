@@ -43,6 +43,9 @@ module.exports = {
         allowNull: false,
         type: Sequelize.INTEGER,
       },
+      balance: {
+        type: Sequelize.INTEGER,
+      },
       botStatus: {
         allowNull: false,
         type: Sequelize.BOOLEAN,

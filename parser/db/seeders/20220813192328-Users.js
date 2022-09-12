@@ -21,6 +21,7 @@ module.exports = {
       sizeDeposit: 10,
       leverage: 1,
       stoploss: 10,
+      balance: 0,
       botStatus: false,
       createdAt: new Date(),
       updatedAt: new Date(),
