@@ -77,7 +77,7 @@ function BotPage() {
     <div className="bot">
       <h1>Управление ботом</h1>
       {save ? <Text type="success">Сохранено</Text> : null}
-      <Text code>
+      <Text>
         Торговая пара:
         {' '}
         {symbol}
