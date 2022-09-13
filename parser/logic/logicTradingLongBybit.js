@@ -82,6 +82,11 @@ async function logicTradingLongBybit() {
       }));
       const period6Hresult = await longTrade(period6hDataCipherBwithTime);
       await storage.addItem('period6hLongBoolean', period6Hresult);
+      const time6h = Number(period6hDataCipherBwithTime[period6hDataCipherBwithTime.length - 1].time);
+      const milliseconds6h = time6h * 1000;
+      const dateObject6h = new Date(milliseconds6h);
+      const humanDateFormat6h = dateObject6h.toLocaleString('ru-RU', { timeZoneName: 'short' });
+      console.log('Время: ', humanDateFormat6h);
       console.log('Проверка входа на 6 часов', storage.getItem('period6hLongBoolean'));
 
       const period2hData = storage.getItem('period2hData');
@@ -92,6 +97,11 @@ async function logicTradingLongBybit() {
       }));
       const period2Hresult = await longTrade(period2hDataCipherBwithTime);
       await storage.addItem('period2hLongBoolean', period2Hresult);
+      const time2h = Number(period2hDataCipherBwithTime[period2hDataCipherBwithTime.length - 1].time);
+      const milliseconds2h = time2h * 1000;
+      const dateObject2h = new Date(milliseconds2h);
+      const humanDateFormat2h = dateObject2h.toLocaleString('ru-RU', { timeZoneName: 'short' });
+      console.log('Время: ', humanDateFormat2h);
       console.log('Проверка входа на 2 часа', storage.getItem('period2hLongBoolean'));
 
       const period1hData = storage.getItem('period1hData');
@@ -102,8 +112,12 @@ async function logicTradingLongBybit() {
       }));
       const period1Hresult = await longTrade(period1hDataCipherBwithTime);
       await storage.addItem('period1hLongBoolean', period1Hresult);
+      const time1h = Number(period1hDataCipherBwithTime[period1hDataCipherBwithTime.length - 1].time);
+      const milliseconds1h = time1h * 1000;
+      const dateObject1h = new Date(milliseconds1h);
+      const humanDateFormat1h = dateObject1h.toLocaleString('ru-RU', { timeZoneName: 'short' });
+      console.log('Время: ', humanDateFormat1h);
       console.log('Проверка входа на 1 час', storage.getItem('period1hLongBoolean'));
-
       const period15Data = storage.getItem('period15Data');
       const period15DataCipherB = await cipherB(period15Data);
       const period15DataBullTv = await bullTv(period15Data);
@@ -112,6 +126,11 @@ async function logicTradingLongBybit() {
       }));
       const period15result = await longTrade15(period15DataCipherBwithTime);
       await storage.addItem('period15LongBoolean', period15result);
+      const time15 = Number(period15DataCipherBwithTime[period15DataCipherBwithTime.length - 1].time);
+      const milliseconds15 = time15 * 1000;
+      const dateObject15 = new Date(milliseconds15);
+      const humanDateFormat15 = dateObject15.toLocaleString('ru-RU', { timeZoneName: 'short' });
+      console.log('Время: ', humanDateFormat15);
       console.log('Проверка входа на 15 минут', storage.getItem('period15LongBoolean'));
 
       // const period5Data = storage.getItem('period5Data');
