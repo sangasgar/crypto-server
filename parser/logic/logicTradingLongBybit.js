@@ -25,8 +25,9 @@ function longTrade15(array) {
   const bw2Logic = Number(array[array.length - 1].bw2);
   const differenceBw1LogicBw2Logic = Math.abs(bw1Logic) - Math.abs(bw2Logic);
   const bullLogic = Number(array[array.length - 1].bullTV);
-  const bullLogicPrev = Number(array[array.length - 2].bullTV);
-  if (vwapLogic > 0 && bw1Logic > bw2Logic && bullLogic === 1 && bullLogicPrev !== 1 && differenceBw1LogicBw2Logic > 5) {
+  // const bullLogicPrev = Number(array[array.length - 2].bullTV);
+  // (vwapLogic > 0 && bw1Logic > bw2Logic && bullLogic === 1 && bullLogicPrev !== 1 && differenceBw1LogicBw2Logic > 5)
+  if (vwapLogic > 0 && bw1Logic > bw2Logic && bullLogic === 1 && differenceBw1LogicBw2Logic > 5) {
     return true;
   }
   return false;
@@ -78,8 +79,8 @@ async function logicTradingLongBybit() {
       const countActive = (longDeposit / lastPrice).toFixed(2);
 
       // Расчет стоп-лоса
-      const stopLossTrade = (lastPrice - (lastPrice * stoploss) / 100).toFixed(2);
-
+      // const stopLossTrade = (lastPrice - (lastPrice * stoploss) / 100).toFixed(2);
+      const stopLossTrade = (lastPrice - (longDeposit * stoploss) / 100).toFixed(2);
       const period6hData = storage.getItem('period6hData');
       const period6hDataCipherB = await cipherB(period6hData);
       const period6hDataBullTv = await bullTv(period6hData);
