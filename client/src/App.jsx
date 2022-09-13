@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
 import {
   Routes,
   Route,
@@ -15,10 +14,6 @@ import MainPage from './components/MainPage/MainPage';
 import NavBar from './components/NavBar/NavBar';
 import Singin from './components/Singin/Singin';
 import { checkUser } from './Redux/Actions/userAction';
-
-const AppWrapper = styled.div`
-margin: 5%;
-`;
 
 function App() {
   const dispatch = useDispatch();
@@ -37,12 +32,9 @@ function App() {
         <Route path="/bot" element={user.name ? <BotPage /> : <Navigate replace to="/singin" />} />
         <Route path="/feedback" element={<Feedback />} />
       </Routes>
-      <AppWrapper>
-        <div className="footer">
-          <strong>Copyright Crypto Server 2022</strong>
-        </div>
-
-      </AppWrapper>
+      <div className="footer">
+        <strong>Copyright Crypto Server 2022</strong>
+      </div>
     </>
 
   );
