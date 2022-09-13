@@ -59,6 +59,11 @@ async function logicTradingShortBybit() {
         console.log('Ключи подтверждены');
       } else {
         console.log('Ошибка верификации ключей на бирже');
+        try {
+          await Users.update({ botStatus: false }, { where: { id: 1 } });
+        } catch (error) {
+          console.log('Ошибка подключения к базе данных');
+        }
       }
       // Получение данных о балансе
       const balance = await client.getWalletBalance({ symbol });
