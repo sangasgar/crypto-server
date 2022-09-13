@@ -154,6 +154,14 @@ async function logicTradingShortBybit() {
       const Long2hBoolean = storage.getItem('period2hLongBoolean');
       const Long1hBoolean = storage.getItem('period1hLongBoolean');
       const Long15Boolean = storage.getItem('period15LongBoolean');
+
+      // Проверка на вылет от стоп-лосса
+      const stopBotstoploss = storage.getItem('stopLossShort');
+      const positionBTCUSDTstopLoss = await client.getPosition({ symbol: 'BTCUSDT' });
+      const positionETHUSDTstopLoss = await client.getPosition({ symbol: 'ETHUSDT' });
+      if (stopBotstoploss === true && Number(positionBTCUSDTstopLoss.result[0].size) === 0 && Number(positionETHUSDTstopLoss.result[0].size) === 0) {
+        await Users.update({ botStatus: false }, { where: { id: 1 } });
+      }
       // const Long5Boolean = storage.getItem('period5LongBoolean');
       // Вход в позицию
       // Long6hBoolean && Long1hBoolean && Long15Boolean && Long5Boolean
@@ -178,6 +186,7 @@ async function logicTradingShortBybit() {
             if (longPosition.ret_msg === 'OK') {
               console.log('Позиция шорт открыта');
               storage.addItem('Position', 'short');
+              storage.addItem('stopLossShort', true);
               const vwapLogic = Number(period15DataCipherBwithTime[period15DataCipherBwithTime.length - 1].vwap);
               storage.addItem('vwap', vwapLogic);
             } else {
@@ -214,6 +223,7 @@ async function logicTradingShortBybit() {
               });
               if (closePosition.ret_msg === 'OK') {
                 storage.addItem('Position', 'flat');
+                storage.addItem('stopLossShort', false);
                 console.log('Позиция закрыта');
               } else {
                 console.log('Позиция не закрыта');
