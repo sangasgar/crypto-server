@@ -18,7 +18,6 @@ const app = express();
 const startBot = async () => {
   await playBot();
   const position = storage.getItem('Position');
-  await playBot();
   if (position === undefined || position === 'long' || position === 'flat') {
     await logicTradingLongBybit();
   }
