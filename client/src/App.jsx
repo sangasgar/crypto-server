@@ -39,7 +39,7 @@ function App() {
       </Routes>
       <AppWrapper>
         <div className="footer">
-          <strong>Copyright Neural Network 2022</strong>
+          <strong>Copyright Crypto Server 2022</strong>
         </div>
 
       </AppWrapper>
