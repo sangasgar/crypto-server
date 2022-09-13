@@ -161,6 +161,7 @@ async function logicTradingLongBybit() {
       const positionETHUSDTstopLoss = await client.getPosition({ symbol: 'ETHUSDT' });
       if (stopBotstoploss === true && Number(positionBTCUSDTstopLoss.result[0].size) === 0 && Number(positionETHUSDTstopLoss.result[0].size) === 0) {
         await Users.update({ botStatus: false }, { where: { id: 1 } });
+        console.log('Вылетел по стоп-лоссу лонг');
       }
       // const Long5Boolean = storage.getItem('period5LongBoolean');
       // Вход в позицию
