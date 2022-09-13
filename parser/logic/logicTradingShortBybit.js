@@ -24,9 +24,9 @@ function longTrade15(array) {
   const bw2Logic = Number(array[array.length - 1].bw2);
   const differenceBw1LogicBw2Logic = Math.abs(bw1Logic) - Math.abs(bw2Logic);
   const bullLogic = Number(array[array.length - 1].bullTV);
-  // const bullLogicPrev = Number(array[array.length - 2].bullTV);
+  const bullLogicPrev = Number(array[array.length - 2].bullTV);
   // (vwapLogic < 0 && bw1Logic < bw2Logic && bullLogic === 4 && bullLogicPrev !== 4 && differenceBw1LogicBw2Logic > 5)
-  if (vwapLogic < 0 && bw1Logic < bw2Logic && bullLogic === 4 && differenceBw1LogicBw2Logic > 5) {
+  if (vwapLogic < 0 && bw1Logic < bw2Logic && bullLogic === 4 && bullLogicPrev !== 4 && differenceBw1LogicBw2Logic > 5) {
     return true;
   }
   return false;

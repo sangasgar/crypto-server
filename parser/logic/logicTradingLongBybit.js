@@ -12,9 +12,9 @@ function longTrade(array) {
   const bw1Logic = Number(array[array.length - 1].bw1);
   const bw2Logic = Number(array[array.length - 1].bw2);
   const bullLogic = Number(array[array.length - 1].bullTV);
-  // const bullLogicPrev = Number(array[array.length - 2].bullTV);
+  const bullLogicPrev = Number(array[array.length - 2].bullTV);
   // (vwapLogic > 0 && bw1Logic > bw2Logic && bullLogic === 1 && bullLogicPrev !== 1);
-  if (vwapLogic > 0 && bw1Logic > bw2Logic && bullLogic === 1) {
+  if (vwapLogic > 0 && bw1Logic > bw2Logic && bullLogic === 1 && bullLogicPrev !== 1) {
     return true;
   }
   return false;
