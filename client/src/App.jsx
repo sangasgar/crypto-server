@@ -1,11 +1,11 @@
 import React, { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import styled from 'styled-components';
 import {
   Routes,
   Route,
   Navigate,
 } from 'react-router-dom';
+import axios from 'axios';
 import Account from './components/Admin/Account/Account';
 import AdminNavBar from './components/Admin/AdminNavBar/AdminNavBar';
 import BotPage from './components/Admin/BotPage/BotPage';
@@ -16,11 +16,8 @@ import NavBar from './components/NavBar/NavBar';
 import Singin from './components/Singin/Singin';
 import { checkUser } from './Redux/Actions/userAction';
 
-const AppWrapper = styled.div`
-margin: 5%;
-`;
-
 function App() {
+  axios.defaults.baseURL = 'http://31.172.73.217:3010';
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(checkUser());
@@ -37,12 +34,9 @@ function App() {
         <Route path="/bot" element={user.name ? <BotPage /> : <Navigate replace to="/singin" />} />
         <Route path="/feedback" element={<Feedback />} />
       </Routes>
-      <AppWrapper>
-        <div className="footer">
-          <strong>Copyright Neural Network 2022</strong>
-        </div>
-
-      </AppWrapper>
+      <div className="footer">
+        <strong>Copyright Crypto Server 2022</strong>
+      </div>
     </>
 
   );

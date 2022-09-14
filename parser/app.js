@@ -52,5 +52,5 @@ setInterval(async () => {
   if (position === undefined || position === 'short' || position === 'flat') {
     await logicTradingShortBybit();
   }
-}, 25000);
+}, 60000);
 module.exports = app;

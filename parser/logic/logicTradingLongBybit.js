@@ -12,9 +12,9 @@ function longTrade(array) {
   const bw1Logic = Number(array[array.length - 1].bw1);
   const bw2Logic = Number(array[array.length - 1].bw2);
   const bullLogic = Number(array[array.length - 1].bullTV);
-  // const bullLogicPrev = Number(array[array.length - 2].bullTV);
+  const bullLogicPrev = Number(array[array.length - 2].bullTV);
   // (vwapLogic > 0 && bw1Logic > bw2Logic && bullLogic === 1 && bullLogicPrev !== 1);
-  if (vwapLogic > 0 && bw1Logic > bw2Logic && bullLogic === 1) {
+  if (vwapLogic > 0 && bw1Logic > bw2Logic && bullLogic === 1 && bullLogicPrev !== 1) {
     return true;
   }
   return false;
@@ -154,6 +154,15 @@ async function logicTradingLongBybit() {
       const Long2hBoolean = storage.getItem('period2hLongBoolean');
       const Long1hBoolean = storage.getItem('period1hLongBoolean');
       const Long15Boolean = storage.getItem('period15LongBoolean');
+
+      // Проверка на вылет от стоп-лосса
+      const stopBotstoploss = storage.getItem('stopLoss');
+      const positionBTCUSDTstopLoss = await client.getPosition({ symbol: 'BTCUSDT' });
+      const positionETHUSDTstopLoss = await client.getPosition({ symbol: 'ETHUSDT' });
+      if (stopBotstoploss === true && Number(positionBTCUSDTstopLoss.result[0].size) === 0 && Number(positionETHUSDTstopLoss.result[0].size) === 0) {
+        await Users.update({ botStatus: false }, { where: { id: 1 } });
+        console.log('Вылетел по стоп-лоссу лонг');
+      }
       // const Long5Boolean = storage.getItem('period5LongBoolean');
       // Вход в позицию
       // Long6hBoolean && Long1hBoolean && Long15Boolean && Long5Boolean
@@ -178,6 +187,7 @@ async function logicTradingLongBybit() {
             if (longPosition.ret_msg === 'OK') {
               console.log('Позиция лонг открыта');
               storage.addItem('Position', 'long');
+              storage.addItem('stopLoss', true);
               const vwapLogic = Number(period15DataCipherBwithTime[period15DataCipherBwithTime.length - 1].vwap);
               storage.addItem('vwap', vwapLogic);
             } else {
@@ -214,6 +224,7 @@ async function logicTradingLongBybit() {
               });
               if (closePosition.ret_msg === 'OK') {
                 storage.addItem('Position', 'flat');
+                storage.addItem('stopLoss', false);
                 console.log('Позиция закрыта');
               } else {
                 console.log('Позиция не закрыта');

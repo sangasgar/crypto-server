@@ -7,6 +7,6 @@ export const data1hAction = (value) => ({
 });
 
 export const get1h = () => async (dispatch) => {
-  const data1h = await axios.get('http://localhost:3010/api/data-1h');
+  const data1h = await axios.get('/api/data-1h');
   dispatch(data1hAction(data1h.data));
 };

@@ -7,6 +7,6 @@ export const data6hAction = (value) => ({
 });
 
 export const get6h = () => async (dispatch) => {
-  const data6h = await axios.get('http://localhost:3010/api/data-6h');
+  const data6h = await axios.get('/api/data-6h');
   dispatch(data6hAction(data6h.data));
 };

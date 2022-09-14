@@ -33,7 +33,7 @@ function MainPage() {
             риска и предпочтений по секторам финансового рынка.
           </Text>
         </div>
-        <img src={robot} alt="robot" width={200} />
+        <img src={robot} alt="robot" width={160} />
         <Sparklines data={sparkData} limit={20}>
           <SparklinesLine color="#1c8cdc" />
           <SparklinesSpots />

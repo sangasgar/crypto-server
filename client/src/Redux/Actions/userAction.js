@@ -9,7 +9,7 @@ export const userAction = (value) => ({
 
 export const getUser = (value) => async (dispatch) => {
   try {
-    const user = await axios.post('http://localhost:3010/users', value);
+    const user = await axios.post('/users', value);
     localStorage.setItem('token', user.data.token);
     dispatch(userAction({
       id: user.data.id, name: user.data.name, email: user.data.email, privateKey: user.data.privateKey, publicKey: user.data.publicKey, botStatus: user.data.botStatus,
@@ -21,7 +21,7 @@ export const getUser = (value) => async (dispatch) => {
 
 export const editUser = (value) => async (dispatch) => {
   try {
-    const user = await axios.put('http://localhost:3010/users', value);
+    const user = await axios.put('/users', value);
     localStorage.setItem('token', user.data.token);
     dispatch(userAction({
       id: user.data.id, name: user.data.name, email: user.data.email, privateKey: user.data.privateKey, publicKey: user.data.publicKey, botStatus: user.data.botStatus,
@@ -38,7 +38,7 @@ export const checkUser = () => async (dispatch) => {
       authorization: `Bearer ${token}`,
     },
   };
-  const user = await axios.post('http://localhost:3010/users/check', {}, option);
+  const user = await axios.post('/users/check', {}, option);
   dispatch(userAction(user.data));
 };
 

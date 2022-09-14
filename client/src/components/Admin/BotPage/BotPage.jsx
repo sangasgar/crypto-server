@@ -14,8 +14,8 @@ function BotPage() {
   const [stoploss, setStoploss] = useState(false);
   const [save, setSave] = useState(false);
   useEffect(() => {
-    axios.get('http://localhost:3010/users/bot-status-check').then((res) => setValue(res.data.botStatus));
-    axios.get('http://localhost:3010/users/settings').then((res) => {
+    axios.get('/users/bot-status-check').then((res) => setValue(res.data.botStatus));
+    axios.get('/users/settings').then((res) => {
       setSymbol(res.data.symbol);
       setSizeDeposit(res.data.sizeDeposit);
       setLeverage(res.data.leverage);
@@ -23,7 +23,7 @@ function BotPage() {
     });
   }, []);
   const botHandler = () => {
-    axios.put('http://localhost:3010/users/bot-status', { botStatus: !value }).then((res) => setValue(res.data.botStatus));
+    axios.put('/users/bot-status', { botStatus: !value }).then((res) => setValue(res.data.botStatus));
   };
   const symbolChangeHandler = (e) => {
     setSymbol(e.target.value);
@@ -38,7 +38,7 @@ function BotPage() {
     setStoploss(e.target.value);
   };
   const clickSymbolHandler = () => {
-    axios.put('http://localhost:3010/users/settings', { symbol }).then((res) => {
+    axios.put('/users/settings', { symbol }).then((res) => {
       setSymbol(res.data.symbol);
       setSave(true);
       setTimeout(() => {
@@ -47,7 +47,7 @@ function BotPage() {
     });
   };
   const clickDepositChangeHandler = () => {
-    axios.put('http://localhost:3010/users/settings', { sizeDeposit }).then((res) => {
+    axios.put('/users/settings', { sizeDeposit }).then((res) => {
       setSizeDeposit(res.data.sizeDeposit);
       setSave(true);
       setTimeout(() => {
@@ -56,7 +56,7 @@ function BotPage() {
     });
   };
   const clickLeverageHandler = () => {
-    axios.put('http://localhost:3010/users/settings', { leverage }).then((res) => {
+    axios.put('/users/settings', { leverage }).then((res) => {
       setLeverage(res.data.leverage);
       setSave(true);
       setTimeout(() => {
@@ -65,7 +65,7 @@ function BotPage() {
     });
   };
   const clickStopLossHandler = () => {
-    axios.put('http://localhost:3010/users/settings', { stoploss }).then((res) => {
+    axios.put('/users/settings', { stoploss }).then((res) => {
       setStoploss(res.data.stoploss);
       setSave(true);
       setTimeout(() => {
@@ -77,7 +77,7 @@ function BotPage() {
     <div className="bot">
       <h1>Управление ботом</h1>
       {save ? <Text type="success">Сохранено</Text> : null}
-      <Text code>
+      <Text>
         Торговая пара:
         {' '}
         {symbol}
@@ -126,8 +126,15 @@ function BotPage() {
           ? (
             <select onChange={sizeDepositChangeHandler} name="sizeDeposit">
               <option disabled>{sizeDeposit}</option>
+              <option value="5">5</option>
               <option value="10">10</option>
+              <option value="15">15</option>
+              <option value="20">20</option>
               <option value="25">25</option>
+              <option value="30">30</option>
+              <option value="35">35</option>
+              <option value="40">40</option>
+              <option value="45">45</option>
               <option value="50">50</option>
               <option value="75">75</option>
               <option value="100">100</option>
@@ -151,7 +158,13 @@ function BotPage() {
               <option value="3">3x</option>
               <option value="5">5x</option>
               <option value="10">10x</option>
+              <option value="15">15x</option>
+              <option value="20">20x</option>
               <option value="25">25x</option>
+              <option value="30">30x</option>
+              <option value="35">35x</option>
+              <option value="40">40x</option>
+              <option value="45">45x</option>
               <option value="50">50x</option>
               <option value="100">100x</option>
             </select>
@@ -170,12 +183,20 @@ function BotPage() {
           ? (
             <select name="stoploss" onChange={stoplossChangeHandler}>
               <option disabled>{stoploss}</option>
+              <option value="1">1x</option>
               <option value="5">5%</option>
               <option value="10">10%</option>
+              <option value="15">15%</option>
+              <option value="20">20%</option>
               <option value="25">25%</option>
+              <option value="30">30%</option>
+              <option value="35">35%</option>
+              <option value="40">40%</option>
+              <option value="45">45%</option>
               <option value="50">50%</option>
               <option value="75">75%</option>
               <option value="95">95%</option>
+              <option value="100">100x</option>
             </select>
           ) : (
             <>
