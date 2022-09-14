@@ -5,6 +5,7 @@ import {
   Route,
   Navigate,
 } from 'react-router-dom';
+import axios from 'axios';
 import Account from './components/Admin/Account/Account';
 import AdminNavBar from './components/Admin/AdminNavBar/AdminNavBar';
 import BotPage from './components/Admin/BotPage/BotPage';
@@ -16,6 +17,7 @@ import Singin from './components/Singin/Singin';
 import { checkUser } from './Redux/Actions/userAction';
 
 function App() {
+  axios.defaults.baseURL = 'http://31.172.73.217:3010';
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(checkUser());

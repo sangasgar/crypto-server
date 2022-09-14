@@ -20,6 +20,7 @@ router.route('/data-30m')
 router.route('/data-1h')
   .get(async (req, res, next) => {
     const period1hData = storage.getItem('period1hData');
+    console.log(period1hData);
     res.json(period1hData);
   });
 router.route('/data-2h')
