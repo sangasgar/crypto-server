@@ -18,13 +18,30 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
-.intro {
-  background-color: white;
-  width: 40%;
-  height: 620px;
-  border-radius: 3%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 2%;
-}
+@media (min-width: 800px) and (max-width: 5000px) {
+  .intro {
+    background-color: white;
+    width: 40%;
+    height: 620px;
+    border-radius: 3%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2%;
+  }
+  
+ }
+ @media (min-width: 10px) and (max-width: 800px) {
+  .intro {
+    background-color: white;
+    width: 95%;
+    height: 620px;
+    border-radius: 3%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 2%;
+  }
+  
+ }
+

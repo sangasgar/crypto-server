@@ -107,8 +107,9 @@ function BotPage() {
         Торговая пара:
         {!value
           ? (
-            <select onChange={symbolChangeHandler} name="symbol">
+            <select onClick={symbolChangeHandler} name="symbol">
               <option disabled>{symbol}</option>
+              <option value={symbol}>-----------</option>
               <option value="BTCUSDT">BTCUSDT</option>
               <option value="ETHUSDT">ETHUSDT</option>
             </select>
@@ -124,8 +125,9 @@ function BotPage() {
         Размер % стоимости ордера от депозита:
         {!value
           ? (
-            <select onChange={sizeDepositChangeHandler} name="sizeDeposit">
+            <select onClick={sizeDepositChangeHandler} name="sizeDeposit">
               <option disabled>{sizeDeposit}</option>
+              <option value={sizeDeposit}>---</option>
               <option value="5">5</option>
               <option value="10">10</option>
               <option value="15">15</option>
@@ -152,8 +154,9 @@ function BotPage() {
         Кредитное плечо:
         {!value
           ? (
-            <select onChange={leverageChangeHandler} name="leverage">
+            <select onClick={leverageChangeHandler} name="leverage">
               <option disabled>{leverage}</option>
+              <option value={leverage}>---</option>
               <option value="1">1x</option>
               <option value="3">3x</option>
               <option value="5">5x</option>
@@ -181,8 +184,9 @@ function BotPage() {
         Размер % стоп-лоса от стоимости:
         {!value
           ? (
-            <select name="stoploss" onChange={stoplossChangeHandler}>
+            <select name="stoploss" onClick={stoplossChangeHandler}>
               <option disabled>{stoploss}</option>
+              <option value={stoploss}>---</option>
               <option value="1">1x</option>
               <option value="5">5%</option>
               <option value="10">10%</option>
