@@ -17,7 +17,7 @@ import Singin from './components/Singin/Singin';
 import { checkUser } from './Redux/Actions/userAction';
 
 function App() {
-  axios.defaults.baseURL = 'http://31.172.73.217:3010';
+  axios.defaults.baseURL = 'http://31.172.73.217:3012';
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(checkUser());

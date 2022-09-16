@@ -14,7 +14,7 @@ function longTrade(array) {
   const bullLogic = Number(array[array.length - 1].bullTV);
   const bullLogicPrev = Number(array[array.length - 2].bullTV);
   // (vwapLogic > 0 && bw1Logic > bw2Logic && bullLogic === 1 && bullLogicPrev !== 1);
-  if (vwapLogic > 0 && bw1Logic > bw2Logic && bullLogic === 1 && bullLogicPrev !== 1) {
+  if (vwapLogic > 0 && bw1Logic > bw2Logic && bullLogic === 1) {
     return true;
   }
   return false;
@@ -211,7 +211,7 @@ async function logicTradingLongBybit() {
         const positionBTCUSDTsize = Number(positionBTCUSDT.result[0].size);
         const positionETHUSDTsize = Number(positionETHUSDT.result[0].size);
         if (positionBTCUSDTsize > 0 || positionETHUSDTsize > 0) {
-          if (vwapLast === 0 || vwapLast < 0 || differenceСloseBw1СloseBw2 <= 5) {
+          if (vwapLast === 0 || vwapLast < 0 || differenceСloseBw1СloseBw2 <= 3) {
             let sizeQty = 0;
             if (positionBTCUSDTsize > 0) {
               sizeQty = positionBTCUSDTsize;

@@ -13,7 +13,7 @@ function longTrade(array) {
   const bw2Logic = Number(array[array.length - 1].bw2);
   const bullLogic = Number(array[array.length - 1].bullTV);
   const bullLogicPrev = Number(array[array.length - 2].bullTV);
-  if (vwapLogic < 0 && bw1Logic < bw2Logic && bullLogic === 4 && bullLogicPrev !== 4) {
+  if (vwapLogic < 0 && bw1Logic < bw2Logic && bullLogic === 4) {
     return true;
   }
   return false;
@@ -26,7 +26,7 @@ function longTrade15(array) {
   const bullLogic = Number(array[array.length - 1].bullTV);
   const bullLogicPrev = Number(array[array.length - 2].bullTV);
   // (vwapLogic < 0 && bw1Logic < bw2Logic && bullLogic === 4 && bullLogicPrev !== 4 && differenceBw1LogicBw2Logic > 5)
-  if (vwapLogic < 0 && bw1Logic < bw2Logic && bullLogic === 4 && bullLogicPrev !== 4 && differenceBw1LogicBw2Logic > 5) {
+  if (vwapLogic < 0 && bw1Logic < bw2Logic && bullLogic === 4 && differenceBw1LogicBw2Logic > 5) {
     return true;
   }
   return false;
@@ -205,13 +205,14 @@ async function logicTradingShortBybit() {
         // vwapLast === 0 || vwapLast < 0
         const closeBw1 = Number(period15DataCipherBwithTime[period15DataCipherBwithTime.length - 1].bw1);
         const closeBw2 = Number(period15DataCipherBwithTime[period15DataCipherBwithTime.length - 1].bw2);
+        const bullLogicStop = Number(period15DataCipherBwithTime[period15DataCipherBwithTime.length - 1].bullTV);
         const differenceСloseBw1СloseBw2 = Math.abs(closeBw1) - Math.abs(closeBw2);
         const positionBTCUSDT = await client.getPosition({ symbol: 'BTCUSDT' });
         const positionETHUSDT = await client.getPosition({ symbol: 'ETHUSDT' });
         const positionBTCUSDTsize = Number(positionBTCUSDT.result[1].size);
         const positionETHUSDTsize = Number(positionETHUSDT.result[1].size);
         if (positionBTCUSDTsize > 0 || positionETHUSDTsize > 0) {
-          if (vwapLast === 0 || vwapLast > 0 || differenceСloseBw1СloseBw2 <= 5) {
+          if (vwapLast === 0 || vwapLast > 0 || differenceСloseBw1СloseBw2 <= 3) {
             let sizeQty = 0;
             if (positionBTCUSDTsize > 0) {
               sizeQty = positionBTCUSDTsize;
