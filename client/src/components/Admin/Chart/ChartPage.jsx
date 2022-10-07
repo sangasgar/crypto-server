@@ -108,6 +108,7 @@ function ChartPage() {
   };
   return (
     <div className="charts">
+      {update ? <Text type="success">Сохранено</Text> : null}
       <div className="symbolChange">
         <select onClick={symbolClickHandler} name="symbol">
           <option disabled>{symbol}</option>
@@ -115,7 +116,6 @@ function ChartPage() {
         </select>
         <button onClick={saveSymbolClickHandler} type="button">Сох.</button>
       </div>
-      {update ? <Text type="success">Сохранено</Text> : null}
       <h1>График на 5 минут</h1>
       <Chart
         options={params.options}
