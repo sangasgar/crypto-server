@@ -13,6 +13,7 @@ module.exports = {
       },
       email: {
         allowNull: false,
+        unique: true,
         type: Sequelize.STRING,
       },
       password: {
@@ -27,28 +28,17 @@ module.exports = {
         allowNull: false,
         type: Sequelize.STRING,
       },
-      symbol: {
-        allowNull: false,
-        type: Sequelize.STRING,
-      },
-      sizeDeposit: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-      },
-      leverage: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-      },
-      stoploss: {
-        allowNull: false,
-        type: Sequelize.INTEGER,
-      },
       balance: {
         type: Sequelize.INTEGER,
       },
-      botStatus: {
-        allowNull: false,
-        type: Sequelize.BOOLEAN,
+      sizeDeposit: {
+        type: Sequelize.INTEGER,
+      },
+      leverage: {
+        type: Sequelize.INTEGER,
+      },
+      stoploss: {
+        type: Sequelize.INTEGER,
       },
       createdAt: {
         allowNull: false,

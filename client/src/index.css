@@ -8,8 +8,8 @@ body {
 }
 .footer {
   background-color:black;
-  height: 50px;
   color: azure;
+  height: 100px;
   display: flex;
   justify-content: center;
   padding: 1%;
@@ -21,8 +21,9 @@ code {
 @media (min-width: 800px) and (max-width: 5000px) {
   .intro {
     background-color: white;
-    width: 40%;
-    height: 620px;
+    width: 60%;
+    opacity: .9;
+    font-family: 'Small Capital';
     border-radius: 3%;
     display: flex;
     flex-direction: column;
@@ -35,7 +36,7 @@ code {
   .intro {
     background-color: white;
     width: 95%;
-    height: 620px;
+    opacity: .9;
     border-radius: 3%;
     display: flex;
     flex-direction: column;
@@ -44,4 +45,3 @@ code {
   }
   
  }
-

@@ -9,6 +9,7 @@ const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
 const playBot = require('./middleWare/apiBybit');
 const usersRouter = require('./routes/users');
+const positionsRouter = require('./routes/positions');
 const logicTradingLongBybit = require('./logic/logicTradingLongBybit');
 const logicTradingShortBybit = require('./logic/logicTradingShortBybit');
 
@@ -26,7 +27,6 @@ const startBot = async () => {
   }
 };
 app.use(logger('dev'));
-app.use(logger('dev'));
 app.use((req, res, next) => {
   console.log('Called URL:', req.url);
   next();
@@ -36,21 +36,23 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname)));
-startBot();
 app.use('/', indexRouter);
-app.use('/api', apiRouter);
+
 app.use('/users', usersRouter);
+app.use('/api', apiRouter);
+app.use('/positions', positionsRouter);
+
 app.listen(PORT, () => {
   console.log('Server запущен на порту ', PORT);
 });
-setInterval(async () => {
-  const position = storage.getItem('Position');
-  await playBot();
-  if (position === undefined || position === 'long' || position === 'flat') {
-    await logicTradingLongBybit();
-  }
-  if (position === undefined || position === 'short' || position === 'flat') {
-    await logicTradingShortBybit();
-  }
-}, 60000);
+// setInterval(async () => {
+//   const position = storage.getItem('Position');
+//   await playBot();
+//   if (position === undefined || position === 'long' || position === 'flat') {
+//     await logicTradingLongBybit();
+//   }
+//   if (position === undefined || position === 'short' || position === 'flat') {
+//     await logicTradingShortBybit();
+//   }
+// }, 60000);
 module.exports = app;

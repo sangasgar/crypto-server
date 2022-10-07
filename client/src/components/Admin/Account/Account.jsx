@@ -22,7 +22,7 @@ function Account() {
   };
   const saveClickHandler = () => {
     dispatch(editUser({
-      name: input, email: inputEmail, publicKey: inputPublicKey, privateKey: inputPrivateKey, password: inputPassword,
+      id: user.id, name: input, email: inputEmail, publicKey: inputPublicKey, privateKey: inputPrivateKey, password: inputPassword,
     }));
     setName(!name);
   };
@@ -31,7 +31,7 @@ function Account() {
   };
   const saveEmailHandler = () => {
     dispatch(editUser({
-      name: input, email: inputEmail, publicKey: inputPublicKey, privateKey: inputPrivateKey, password: inputPassword,
+      id: user.id, name: input, email: inputEmail, publicKey: inputPublicKey, privateKey: inputPrivateKey, password: inputPassword,
     }));
     setEmail(!email);
   };
@@ -40,7 +40,7 @@ function Account() {
   };
   const savePublicKeHandler = () => {
     dispatch(editUser({
-      name: input, email: inputEmail, publicKey: inputPublicKey, privateKey: inputPrivateKey, password: inputPassword,
+      id: user.id, name: input, email: inputEmail, publicKey: inputPublicKey, privateKey: inputPrivateKey, password: inputPassword,
     }));
     setPublicKey(!publicKey);
   };
@@ -49,7 +49,7 @@ function Account() {
   };
   const savePrivateKeHandler = () => {
     dispatch(editUser({
-      name: input, email: inputEmail, publicKey: inputPublicKey, privateKey: inputPrivateKey, password: inputPassword,
+      id: user.id, name: input, email: inputEmail, publicKey: inputPublicKey, privateKey: inputPrivateKey, password: inputPassword,
     }));
     setPrivateKey(!privateKey);
   };
@@ -58,7 +58,7 @@ function Account() {
   };
   const savePasswordHandler = () => {
     dispatch(editUser({
-      name: input, email: inputEmail, publicKey: inputPublicKey, privateKey: inputPrivateKey, password: inputPassword,
+      id: user.id, name: input, email: inputEmail, publicKey: inputPublicKey, privateKey: inputPrivateKey, password: inputPassword,
     }));
     setPassword(!password);
   };

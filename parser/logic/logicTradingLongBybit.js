@@ -67,6 +67,7 @@ async function logicTradingLongBybit() {
           console.log('Ошибка подключения к базе данных');
         }
       }
+
       // Получение данных о балансе
       const balance = await client.getWalletBalance({ symbol });
       const balanceUSDT = Number(balance.result.USDT.available_balance);
@@ -77,6 +78,8 @@ async function logicTradingLongBybit() {
       const lastPrice = Number(priceBybit.result[0].last_price);
       // Количество покупаемого актива
       const countActive = (longDeposit / lastPrice).toFixed(2);
+
+      // Проверка на возможность закрытия позиции
 
       // Расчет стоп-лоса
       // const stopLossTrade = (lastPrice - (lastPrice * stoploss) / 100).toFixed(2);
@@ -200,40 +203,6 @@ async function logicTradingLongBybit() {
         }
       } else {
         console.log('Не подтверждены условия для входа в лонг');
-        console.log('Проверка на возможность закрытия позиции лонг');
-        const vwapLast = Number(period15DataCipherBwithTime[period15DataCipherBwithTime.length - 1].vwap);
-        // vwapLast === 0 || vwapLast < 0
-        const closeBw1 = Number(period15DataCipherBwithTime[period15DataCipherBwithTime.length - 1].bw1);
-        const closeBw2 = Number(period15DataCipherBwithTime[period15DataCipherBwithTime.length - 1].bw2);
-        const differenceСloseBw1СloseBw2 = Math.abs(closeBw1) - Math.abs(closeBw2);
-        const positionBTCUSDT = await client.getPosition({ symbol: 'BTCUSDT' });
-        const positionETHUSDT = await client.getPosition({ symbol: 'ETHUSDT' });
-        const positionBTCUSDTsize = Number(positionBTCUSDT.result[0].size);
-        const positionETHUSDTsize = Number(positionETHUSDT.result[0].size);
-        if (positionBTCUSDTsize > 0 || positionETHUSDTsize > 0) {
-          if (vwapLast === 0 || vwapLast < 0 || differenceСloseBw1СloseBw2 <= 3) {
-            let sizeQty = 0;
-            if (positionBTCUSDTsize > 0) {
-              sizeQty = positionBTCUSDTsize;
-            } else {
-              sizeQty = positionETHUSDTsize;
-            }
-            if (sizeQty > 0) {
-              const closePosition = await client.placeActiveOrder({
-                symbol, side: 'Sell', qty: sizeQty, order_type: 'Market', close_on_trigger: false, reduce_only: true, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
-              });
-              if (closePosition.ret_msg === 'OK') {
-                storage.addItem('Position', 'flat');
-                storage.addItem('stopLoss', false);
-                console.log('Позиция закрыта');
-              } else {
-                console.log('Позиция не закрыта');
-              }
-            }
-          }
-        } else {
-          console.log('Открытых позиций нет');
-        }
       }
     } catch (error) {
       console.log('Ошибка расчетов');

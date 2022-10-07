@@ -1,23 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React from 'react';
 import './MainPage.css';
 import { Button, Typography } from 'antd';
 import { Link } from 'react-router-dom';
-import { Sparklines, SparklinesLine, SparklinesSpots } from 'react-sparklines';
-import robot from '../../img/robot.png';
+import robot from '../../img/robot1.png';
 
 function MainPage() {
-  const [sparkData, setSparkData] = useState([]);
-  function randomData(num) {
-    const arr = [];
-    for (let i = 0; i < num; i += 1) {
-      arr.push(Math.floor(Math.random() * 10) + 1);
-    }
-    return arr;
-  }
-  useEffect(() => {
-    setSparkData(randomData(30));
-  }, []);
-
   const { Text } = Typography;
   return (
     <div className="mainPage">
@@ -33,12 +20,9 @@ function MainPage() {
             риска и предпочтений по секторам финансового рынка.
           </Text>
         </div>
-        <img src={robot} alt="robot" width={160} />
-        <Sparklines data={sparkData} limit={20}>
-          <SparklinesLine color="#1c8cdc" />
-          <SparklinesSpots />
-        </Sparklines>
-        <Button type="primary" className="singinButton" shape="round" size="large">
+        <img src={robot} alt="robot" width={400} />
+
+        <Button type="primary" style={{ background: 'black', borderColor: 'black' }} blue className="singinButton" shape="round" size="large">
           <Link to="/singin">Вход</Link>
         </Button>
       </div>

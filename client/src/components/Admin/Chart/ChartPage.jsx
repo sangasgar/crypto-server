@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Chart from '@qognicafinance/react-lightweight-charts';
+import axios from 'axios';
+import { Typography } from 'antd';
 import { get5m } from '../../../Redux/Actions/data5mAction';
 import './ChartPage.css';
 import { get15m } from '../../../Redux/Actions/data15mAction';
@@ -8,18 +10,23 @@ import { get30m } from '../../../Redux/Actions/data30mAction';
 import { get1h } from '../../../Redux/Actions/data1hAction';
 import { get2h } from '../../../Redux/Actions/data2hAction';
 import { get6h } from '../../../Redux/Actions/data6hAction';
+import SymbolItems from './SymbolItems/SymbolItems';
 
+const { Text } = Typography;
 function ChartPage() {
   const dispatch = useDispatch();
   const [value, setValue] = useState('stop');
-
+  const { user } = useSelector((state) => state);
+  const [symbol, setSymbol] = useState('BTCUSDT');
+  const [positions, setPositions] = useState([]);
+  const [update, setUpdate] = useState(false);
   useEffect(() => {
-    dispatch(get5m());
-    dispatch(get15m());
-    dispatch(get30m());
-    dispatch(get1h());
-    dispatch(get2h());
-    dispatch(get6h());
+    dispatch(get5m({ id: user.id, symbol }));
+    dispatch(get15m({ id: user.id, symbol }));
+    dispatch(get30m({ id: user.id, symbol }));
+    dispatch(get1h({ id: user.id, symbol }));
+    dispatch(get2h({ id: user.id, symbol }));
+    dispatch(get6h({ id: user.id, symbol }));
     const interval = setInterval(() => {
       if (value === 'stop') {
         setValue('play');
@@ -28,14 +35,19 @@ function ChartPage() {
       }
     }, 60000);
     return () => clearInterval(interval);
-  }, [value]);
-
+  }, [value, update]);
   const { data5m } = useSelector((state) => state);
   const { data15m } = useSelector((state) => state);
   const { data30m } = useSelector((state) => state);
   const { data1h } = useSelector((state) => state);
   const { data2h } = useSelector((state) => state);
   const { data6h } = useSelector((state) => state);
+
+  useEffect(() => {
+    axios.get('/api/positions').then((res) => {
+      setPositions(res.data);
+    });
+  }, []);
 
   const params = {
     options: {
@@ -85,9 +97,25 @@ function ChartPage() {
       })),
     }],
   };
-
+  const symbolClickHandler = (e) => {
+    setSymbol(e.target.value);
+  };
+  const saveSymbolClickHandler = () => {
+    setUpdate(true);
+    setTimeout(() => {
+      setUpdate(false);
+    }, 2000);
+  };
   return (
     <div className="charts">
+      <div className="symbolChange">
+        <select onClick={symbolClickHandler} name="symbol">
+          <option disabled>{symbol}</option>
+          <SymbolItems positions={positions} />
+        </select>
+        <button onClick={saveSymbolClickHandler} type="button">Сох.</button>
+      </div>
+      {update ? <Text type="success">Сохранено</Text> : null}
       <h1>График на 5 минут</h1>
       <Chart
         options={params.options}

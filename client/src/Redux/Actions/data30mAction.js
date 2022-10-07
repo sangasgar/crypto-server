@@ -6,7 +6,7 @@ export const data30Action = (value) => ({
   payload: value,
 });
 
-export const get30m = () => async (dispatch) => {
-  const data30m = await axios.get('/api/data-30m');
+export const get30m = (value) => async (dispatch) => {
+  const data30m = await axios.post('/api/data-30m', value);
   dispatch(data30Action(data30m.data));
 };

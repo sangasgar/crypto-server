@@ -15,9 +15,10 @@ import MainPage from './components/MainPage/MainPage';
 import NavBar from './components/NavBar/NavBar';
 import Singin from './components/Singin/Singin';
 import { checkUser } from './Redux/Actions/userAction';
+import Symbol from './components/Admin/Symbol/Symbol';
 
 function App() {
-  axios.defaults.baseURL = 'http://31.172.73.217:3012';
+  axios.defaults.baseURL = 'http://localhost:3010';
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(checkUser());
@@ -32,6 +33,7 @@ function App() {
         <Route path="/chart" element={user.name ? <ChartPage /> : <Navigate replace to="/singin" />} />
         <Route path="/singin" element={!user.name ? <Singin /> : <Navigate replace to="/account" />} />
         <Route path="/bot" element={user.name ? <BotPage /> : <Navigate replace to="/singin" />} />
+        <Route path="/symbols" element={user.name ? <Symbol /> : <Navigate replace to="/singin" />} />
         <Route path="/feedback" element={<Feedback />} />
       </Routes>
       <div className="footer">

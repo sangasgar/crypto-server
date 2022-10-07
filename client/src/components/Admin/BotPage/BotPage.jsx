@@ -1,32 +1,42 @@
+/* eslint-disable max-len */
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import { Typography, Button } from 'antd';
+import { useSelector } from 'react-redux';
+import {
+  Typography, Button, Checkbox, Row,
+} from 'antd';
 import Bot from '../../../img/pngwing.png';
 import BotPrint from '../../../img/botprint.png';
 import './BotPage.css';
+import Positions from './Positions/Positions';
 
 function BotPage() {
+  const { user } = useSelector((state) => state);
   const { Text } = Typography;
   const [value, setValue] = useState(false);
-  const [symbol, setSymbol] = useState(false);
+  const [symbol, setSymbol] = useState([]);
+  const [positions, setPositions] = useState([]);
   const [sizeDeposit, setSizeDeposit] = useState(false);
   const [leverage, setLeverage] = useState(false);
   const [stoploss, setStoploss] = useState(false);
   const [save, setSave] = useState(false);
+  const [update, setUpdate] = useState(false);
+  let symbolArray = [];
+
   useEffect(() => {
-    axios.get('/users/bot-status-check').then((res) => setValue(res.data.botStatus));
-    axios.get('/users/settings').then((res) => {
-      setSymbol(res.data.symbol);
+    axios.post('/users/bot-status-check', { id: user.id }).then((res) => setValue(res.data.botStatus));
+    axios.post('/users/settings', { id: user.id }).then((res) => {
+      setSymbol(res.data.Positions);
       setSizeDeposit(res.data.sizeDeposit);
       setLeverage(res.data.leverage);
       setStoploss(res.data.stoploss);
     });
-  }, []);
+    axios.get('/users/settings').then((res) => {
+      setPositions(res.data);
+    });
+  }, [update]);
   const botHandler = () => {
-    axios.put('/users/bot-status', { botStatus: !value }).then((res) => setValue(res.data.botStatus));
-  };
-  const symbolChangeHandler = (e) => {
-    setSymbol(e.target.value);
+    axios.put('/users/bot-status', { id: user.id, botStatus: !value }).then((res) => setValue(res.data.botStatus));
   };
   const sizeDepositChangeHandler = (e) => {
     setSizeDeposit(e.target.value);
@@ -37,9 +47,12 @@ function BotPage() {
   const stoplossChangeHandler = (e) => {
     setStoploss(e.target.value);
   };
+  const onChange = (checkedValues) => {
+    symbolArray = checkedValues.map((el) => ({ symbolId: el }));
+  };
   const clickSymbolHandler = () => {
-    axios.put('/users/settings', { symbol }).then((res) => {
-      setSymbol(res.data.symbol);
+    axios.put('/users/settings', { symbols: symbolArray, id: user.id }).then((res) => {
+      setUpdate(res.data);
       setSave(true);
       setTimeout(() => {
         setSave(false);
@@ -47,7 +60,7 @@ function BotPage() {
     });
   };
   const clickDepositChangeHandler = () => {
-    axios.put('/users/settings', { sizeDeposit }).then((res) => {
+    axios.put('/users/settings', { sizeDeposit, id: user.id }).then((res) => {
       setSizeDeposit(res.data.sizeDeposit);
       setSave(true);
       setTimeout(() => {
@@ -56,7 +69,7 @@ function BotPage() {
     });
   };
   const clickLeverageHandler = () => {
-    axios.put('/users/settings', { leverage }).then((res) => {
+    axios.put('/users/settings', { leverage, id: user.id }).then((res) => {
       setLeverage(res.data.leverage);
       setSave(true);
       setTimeout(() => {
@@ -65,7 +78,7 @@ function BotPage() {
     });
   };
   const clickStopLossHandler = () => {
-    axios.put('/users/settings', { stoploss }).then((res) => {
+    axios.put('/users/settings', { stoploss, id: user.id }).then((res) => {
       setStoploss(res.data.stoploss);
       setSave(true);
       setTimeout(() => {
@@ -80,7 +93,12 @@ function BotPage() {
       <Text>
         Торговая пара:
         {' '}
-        {symbol}
+        {symbol.map((el) => (
+          <>
+            {el.symbol}
+            {' '}
+          </>
+        ))}
         {' '}
         /
         {' '}
@@ -103,20 +121,35 @@ function BotPage() {
         {stoploss}
         %
       </Text>
-      <div className="name">
-        Торговая пара:
+      <div className="name1">
         {!value
           ? (
-            <select onClick={symbolChangeHandler} name="symbol">
-              <option disabled>{symbol}</option>
-              <option value={symbol}>-----------</option>
-              <option value="BTCUSDT">BTCUSDT</option>
-              <option value="ETHUSDT">ETHUSDT</option>
-            </select>
+            <>
+              Выберите торговые пары:
+              <Checkbox.Group
+                style={{
+                  width: '100%',
+                }}
+                onChange={onChange}
+              >
+                {positions?.map((el) => (
+                  <Row>
+                    <Positions key={el.id} id={el.id} symbol={el.symbol} />
+                  </Row>
+                ))}
+              </Checkbox.Group>
+            </>
           ) : (
             <>
               {' '}
-              {symbol}
+              Включенные торговые пары:
+              {symbol.map((el) => (
+                <>
+                  {' '}
+                  {el.symbol}
+                  {' '}
+                </>
+              ))}
             </>
           ) }
         {!value ? <button onClick={clickSymbolHandler} type="button">Сох.</button> : null}
