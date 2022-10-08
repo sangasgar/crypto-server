@@ -1,7 +1,6 @@
 /* eslint-disable max-len */
 
 const tulind = require('tulind');
-
 const { promisify } = require('util');
 const array = require('./data');
 
@@ -32,5 +31,4 @@ async function chandeTrendScore(arr, period = 5) {
   const res = [...Array(countLen).fill(null), ...results[0]];
   return res;
 }
-
 module.exports = chandeTrendScore;
