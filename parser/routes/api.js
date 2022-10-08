@@ -23,6 +23,7 @@ router.route('/data-15m')
     await playBot(id, symbol);
     try {
       const period15Data = storage.getItem(`period15Data_${id}`);
+      console.log(period15Data);
       res.json(period15Data);
     } catch (error) {
       res.json({ error: 'Не авторизирован' });

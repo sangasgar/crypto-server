@@ -97,6 +97,4 @@ async function cipherB(arrayValue, timeframe, useCurrentRes = true, customRes = 
   return blueWavesV;
 }
 
-cipherB(array);
-
 module.exports = cipherB;
