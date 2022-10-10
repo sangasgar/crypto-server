@@ -14,7 +14,7 @@ async function closeShortPosition(id, client, symbol) {
   const vwapMin = Math.min(period15DataCipherBwithTime[1].vwap, period15DataCipherBwithTime[2].vwap, period15DataCipherBwithTime[3].vwap, period15DataCipherBwithTime[4].vwap);
   const currentVwap = period15DataCipherBwithTime[0].vwap;
   let currentVwap50Change = false;
-  if (currentVwap >= vwapMin - (vwapMin * 0.5)) {
+  if (currentVwap >= vwapMin - (vwapMin * 0.93)) {
     currentVwap50Change = true;
   }
   const positioByBit = await client.getPosition({ symbol });
