@@ -4,28 +4,25 @@ const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const cors = require('cors');
-const storage = require('./storage/storage');
 const indexRouter = require('./routes/index');
 const apiRouter = require('./routes/api');
-const playBot = require('./middleWare/apiBybit');
+const botRouter = require('./routes/bot');
 const usersRouter = require('./routes/users');
 const positionsRouter = require('./routes/positions');
-const logicTradingLongBybit = require('./logic/logicTradingLongBybit');
-const logicTradingShortBybit = require('./logic/logicTradingShortBybit');
 
 const { PORT } = process.env || 3011;
 
 const app = express();
-const startBot = async () => {
-  await playBot();
-  const position = storage.getItem('Position');
-  if (position === undefined || position === 'long' || position === 'flat') {
-    await logicTradingLongBybit();
-  }
-  if (position === undefined || position === 'short' || position === 'flat') {
-    await logicTradingShortBybit();
-  }
-};
+// const startBot = async () => {
+//   await playBot();
+//   const position = storage.getItem('Position');
+//   if (position === undefined || position === 'long' || position === 'flat') {
+//     await logicTradingLongBybit();
+//   }
+//   if (position === undefined || position === 'short' || position === 'flat') {
+//     await logicTradingShortBybit();
+//   }
+// };
 app.use(logger('dev'));
 app.use((req, res, next) => {
   console.log('Called URL:', req.url);
@@ -41,7 +38,7 @@ app.use('/', indexRouter);
 app.use('/users', usersRouter);
 app.use('/api', apiRouter);
 app.use('/positions', positionsRouter);
-
+app.use('/bot', botRouter);
 app.listen(PORT, () => {
   console.log('Server запущен на порту ', PORT);
 });

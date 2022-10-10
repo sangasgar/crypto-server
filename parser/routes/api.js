@@ -10,7 +10,7 @@ router.route('/data-5m')
     const { symbol } = req.body;
     await playBot(id, symbol);
     try {
-      const period5Data = storage.getItem(`period5Data_${id}`);
+      const period5Data = storage.getItem(`period5Data_${id}_${symbol}`);
       res.json(period5Data);
     } catch (error) {
       res.json({ error: 'Не авторизирован' });
@@ -22,8 +22,7 @@ router.route('/data-15m')
     const { symbol } = req.body;
     await playBot(id, symbol);
     try {
-      const period15Data = storage.getItem(`period15Data_${id}`);
-      console.log(period15Data);
+      const period15Data = storage.getItem(`period15Data_${id}_${symbol}`);
       res.json(period15Data);
     } catch (error) {
       res.json({ error: 'Не авторизирован' });
@@ -35,7 +34,7 @@ router.route('/data-30m')
     const { symbol } = req.body;
     await playBot(id, symbol);
     try {
-      const period30mData = storage.getItem(`period30mData_${id}`);
+      const period30mData = storage.getItem(`period30mData_${id}_${symbol}`);
       res.json(period30mData);
     } catch (error) {
       res.json({ error: 'Не авторизирован' });
@@ -47,7 +46,7 @@ router.route('/data-1h')
     const { symbol } = req.body;
     await playBot(id, symbol);
     try {
-      const period1hData = storage.getItem(`period1hData_${id}`);
+      const period1hData = storage.getItem(`period1hData_${id}_${symbol}`);
       res.json(period1hData);
     } catch (error) {
       res.json({ error: 'Не авторизирован' });
@@ -59,7 +58,7 @@ router.route('/data-2h')
     const { symbol } = req.body;
     await playBot(id, symbol);
     try {
-      const period2hData = storage.getItem(`period2hData_${id}`);
+      const period2hData = storage.getItem(`period2hData_${id}_${symbol}`);
       res.json(period2hData);
     } catch (error) {
       res.json({ error: 'Не авторизирован' });
@@ -71,7 +70,7 @@ router.route('/data-6h')
     const { symbol } = req.body;
     await playBot(id, symbol);
     try {
-      const period6hData = storage.getItem(`period6hData_${id}`);
+      const period6hData = storage.getItem(`period6hData_${id}_${symbol}`);
       res.json(period6hData);
     } catch (error) {
       res.json({ error: 'Не авторизирован' });

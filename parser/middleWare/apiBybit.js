@@ -31,7 +31,6 @@ async function playBot(id, symbol) {
       // requestLibraryOptions
     );
     const today = Date.now();
-    console.log('bot start');
     const data5Period = await client.getKline({
       symbol, interval: period.five, from: Math.floor((today - Number(period.five) * 200 * 60 * 1000) / 1000), limit: 200,
     });
@@ -44,7 +43,7 @@ async function playBot(id, symbol) {
       decimals: 4,
       forceExactDecimals: false,
     });
-    storage.addItem(`period5Data_${userJson.id}`, period5Data);
+    storage.addItem(`period5Data_${userJson.id}_${symbol}`, period5Data);
     const data15Period = await client.getKline({
       symbol, interval: period.fifteen, from: Math.floor((today - Number(period.fifteen) * 200 * 60 * 1000) / 1000), limit: 200,
     });
@@ -57,7 +56,7 @@ async function playBot(id, symbol) {
       decimals: 4,
       forceExactDecimals: false,
     });
-    storage.addItem(`period15Data_${userJson.id}`, period15Data);
+    storage.addItem(`period15Data_${userJson.id}_${symbol}`, period15Data);
     const data30mPeriod = await client.getKline({
       symbol, interval: period.firteen, from: Math.floor((today - Number(period.firteen) * 200 * 60 * 1000) / 1000), limit: 200,
     });
@@ -71,7 +70,7 @@ async function playBot(id, symbol) {
       decimals: 4,
       forceExactDecimals: false,
     });
-    storage.addItem(`period30mData_${userJson.id}`, period30mData);
+    storage.addItem(`period30mData_${userJson.id}_${symbol}`, period30mData);
     const data1hPeriod = await client.getKline({
       symbol, interval: period.onehour, from: Math.floor((today - Number(period.onehour) * 200 * 60 * 1000) / 1000), limit: 200,
     });
@@ -84,7 +83,7 @@ async function playBot(id, symbol) {
       decimals: 4,
       forceExactDecimals: false,
     });
-    storage.addItem(`period1hData_${userJson.id}`, period1hData);
+    storage.addItem(`period1hData_${userJson.id}_${symbol}`, period1hData);
     const data2hPeriod = await client.getKline({
       symbol, interval: period.twohour, from: Math.floor((today - Number(period.twohour) * 200 * 60 * 1000) / 1000), limit: 200,
     });
@@ -97,7 +96,7 @@ async function playBot(id, symbol) {
       decimals: 4,
       forceExactDecimals: false,
     });
-    storage.addItem(`period2hData_${userJson.id}`, period2hData);
+    storage.addItem(`period2hData_${userJson.id}_${symbol}`, period2hData);
     const data6hPeriod = await client.getKline({
       symbol, interval: period.sixhour, from: Math.floor((today - Number(period.sixhour) * 200 * 60 * 1000) / 1000), limit: 200,
     });
@@ -110,8 +109,7 @@ async function playBot(id, symbol) {
       decimals: 4,
       forceExactDecimals: false,
     });
-    storage.addItem(`period6hData_${userJson.id}`, period6hData);
-    console.log('down bot');
+    storage.addItem(`period6hData_${userJson.id}_${symbol}`, period6hData);
   } catch (error) {
     console.log('Ошибка парсера, возможно нет соединения');
   }

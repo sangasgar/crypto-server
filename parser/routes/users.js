@@ -5,7 +5,6 @@ const jwt = require('jsonwebtoken');
 
 const router = express.Router();
 const { Users } = require('../db/models');
-const { Bots } = require('../db/models');
 const { Positions } = require('../db/models');
 const { PositionsUsers } = require('../db/models');
 
@@ -76,19 +75,7 @@ router.route('/')
       return res.json({ error: 'Connection error' });
     }
   });
-router.route('/bot-status')
-  .put(async (req, res) => {
-    const { id } = req.body;
-    const { botStatus } = req.body;
-    try {
-      await Bots.update({ botStatus }, { where: { user_id: id } });
-      const bots = await Bots.findOne({ where: { user_id: id } });
-      const botsJson = JSON.parse(JSON.stringify(bots));
-      res.json(botsJson);
-    } catch (error) {
-      res.json({ error: 'connection error' });
-    }
-  });
+
 router.route('/settings')
   .post(async (req, res) => {
     const { id } = req.body;
@@ -144,15 +131,5 @@ router.route('/settings')
       return res.json({ error: 'Database connection error' });
     }
   });
-router.route('/bot-status-check')
-  .post(async (req, res) => {
-    const { id } = req.body;
-    try {
-      const bots = await Bots.findOne({ where: { user_id: id } });
-      const userJson = JSON.parse(JSON.stringify(bots));
-      res.json(userJson);
-    } catch (error) {
-      res.json({ error: 'connection error' });
-    }
-  });
+
 module.exports = router;

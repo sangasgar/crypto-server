@@ -24,7 +24,7 @@ function BotPage() {
   let symbolArray = [];
 
   useEffect(() => {
-    axios.post('/users/bot-status-check', { id: user.id }).then((res) => setValue(res.data.botStatus));
+    axios.post('/bot/bot-status-check', { id: user.id }).then((res) => setValue(res.data.botStatus));
     axios.post('/users/settings', { id: user.id }).then((res) => {
       setSymbol(res.data.Positions);
       setSizeDeposit(res.data.sizeDeposit);
@@ -36,7 +36,7 @@ function BotPage() {
     });
   }, [update]);
   const botHandler = () => {
-    axios.put('/users/bot-status', { id: user.id, botStatus: !value }).then((res) => setValue(res.data.botStatus));
+    axios.put('/bot/bot-status', { id: user.id, botStatus: !value }).then((res) => setValue(res.data.botStatus));
   };
   const sizeDepositChangeHandler = (e) => {
     setSizeDeposit(e.target.value);
