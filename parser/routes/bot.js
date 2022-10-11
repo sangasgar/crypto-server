@@ -1,3 +1,4 @@
+/* eslint-disable no-restricted-syntax */
 const router = require('express').Router();
 const { LinearClient } = require('bybit-api');
 const { Users } = require('../db/models');
@@ -5,6 +6,7 @@ const { Bots } = require('../db/models');
 const playBot = require('../middleWare/apiBybit');
 const closeLongPosition = require('../logic/closeLongPostiion');
 const closeShortPosition = require('../logic/closeShortPostiion');
+const longTradeBybit = require('../logic/longTradeBybit');
 const { Positions } = require('../db/models');
 const storage = require('../storage/storage');
 
@@ -31,6 +33,9 @@ router.route('/bot-status')
       const botBool = botsJson.botStatus;
       const user = await Users.findOne({ where: { id }, include: Positions });
       const userJson = JSON.parse(JSON.stringify(user));
+      const { leverage } = userJson;
+      const { stoploss } = userJson;
+      const { sizeDeposit } = userJson;
       if (botBool) {
         const API_KEY = userJson.publicKey;
         const PRIVATE_KEY = userJson.privateKey;
@@ -47,37 +52,33 @@ router.route('/bot-status')
         // requestLibraryOptions
         );
         const postition = userJson.Positions.map((el) => el.symbol);
-
-        postition.forEach((symbol) => {
-          setTimeout(async () => {
-            await playBot(id, symbol);
-            await closeLongPosition(id, client, symbol);
-            await closeShortPosition(id, client, symbol);
-          }, 2000);
-        });
-      }
-      console.log(botBool);
-      if (botBool) {
-        const timer = setInterval(() => {
-          console.log(`interval is running ${userJson.id}`);
-        }, 1000);
-        console.log(timer);
+        const timer = setInterval(async () => {
+          postition.forEach((symbol) => {
+            setTimeout(async () => {
+              await playBot(id, symbol);
+              await closeLongPosition(id, client, symbol);
+              await closeShortPosition(id, client, symbol);
+            }, 2000);
+          });
+          const sizesSymbol = await client.getPosition();
+          const sizies = sizesSymbol.result.reduce((prev, el) => prev + el.data.size, 0);
+          if (sizies === 0) {
+            postition.forEach((symbol) => {
+              setTimeout(async () => {
+                await longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit);
+              }, 2000);
+            });
+            console.log('Есть возможность зайти в позицию');
+          } else {
+            console.log(`Есть купленные позиции объемом ${sizies} у id ${id}`);
+          }
+        }, 10000);
         storage.addItem(`timer_${userJson.id}`, timer);
       } else {
         const timerUser = storage.getItem(`timer_${userJson.id}`);
         console.log('Bot stop');
         clearInterval(timerUser);
       }
-      // const timer = setInterval(() => {
-      //   console.log('Interval is running');
-      // }, 1000);
-      // console.log(timer);
-      // storage.addItem(`timer_${userJson.id}`, timer);
-      // const timerUser = storage.getItem(`timer_${userJson.id}`);
-      // console.log('Bot stop');
-      // clearInterval(timerUser);
-      // console.log(timerUser);
-
       res.json(botsJson);
     } catch (error) {
       res.json({ error: 'connection error' });
