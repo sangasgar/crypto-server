@@ -66,7 +66,7 @@ router.route('/bot-status')
             postition.forEach((symbol) => {
               setTimeout(async () => {
                 await longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit);
-              }, 2000);
+              }, 10000);
             });
             console.log('Есть возможность зайти в позицию');
           } else {

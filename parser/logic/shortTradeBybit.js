@@ -39,7 +39,7 @@ function longTrade15(array) {
 async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit) {
   const getapikey = await client.getApiKeyInfo();
   if (getapikey.ret_msg === 'OK') {
-    console.log('Ключи подтверждены');
+    console.log(`Ключи подтверждены для id ${id} символ ${symbol}`);
     try {
     // Получение данных о балансе
       const balance = await client.getWalletBalance({ symbol });
@@ -50,7 +50,7 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       const priceBybit = await client.getTickers({ symbol });
       // Получение данных о последней цене
       const lastPrice = Number(priceBybit.result[0].last_price);
-      console.log(`Последняя цена  id ${id} символ ${symbol}`, lastPrice);
+      console.log(`Последняя цена id ${id} символ ${symbol}`, lastPrice);
       // Количество покупаемого актива
       const countActive = (longDeposit / lastPrice).toFixed(2);
       console.log(`Количество актива_${id}_${symbol}`, countActive);
