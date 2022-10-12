@@ -1,11 +1,12 @@
 /* eslint-disable react/prop-types */
 import React from 'react';
+import { Select } from 'antd';
 
-function SymbolItems({ positions }) {
+const { Option } = Select;
+
+function SymbolItems({ value }) {
   return (
-    <>
-      {positions.map((el) => <option value={el.symbol}>{el.symbol}</option>)}
-    </>
+    <Option value={value}>{value}</Option>
   );
 }
 
