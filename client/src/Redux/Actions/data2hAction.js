@@ -6,7 +6,7 @@ export const data5Action = (value) => ({
   payload: value,
 });
 
-export const get2h = () => async (dispatch) => {
-  const data2h = await axios.get('/api/data-2h');
+export const get2h = (value) => async (dispatch) => {
+  const data2h = await axios.post('/api/data-2h', value);
   dispatch(data5Action(data2h.data));
 };

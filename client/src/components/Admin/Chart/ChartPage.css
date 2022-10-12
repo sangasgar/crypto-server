@@ -17,3 +17,9 @@ h1,
 p {
   font-family: Lato;
 }
+.symbolChange {
+  display: flex;
+  flex-direction: row;
+  font-size: 20px;
+  margin: 1%;
+}

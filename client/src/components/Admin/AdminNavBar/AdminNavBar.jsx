@@ -18,6 +18,9 @@ function AdminNavBar() {
         <Menu.Item key="bot">
           <Link to="/bot">Управление ботом</Link>
         </Menu.Item>
+        <Menu.Item key="symbols">
+          <Link to="/symbols">Торговые пары</Link>
+        </Menu.Item>
         <Menu.Item key="account">
           <Link to="/account">Аккаунт</Link>
         </Menu.Item>

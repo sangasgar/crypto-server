@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 function NavBar() {
   return (
     <div className="menu">
-      <Menu mode="horizontal" defaultSelectedKeys={['main']}>
+      <Menu mode="horizontal" style={{ color: 'black' }} defaultSelectedKeys={['main']}>
         <Menu.Item key="main">
           <Link to="/">Главная</Link>
         </Menu.Item>
@@ -18,6 +18,7 @@ function NavBar() {
         </Menu.Item>
       </Menu>
     </div>
+
   );
 }
 

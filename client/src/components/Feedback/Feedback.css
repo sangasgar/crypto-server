@@ -1,5 +1,6 @@
 .feedback {
   background-image: url(../../img/feedback.jpg);
+  background-color:black;
   height: 100%;
   display: flex;
   justify-content: center;

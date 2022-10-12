@@ -1,8 +1,12 @@
-.bot {
+.symbol {
   display: flex;
   flex-direction: column;
   align-items: center;
   margin: 1%;
+}
+.page {
+  display: flex;
+  justify-content: center;
 }
 .botText {
   font-size: 24px;
@@ -13,10 +17,15 @@
   font-weight: bold;
   flex-direction: row;
 }
-.name1 {
+.positionsList {
+  margin: 2%;
+  padding: 1%;
   display: flex;
-  font-size: 24px;
-  font-weight: bold;
   flex-direction: column;
-  margin: 1%;
+  border: 1px dashed black;
+}
+.element {
+  display: flex;
+  font-size: 20px;
+  justify-content: space-between;
 }
