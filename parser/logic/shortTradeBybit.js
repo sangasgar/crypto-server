@@ -134,7 +134,8 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
           });
           console.log(shortPosition);
           if (shortPosition.ret_msg === 'OK') {
-            console.log(`Позиция лонг открыта для id ${id}`);
+            console.log(`Позиция шорт открыта для id ${id}`);
+            await storage.addItem(`positionEnter_${id}`, true);
           }
         }
       }

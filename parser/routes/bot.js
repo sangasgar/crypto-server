@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 /* eslint-disable no-restricted-syntax */
 const router = require('express').Router();
 const { LinearClient } = require('bybit-api');
@@ -63,15 +64,19 @@ router.route('/bot-status')
           });
           const sizesSymbol = await client.getPosition();
           const sizies = sizesSymbol.result.reduce((prev, el) => prev + el.data.size, 0);
-          if (sizies === 0) {
+          const positionEnter = storage.getItem(`positionEnter_${id}`);
+          if ((sizies === 0 && positionEnter === undefined) || (sizies === 0 && positionEnter === null)) {
+            console.log(`Есть возможность зайти в позицию  у id ${id}`);
             postition.forEach((symbol) => {
               setTimeout(async () => {
                 await longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit);
                 await shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit);
               }, 10000);
             });
-            console.log('Есть возможность зайти в позицию');
-          } else {
+          } else if (sizies === 0 && positionEnter === true) {
+            console.log(`Бот вылетел по стоп-лоссу у id ${id}`);
+            await Bots.update({ botStatus: false }, { where: { user_id: id } });
+          } else if (sizies > 0) {
             console.log(`Есть купленные позиции объемом ${sizies} у id ${id}`);
           }
         }, 10000);

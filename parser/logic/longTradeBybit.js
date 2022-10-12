@@ -135,6 +135,7 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
           console.log(longPosition);
           if (longPosition.ret_msg === 'OK') {
             console.log(`Позиция лонг открыта для id ${id}`);
+            await storage.addItem(`positionEnter_${id}`, true);
           }
         }
       }
