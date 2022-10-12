@@ -85,7 +85,7 @@ module.exports = {
       updatedAt: new Date(),
     }], {});
     await queryInterface.bulkInsert('Positions', [{
-      symbol: 'ETHUSDT',
+      symbol: 'TRXUSDT',
       createdAt: new Date(),
       updatedAt: new Date(),
     }], {});
@@ -114,11 +114,6 @@ module.exports = {
       createdAt: new Date(),
       updatedAt: new Date(),
     }], {});
-    await queryInterface.bulkInsert('Positions', [{
-      symbol: 'ETHUSDT',
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    }], {});
     await queryInterface.bulkInsert('Bots', [{
       user_id: 4,
       botStatus: false,
@@ -127,7 +122,7 @@ module.exports = {
     }], {});
     await queryInterface.bulkInsert('PositionsUsers', [{
       user_id: 4,
-      position_id: 4,
+      position_id: 3,
       createdAt: new Date(),
       updatedAt: new Date(),
     }], {});
