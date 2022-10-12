@@ -7,6 +7,7 @@ const playBot = require('../middleWare/apiBybit');
 const closeLongPosition = require('../logic/closeLongPostiion');
 const closeShortPosition = require('../logic/closeShortPostiion');
 const longTradeBybit = require('../logic/longTradeBybit');
+const shortTradeBybit = require('../logic/shortTradeBybit');
 const { Positions } = require('../db/models');
 const storage = require('../storage/storage');
 
@@ -66,6 +67,7 @@ router.route('/bot-status')
             postition.forEach((symbol) => {
               setTimeout(async () => {
                 await longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit);
+                await shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit);
               }, 10000);
             });
             console.log('Есть возможность зайти в позицию');
