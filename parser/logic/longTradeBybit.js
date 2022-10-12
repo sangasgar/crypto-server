@@ -15,9 +15,9 @@ function longTrade(array) {
 function longTrade1h(array) {
   array.reverse();
   const vwapLogic = array[0].vwap;
-  const vwapLastScore = array[1].score;
-  const vwapScore = array[0].score;
-  if (vwapLogic > 3.5 && vwapLastScore < vwapScore && vwapLastScore < 0 && vwapScore < 0) {
+  const lastScore = array[1].score;
+  const scoreCurrent = array[0].score;
+  if (vwapLogic > 3.5 && lastScore < scoreCurrent && lastScore < 0 && scoreCurrent < 0) {
     return true;
   }
   return false;
@@ -26,11 +26,11 @@ function longTrade15(array) {
   array.reverse();
   const zeroLogic = array[2].vwap;
   const vwapLogic = array[1].vwap;
-  const vwapScore = array[1].score;
-  const vwapLastScore = array[2].score;
-  const vwapFreeScore = array[3].score;
+  const scoreCurrent = array[1].score;
+  const lastScore = array[2].score;
+  const freeScore = array[3].score;
   const bwRes = array[2].bw2;
-  if (zeroLogic <= 0 && vwapLogic > 3.5 && vwapFreeScore < vwapLastScore && vwapLastScore < vwapScore && vwapLastScore < 0 && bwRes > -150 && bwRes < 20) {
+  if (zeroLogic <= 0 && vwapLogic > 3.5 && freeScore < lastScore && lastScore < scoreCurrent && bwRes > -150 && bwRes < 20) {
     return true;
   }
   return false;
