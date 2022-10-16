@@ -27,10 +27,14 @@ async function cipherB(arrayValue, timeframe, useCurrentRes = true, customRes = 
     v.push(element.volume);
   });
   const hlc3 = [];
+  const mFcphl = [];
   for (let i = 0; i < h.length; i += 1) {
     hlc3.push((h[i] + l[i] + c[i]) / 3);
   }
-  const blueWavesVwap = async (src = hlc3, chlLen = 9, avgLen = 12) => {
+  for (let i = 0; i < h.length; i += 1) {
+    mFcphl.push(((c[i] - o[i]) / (h[i] - l[i])) * 200);
+  }
+  const blueWavesVwap = async (src = hlc3, src1 = mFcphl, chlLen = 9, avgLen = 12) => {
     const esaFunc = async (data, len) => {
       const results = await emaAsync([data], [len]);
       const d2 = results[0];
@@ -78,7 +82,16 @@ async function cipherB(arrayValue, timeframe, useCurrentRes = true, customRes = 
       }
       return vwap;
     };
-
+    const moneyFlowFunc = async (arrayMf, period = 60, y = 2.25) => {
+      const results = await smaAsync([arrayMf], [period]);
+      const mfRes = [];
+      const countLen = arrayMf.length - results[0].length;
+      const mf = [...Array(countLen).fill(null), ...results[0]];
+      for (let i = 0; i < array.length; i += 1) {
+        mfRes.push((mf[i] - y));
+      }
+      return mfRes;
+    };
     // esa = ta.ema(src, chlLen)
     const esa = await esaFunc(src, chlLen);
     // d = ta.ema(math.abs(src - esa), chlLen)
@@ -91,7 +104,10 @@ async function cipherB(arrayValue, timeframe, useCurrentRes = true, customRes = 
     const bw2 = await bw2Func(bw1, 3);
     //  vwap = bw1 - bw2;
     const vwap = vwapFunc(bw1, bw2);
-    return [bw1, bw2, vwap];
+    //  moneyFlow = moneyFlow(period, mult, y) => ta.sma(((close - open) / (high - low)) * mult, period) - y
+    const moneyFlow = await moneyFlowFunc(src1);
+
+    return [bw1, bw2, vwap, moneyFlow];
   };
   const blueWavesV = await blueWavesVwap();
   return blueWavesV;

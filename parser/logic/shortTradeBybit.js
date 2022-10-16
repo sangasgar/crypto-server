@@ -30,7 +30,7 @@ function shortTrade15(array) {
   const lastScore = array[2].score;
   const freeScore = array[3].score;
   const bwRes = array[2].bw2;
-  if (zeroLogic >= 0 && vwapLogic < -3.5 && freeScore > lastScore && lastScore > scoreCurrent && bwRes < 150 && bwRes > -20) {
+  if (zeroLogic >= 0 && vwapLogic < -3.5 && freeScore > lastScore && lastScore > scoreCurrent && bwRes < 150 && bwRes > -30) {
     return true;
   }
   return false;
@@ -93,7 +93,7 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
       const period1hDataCipherBwithTime = await period1hData.map((el, i) => ({
         time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period1hDataCipherB[0][i], bw2: period1hDataCipherB[1][i], vwap: period1hDataCipherB[2][i], score: period1hDataChandeTrendScore[i],
       }));
-      const period1Hresult = await shortTrade1h(period1hDataCipherBwithTime);
+      const period1Hresult = await shortTrade(period1hDataCipherBwithTime);
       await storage.addItem(`period1hShortBoolean_${id}_${symbol}`, period1Hresult);
       const time1h = Number(period1hDataCipherBwithTime[period1hDataCipherBwithTime.length - 1].time);
       const milliseconds1h = time1h * 1000;

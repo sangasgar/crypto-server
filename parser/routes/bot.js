@@ -55,29 +55,38 @@ router.route('/bot-status')
         );
         const postition = userJson.Positions.map((el) => el.symbol);
         const timer = setInterval(async () => {
-          postition.forEach((symbol) => {
-            setTimeout(async () => {
-              await playBot(id, symbol);
-              await closeLongPosition(id, client, symbol);
-              await closeShortPosition(id, client, symbol);
-            }, 2000);
-          });
-          const sizesSymbol = await client.getPosition();
-          const sizies = sizesSymbol.result.reduce((prev, el) => prev + el.data.size, 0);
-          const positionEnter = storage.getItem(`positionEnter_${id}`);
-          if ((sizies === 0 && positionEnter === undefined) || (sizies === 0 && positionEnter === null)) {
-            console.log(`Есть возможность зайти в позицию  у id ${id}`);
+          try {
             postition.forEach((symbol) => {
               setTimeout(async () => {
-                await longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit);
-                await shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit);
-              }, 10000);
+                await playBot(id, symbol);
+                await closeLongPosition(id, client, symbol);
+                await closeShortPosition(id, client, symbol);
+              }, 2000);
             });
-          } else if (sizies === 0 && positionEnter === true) {
-            console.log(`Бот вылетел по стоп-лоссу у id ${id}`);
-            await Bots.update({ botStatus: false }, { where: { user_id: id } });
-          } else if (sizies > 0) {
-            console.log(`Есть купленные позиции объемом ${sizies} у id ${id}`);
+
+            try {
+              const sizesSymbol = await client.getPosition();
+              const sizies = sizesSymbol.result.reduce((prev, el) => prev + el.data.size, 0);
+              const positionEnter = storage.getItem(`positionEnter_${id}`);
+              if ((sizies === 0 && positionEnter === undefined) || (sizies === 0 && positionEnter === null)) {
+                console.log(`Есть возможность зайти в позицию  у id ${id}`);
+                postition.forEach((symbol) => {
+                  setTimeout(async () => {
+                    await longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit);
+                    await shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit);
+                  }, 10000);
+                });
+              } else if (sizies === 0 && positionEnter === true) {
+                console.log(`Бот вылетел по стоп-лоссу у id ${id}`);
+                await Bots.update({ botStatus: false }, { where: { user_id: id } });
+              } else if (sizies > 0) {
+                console.log(`Есть купленные позиции объемом ${sizies} у id ${id}`);
+              }
+            } catch (error) {
+              console.log(`Ошибка расчетов у id ${id}`);
+            }
+          } catch (error) {
+            console.log(`Ошибка соединения у id ${id}`);
           }
         }, 10000);
         storage.addItem(`timer_${userJson.id}`, timer);
