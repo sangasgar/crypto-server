@@ -53,6 +53,8 @@ router.route('/bot-status')
           restClientOptions,
         // requestLibraryOptions
         );
+        const getapikey = await client.getApiKeyInfo();
+        console.log(getapikey);
         const postition = userJson.Positions.map((el) => el.symbol);
         const timer = setInterval(async () => {
           try {
@@ -79,6 +81,9 @@ router.route('/bot-status')
               } else if (sizies === 0 && positionEnter === true) {
                 console.log(`Бот вылетел по стоп-лоссу у id ${id}`);
                 await Bots.update({ botStatus: false }, { where: { user_id: id } });
+                const timerUser = storage.getItem(`timer_${userJson.id}`);
+                console.log('Bot stop');
+                clearInterval(timerUser);
               } else if (sizies > 0) {
                 console.log(`Есть купленные позиции объемом ${sizies} у id ${id}`);
               }
