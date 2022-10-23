@@ -1,8 +1,9 @@
+/* eslint-disable max-len */
 import React, { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import Chart from '@qognicafinance/react-lightweight-charts';
 import axios from 'axios';
-import { Typography } from 'antd';
+import { Select, Typography } from 'antd';
 import { get5m } from '../../../Redux/Actions/data5mAction';
 import './ChartPage.css';
 import { get15m } from '../../../Redux/Actions/data15mAction';
@@ -15,12 +16,15 @@ import SymbolItems from './SymbolItems/SymbolItems';
 const { Text } = Typography;
 function ChartPage() {
   const dispatch = useDispatch();
-  const [value, setValue] = useState('stop');
+  const [value, setValue] = useState(false);
   const { user } = useSelector((state) => state);
   const [symbol, setSymbol] = useState('BTCUSDT');
   const [positions, setPositions] = useState([]);
   const [update, setUpdate] = useState(false);
   useEffect(() => {
+    axios.get('/api/positions').then((res) => {
+      setPositions(res.data);
+    });
     dispatch(get5m({ id: user.id, symbol }));
     dispatch(get15m({ id: user.id, symbol }));
     dispatch(get30m({ id: user.id, symbol }));
@@ -28,11 +32,7 @@ function ChartPage() {
     dispatch(get2h({ id: user.id, symbol }));
     dispatch(get6h({ id: user.id, symbol }));
     const interval = setInterval(() => {
-      if (value === 'stop') {
-        setValue('play');
-      } else {
-        setValue('stop');
-      }
+      setValue(!value);
     }, 60000);
     return () => clearInterval(interval);
   }, [value, update]);
@@ -42,12 +42,6 @@ function ChartPage() {
   const { data1h } = useSelector((state) => state);
   const { data2h } = useSelector((state) => state);
   const { data6h } = useSelector((state) => state);
-
-  useEffect(() => {
-    axios.get('/api/positions').then((res) => {
-      setPositions(res.data);
-    });
-  }, []);
 
   const params = {
     options: {
@@ -97,10 +91,8 @@ function ChartPage() {
       })),
     }],
   };
-  const symbolClickHandler = (e) => {
-    setSymbol(e.target.value);
-  };
-  const saveSymbolClickHandler = () => {
+  const symbolClickHandler = (val) => {
+    setSymbol(val);
     setUpdate(true);
     setTimeout(() => {
       setUpdate(false);
@@ -110,11 +102,15 @@ function ChartPage() {
     <div className="charts">
       {update ? <Text type="success">Сохранено</Text> : null}
       <div className="symbolChange">
-        <select onClick={symbolClickHandler} name="symbol">
-          <option disabled>{symbol}</option>
-          <SymbolItems positions={positions} />
-        </select>
-        <button onClick={saveSymbolClickHandler} type="button">Сох.</button>
+        <Select
+          showSearch
+          placeholder="Select a person"
+          optionFilterProp="children"
+          onChange={symbolClickHandler}
+          filterOption={(input, option) => option.children.toLowerCase().includes(input.toLowerCase())}
+        >
+          {positions.map((el) => <SymbolItems key={el.id} value={el.symbol} />)}
+        </Select>
       </div>
       <h1>График на 5 минут</h1>
       <Chart

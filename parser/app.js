@@ -42,14 +42,5 @@ app.use('/bot', botRouter);
 app.listen(PORT, () => {
   console.log('Server запущен на порту ', PORT);
 });
-// setInterval(async () => {
-//   const position = storage.getItem('Position');
-//   await playBot();
-//   if (position === undefined || position === 'long' || position === 'flat') {
-//     await logicTradingLongBybit();
-//   }
-//   if (position === undefined || position === 'short' || position === 'flat') {
-//     await logicTradingShortBybit();
-//   }
-// }, 60000);
+
 module.exports = app;

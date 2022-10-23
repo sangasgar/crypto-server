@@ -6,11 +6,13 @@ const { Bots } = require('../db/models');
 async function closeLongPosition(id, client, symbol) {
   try {
   // console.log(`Проверка на возможность закрытия позиции лонг ${symbol} для ${id}`);
+    console.log('201');
     const period15Data = storage.getItem(`period15Data_${id}_${symbol}`);
     const period15DataCipherB = await cipherB(period15Data);
     const period15DataCipherBwithTime = await period15Data.map((el, i) => ({
-      time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period15DataCipherB[0][i], bw2: period15DataCipherB[1][i], vwap: period15DataCipherB[2][i],
+      time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period15DataCipherB[0][i], bw2: period15DataCipherB[1][i], vwap: period15DataCipherB[2][i], mf: period15DataCipherB[3][i],
     }));
+    console.log('202');
     period15DataCipherBwithTime.reverse();
     const vwapLast = Number(period15DataCipherBwithTime[1].vwap);
     const vwapMax = Math.max(period15DataCipherBwithTime[1].vwap, period15DataCipherBwithTime[2].vwap, period15DataCipherBwithTime[3].vwap, period15DataCipherBwithTime[4].vwap);
@@ -19,6 +21,7 @@ async function closeLongPosition(id, client, symbol) {
     if (currentVwap <= vwapMax - (vwapMax * 0.95)) {
       currentVwap95Change = true;
     }
+    console.log('203');
     const positioByBit = await client.getPosition({ symbol });
     const positionSize = Number(positioByBit.result[0].size);
     if (positionSize > 0) {
@@ -38,7 +41,6 @@ async function closeLongPosition(id, client, symbol) {
     }
   } catch (error) {
     console.log(`Ошибка соединения  для id ${id}`);
-    await Bots.update({ botStatus: false }, { where: { user_id: id } });
   }
 }
 module.exports = closeLongPosition;
