@@ -91,6 +91,11 @@ router.route('/bot-status')
       try {
         timer = setInterval(async () => {
           storage.addItem(`timer_${userJson.id}`, timer);
+          if (botBool === false) {
+            const timerUser = storage.getItem(`timer_${userJson.id}`);
+            console.log('Bot stop');
+            clearInterval(timerUser);
+          }
           if (test()) {
             try {
               console.log('1');
@@ -137,6 +142,11 @@ router.route('/bot-status')
               }
             } catch (error) {
               console.log(`Ошибка соединения у id ${id}`);
+              if (botBool === false) {
+                const timerUser = storage.getItem(`timer_${userJson.id}`);
+                console.log('Bot stop');
+                clearInterval(timerUser);
+              }
             }
           } else {
             console.log(`Проверка соединения у ${id}`);
