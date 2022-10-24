@@ -7,30 +7,63 @@ const { Bots } = require('../db/models');
 function longTrade(array) {
   array.reverse();
   const vwapLogic = array[0].vwap;
-  if (vwapLogic > 3.5) {
+  const vwapLogicLast = array[1].vwap;
+  const { mf } = array[0];
+  const mfLast = array[1].mf;
+  if (vwapLogic > 3.5 && vwapLogicLast < vwapLogic && mfLast < mf) {
     return true;
+  }
+  return false;
+}
+function crossowerLast(array) {
+  for (let i = 1; i < 6; i += 1) {
+    if (array[i].vwap <= 0) {
+      return true;
+    }
   }
   return false;
 }
 function longTrade1h(array) {
   array.reverse();
   const vwapLogic = array[0].vwap;
-  const lastScore = array[1].score;
-  const scoreCurrent = array[0].score;
-  if (vwapLogic > 3.5 && lastScore < scoreCurrent && lastScore < 0 && scoreCurrent < 0) {
+  const vwapLogicLast = array[1].vwap;
+  const { mf } = array[0];
+  const mfLast = array[1].mf;
+  // const scoreCurrent = array[0].score;
+  // const lastScore = array[1].score;
+  if (vwapLogic > 3.5 && vwapLogicLast < vwapLogic && crossowerLast(array) && mfLast < mf) {
+    return true;
+  }
+  return false;
+}
+
+function crossowerLast15m(array) {
+  for (let i = 1; i < 4; i += 1) {
+    if (array[i].vwap <= 0) {
+      return true;
+    }
+  }
+  return false;
+}
+function chandleTrend(array) {
+  if ((array[1].score < array[0].score) || (array[1].score === -10 && array[0].score === -10)) {
+    return true;
+  }
+  return false;
+}
+function bw2Func(array) {
+  if (array[0].bw2 > -150 && array[0].bw2 < 40 && array[0].bw2 > array[1].bw2) {
     return true;
   }
   return false;
 }
 function longTrade15(array) {
   array.reverse();
-  const zeroLogic = array[2].vwap;
-  const vwapLogic = array[1].vwap;
-  const scoreCurrent = array[1].score;
-  const lastScore = array[2].score;
-  const freeScore = array[3].score;
-  const bwRes = array[2].bw2;
-  if (zeroLogic <= 0 && vwapLogic > 3.5 && freeScore < lastScore && lastScore < scoreCurrent && bwRes > -150 && bwRes < 30) {
+  const vwapLogic = array[0].vwap;
+  const vwapLogicLast = array[1].vwap;
+  const { bw1 } = array[0];
+  const bw1Last = array[1].bw1;
+  if (vwapLogic > 3.5 && vwapLogicLast < vwapLogic && bw1Last < bw1 && bw2Func(array) && crossowerLast15m(array) && chandleTrend(array)) {
     return true;
   }
   return false;
@@ -106,7 +139,7 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
         time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period1hDataCipherB[0][i], bw2: period1hDataCipherB[1][i], vwap: period1hDataCipherB[2][i], mf: period1hDataCipherB[3][i], score: period1hDataChandeTrendScore[i],
       }));
       console.log('407');
-      const period1Hresult = await longTrade(period1hDataCipherBwithTime);
+      const period1Hresult = await longTrade1h(period1hDataCipherBwithTime);
       await storage.addItem(`period1hLongBoolean_${id}_${symbol}`, period1Hresult);
       const time1h = Number(period1hDataCipherBwithTime[period1hDataCipherBwithTime.length - 1].time);
       const milliseconds1h = time1h * 1000;
