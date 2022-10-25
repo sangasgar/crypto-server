@@ -7,14 +7,15 @@ const { Bots } = require('../db/models');
 function longTrade(array) {
   array.reverse();
   const vwapLogic = array[0].vwap;
-  const vwapLogicLast = array[1].vwap;
+  // const vwapLogicLast = array[1].vwap;
   const { mf } = array[0];
   const mfLast = array[1].mf;
-  if (vwapLogic > 3.5 && vwapLogicLast < vwapLogic && mfLast < mf) {
+  if (vwapLogic >= 3.5 && mfLast < mf) {
     return true;
   }
   return false;
 }
+
 function crossowerLast(array) {
   for (let i = 1; i < 6; i += 1) {
     if (array[i].vwap <= 0) {
@@ -26,12 +27,12 @@ function crossowerLast(array) {
 function longTrade1h(array) {
   array.reverse();
   const vwapLogic = array[0].vwap;
-  const vwapLogicLast = array[1].vwap;
+  // const vwapLogicLast = array[1].vwap;
   const { mf } = array[0];
   const mfLast = array[1].mf;
   // const scoreCurrent = array[0].score;
   // const lastScore = array[1].score;
-  if (vwapLogic > 3.5 && vwapLogicLast < vwapLogic && crossowerLast(array) && mfLast < mf) {
+  if (vwapLogic >= 3.5 && crossowerLast(array) && mfLast < mf) {
     return true;
   }
   return false;
@@ -63,7 +64,7 @@ function longTrade15(array) {
   const vwapLogicLast = array[1].vwap;
   const { bw1 } = array[0];
   const bw1Last = array[1].bw1;
-  if (vwapLogic > 3.5 && vwapLogicLast < vwapLogic && bw1Last < bw1 && bw2Func(array) && crossowerLast15m(array) && chandleTrend(array)) {
+  if (vwapLogic >= 3.5 && vwapLogicLast < vwapLogic && bw1Last < bw1 && bw2Func(array) && crossowerLast15m(array) && chandleTrend(array)) {
     return true;
   }
   return false;
