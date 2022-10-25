@@ -46,7 +46,7 @@ function crossowerLast15m(array) {
   return false;
 }
 function chandleTrend(array) {
-  if ((array[1].score < array[0].score) || (array[1].score === -10 && array[0].score === -10)) {
+  if ((array[1].score < array[0].score) || (array[1].score === 10 && array[0].score === 10)) {
     return true;
   }
   return false;
