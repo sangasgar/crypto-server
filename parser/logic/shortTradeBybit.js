@@ -2,24 +2,33 @@
 const storage = require('../storage/storage');
 const cipherB = require('../indicators/cipherB');
 const chandeTrendScore = require('../indicators/chandeTrendScore');
-const { Bots } = require('../db/models');
 
-function shortTrade(array) {
+function shortTrade6h(array) {
+  array.reverse();
+  const vwapLogic = array[0].vwap;
+  // const vwapLogicLast = array[1].vwap;
+  const { mf } = array[0];
+  const mfLast = array[1].mf;
+  if (vwapLogic <= -3.5 && mfLast > mf) {
+    return true;
+  }
+  return false;
+}
+function shortTrade2h(array) {
   array.reverse();
   const vwapLogic = array[0].vwap;
   const vwapLogicLast = array[1].vwap;
   const { mf } = array[0];
   const mfLast = array[1].mf;
-  if (vwapLogic < -3.5 && vwapLogicLast > vwapLogic && mfLast > mf) {
+  if (vwapLogic <= -3.5 && (vwapLogicLast > vwapLogic || mfLast > mf)) {
     return true;
   }
   return false;
 }
-function crossowerLast(array) {
-  for (let i = 1; i < 6; i += 1) {
-    if (array[i].vwap >= 0) {
-      return true;
-    }
+
+function chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent) {
+  if ((vwapLogicLast > vwapLogic || mfLast > mf) && (lastScore > scoreCurrent || (lastScore === -10 && scoreCurrent === -10))) {
+    return true;
   }
   return false;
 }
@@ -29,15 +38,15 @@ function shortTrade1h(array) {
   const vwapLogicLast = array[1].vwap;
   const { mf } = array[0];
   const mfLast = array[1].mf;
-  // const scoreCurrent = array[0].score;
-  // const lastScore = array[1].score;
-  if (vwapLogic < -3.5 && vwapLogicLast > vwapLogic && crossowerLast(array) && mfLast > mf) {
+  const scoreCurrent = array[0].score;
+  const lastScore = array[1].score;
+  if (vwapLogic <= -3.5 && chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
     return true;
   }
   return false;
 }
 
-function crossowerLast15m(array) {
+function crossowerLast15mShort(array) {
   for (let i = 1; i < 4; i += 1) {
     if (array[i].vwap >= 0) {
       return true;
@@ -45,14 +54,8 @@ function crossowerLast15m(array) {
   }
   return false;
 }
-function chandleTrend(array) {
-  if ((array[1].score > array[0].score) || (array[1].score === -10 && array[0].score === -10)) {
-    return true;
-  }
-  return false;
-}
-function bw2Func(array) {
-  if (array[0].bw2 < 150 && array[0].bw2 > -40 && array[0].bw2 < array[1].bw2) {
+function chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent, array) {
+  if ((vwapLogicLast > vwapLogic || mfLast > mf) && crossowerLast15mShort(array) && (lastScore > scoreCurrent || (lastScore === -10 && scoreCurrent === -10))) {
     return true;
   }
   return false;
@@ -61,9 +64,49 @@ function shortTrade15(array) {
   array.reverse();
   const vwapLogic = array[0].vwap;
   const vwapLogicLast = array[1].vwap;
-  const { bw1 } = array[0];
-  const bw1Last = array[1].bw1;
-  if (vwapLogic < -3.5 && vwapLogicLast > vwapLogic && bw1Last > bw1 && bw2Func(array) && crossowerLast15m(array) && chandleTrend(array)) {
+  const { mf } = array[0];
+  const mfLast = array[1].mf;
+  const scoreCurrent = array[0].score;
+  const lastScore = array[1].score;
+  if (vwapLogic <= -2 && chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent, array)) {
+    return true;
+  }
+  return false;
+}
+
+function crossowerLast5mShort(array) {
+  for (let i = 1; i < 4; i += 1) {
+    if (array[i].vwap >= 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
+function bw2FuncShort(bw2last, bw2Current) {
+  if (bw2Current < 150 && bw2Current > -50 && bw2Current < bw2last) {
+    return true;
+  }
+  return false;
+}
+function chandleTrendMfiVwapComparison5mShort(vwapLogicLast, vwapLogic, bw2last, bw2Current, mfLast, mf, lastScore, scoreCurrent, array) {
+  if ((vwapLogicLast > vwapLogic || mfLast > mf) && bw2FuncShort(bw2last, bw2Current) && crossowerLast5mShort(array) && (lastScore > scoreCurrent || (lastScore === -10 && scoreCurrent === -10))) {
+    return true;
+  }
+  return false;
+}
+
+function shortTrade5m(array) {
+  array.reverse();
+  const vwapLogic = array[1].vwap;
+  const vwapLogicLast = array[2].vwap;
+  const { mf } = array[1];
+  const mfLast = array[2].mf;
+  const scoreCurrent = array[1].score;
+  const lastScore = array[2].score;
+  const bw2Current = array[1].bw2;
+  const bw2last = array[2].bw2;
+  if (vwapLogic <= -3.5 && chandleTrendMfiVwapComparison5mShort(vwapLogicLast, vwapLogic, bw2last, bw2Current, mfLast, mf, lastScore, scoreCurrent, array)) {
     return true;
   }
   return false;
@@ -106,7 +149,7 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
         time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period6hDataCipherB[0][i], bw2: period6hDataCipherB[1][i], vwap: period6hDataCipherB[2][i], mf: period6hDataCipherB[3][i], score: period6hDataChandeTrendScore[i],
       }));
       console.log('504');
-      const period6Hresult = await shortTrade(period6hDataCipherBwithTime);
+      const period6Hresult = await shortTrade6h(period6hDataCipherBwithTime);
       await storage.addItem(`period6hShortBoolean_${id}_${symbol}`, period6Hresult);
       const time6h = Number(period6hDataCipherBwithTime[period6hDataCipherBwithTime.length - 1].time);
       const milliseconds6h = time6h * 1000;
@@ -121,7 +164,7 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
       const period2hDataCipherBwithTime = await period2hData.map((el, i) => ({
         time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period2hDataCipherB[0][i], bw2: period2hDataCipherB[1][i], vwap: period2hDataCipherB[2][i], mf: period2hDataCipherB[3][i], score: period2hDataChandeTrendScore[i],
       }));
-      const period2Hresult = await shortTrade(period2hDataCipherBwithTime);
+      const period2Hresult = await shortTrade2h(period2hDataCipherBwithTime);
       await storage.addItem(`period2hShortBoolean_${id}_${symbol}`, period2Hresult);
       const time2h = Number(period2hDataCipherBwithTime[period2hDataCipherBwithTime.length - 1].time);
       const milliseconds2h = time2h * 1000;
@@ -162,11 +205,31 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
       const humanDateFormat15 = dateObject15.toLocaleString('ru-RU', { timeZoneName: 'short' });
       console.log('Время: ', humanDateFormat15);
       console.log(`Проверка входа на 15 минут для id ${id}`, storage.getItem(`period15ShortBoolean_${id}_${symbol}`));
+
+      const period5mData = storage.getItem(`period5Data_${id}_${symbol}`);
+      const period5mDataCipherB = await cipherB(period5mData);
+      const period5mDataChandeTrendScore = await chandeTrendScore(period5mData);
+      const period5mDataCipherBwithTime = await period5mData.map((el, i) => ({
+        time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period5mDataCipherB[0][i], bw2: period5mDataCipherB[1][i], vwap: period5mDataCipherB[2][i], mf: period5mDataCipherB[3][i], score: period5mDataChandeTrendScore[i],
+      }));
+      console.log('408');
+      console.log('Символ', symbol);
+      const period5mresult = await shortTrade5m(period5mDataCipherBwithTime);
+      await storage.addItem(`period5ShortBoolean_${id}_${symbol}`, period5mresult);
+      const time5 = Number(period5mDataCipherBwithTime[period5mDataCipherBwithTime.length - 1].time);
+      const milliseconds5 = time5 * 1000;
+      const dateObject5 = new Date(milliseconds5);
+      const humanDateFormat5 = dateObject5.toLocaleString('ru-RU', { timeZoneName: 'short' });
+      console.log('Время: ', humanDateFormat5);
+      console.log('409');
+      console.log(`Проверка входа на 5 минут для id ${id}`, storage.getItem(`period5ShortBoolean_${id}_${symbol}`));
+
       const short6hBoolean = storage.getItem(`period6hShortBoolean_${id}_${symbol}`);
       const short2hBoolean = storage.getItem(`period2hShortBoolean_${id}_${symbol}`);
       const short1hBoolean = storage.getItem(`period1hShortBoolean_${id}_${symbol}`);
       const short15Boolean = storage.getItem(`period15ShortBoolean_${id}_${symbol}`);
-      if ((short6hBoolean && short1hBoolean && short15Boolean) || (short2hBoolean && short1hBoolean && short15Boolean)) {
+      const short5Boolean = storage.getItem(`period5ShortBoolean_${id}_${symbol}`);
+      if ((short6hBoolean && short1hBoolean && short15Boolean && short5Boolean) || (short2hBoolean && short1hBoolean && short15Boolean && short5Boolean)) {
         console.log(`Проверка возможности входа в позицию для id ${id}`);
         await client.setMarginSwitch({
           symbol, buy_leverage: leverage, sell_leverage: leverage, is_isolated: false,
