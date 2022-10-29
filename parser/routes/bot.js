@@ -115,9 +115,7 @@ router.route('/bot-status')
                 }, 1000);
               });
               console.log('5');
-              let sizesSymbol = [];
-              console.log('6');
-              sizesSymbol = await client.getPosition();
+              const sizesSymbol = await client.getPosition();
               console.log('8');
               const sizies = sizesSymbol.result.reduce((prev, el) => prev + el.data.size, 0);
               const positionEnter = storage.getItem(`positionEnter_${id}`);

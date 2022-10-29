@@ -25,14 +25,6 @@ function longTrade2h(array) {
   }
   return false;
 }
-// function crossowerLast(array) {
-//   for (let i = 1; i < 6; i += 1) {
-//     if (array[i].vwap <= 0) {
-//       return true;
-//     }
-//   }
-//   return false;
-// }
 function chandleTrendMfiVwapComparison(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent) {
   if ((vwapLogicLast < vwapLogic || mfLast < mf) && (lastScore < scoreCurrent || (lastScore === 10 && scoreCurrent === 10))) {
     return true;
