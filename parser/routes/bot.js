@@ -84,6 +84,7 @@ router.route('/bot-status')
       let postition = null;
       try {
         postition = userJson.Positions.map((el) => el.symbol);
+        console.log(postition);
       } catch (error) {
         console.log(`Ошибка получения позиций у id ${id}`);
       }
@@ -103,21 +104,20 @@ router.route('/bot-status')
                 setTimeout(async () => {
                   console.log('2');
                   await playBot(id, client, symbol);
+                }, 1000);
+                setTimeout(async () => {
                   console.log('3');
                   await closeLongPosition(id, client, symbol);
+                }, 1000);
+                setTimeout(async () => {
                   console.log('4');
                   await closeShortPosition(id, client, symbol);
-                }, 2000);
+                }, 1000);
               });
               console.log('5');
               let sizesSymbol = [];
-              try {
-                console.log('6');
-                sizesSymbol = await client.getPosition();
-                console.log('7');
-              } catch (error) {
-                console.log(`Ошибка получения позиций у id ${id}`);
-              }
+              console.log('6');
+              sizesSymbol = await client.getPosition();
               console.log('8');
               const sizies = sizesSymbol.result.reduce((prev, el) => prev + el.data.size, 0);
               const positionEnter = storage.getItem(`positionEnter_${id}`);
