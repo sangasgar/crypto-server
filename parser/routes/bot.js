@@ -104,15 +104,11 @@ router.route('/bot-status')
                 setTimeout(async () => {
                   console.log('2');
                   await playBot(id, client, symbol);
-                }, 1000);
-                setTimeout(async () => {
                   console.log('3');
                   await closeLongPosition(id, client, symbol);
-                }, 1000);
-                setTimeout(async () => {
                   console.log('4');
                   await closeShortPosition(id, client, symbol);
-                }, 1000);
+                }, 4000);
               });
               console.log('5');
               const sizesSymbol = await client.getPosition();
@@ -140,16 +136,11 @@ router.route('/bot-status')
               }
             } catch (error) {
               console.log(`Ошибка соединения у id ${id}`);
-              if (botBool === false) {
-                const timerUser = storage.getItem(`timer_${userJson.id}`);
-                console.log('Bot stop');
-                clearInterval(timerUser);
-              }
             }
           } else {
             console.log(`Проверка соединения у ${id}`);
           }
-        }, 10000);
+        }, 15000);
       } catch (error) {
         console.log(`Ошибка соединения у id вне setintervala ${id}`);
       }
