@@ -15,6 +15,7 @@ async function closeShortPosition(id, client, symbol) {
     console.log('302');
     period15DataCipherBwithTime.reverse();
     const vwapLast = Number(period15DataCipherBwithTime[1].vwap);
+    const openCurrent = Number(period15DataCipherBwithTime[0].open);
     // const vwapMin = Math.min(period15DataCipherBwithTime[1].vwap, period15DataCipherBwithTime[2].vwap, period15DataCipherBwithTime[3].vwap, period15DataCipherBwithTime[4].vwap);
     // const currentVwap = period15DataCipherBwithTime[0].vwap;
     // const currentVwap95Change = false;
@@ -25,9 +26,12 @@ async function closeShortPosition(id, client, symbol) {
     const positioByBit = await client.getPosition({ symbol });
     const positionSize = Number(positioByBit.result[0].size);
     console.log('304');
+    const priceBybit = await client.getTickers({ symbol });
+    // Получение данных о последней цене
+    const lastPrice = Number(priceBybit.result[0].last_price);
     if (positionSize > 0) {
       console.log(`Проверка на возможность закрытия позиции шорт ${symbol} для ${id}`);
-      if (vwapLast >= -1) {
+      if (vwapLast >= -1.5 && openCurrent < lastPrice) {
         const closePosition = await client.placeActiveOrder({
           symbol, side: 'Buy', qty: positionSize, order_type: 'Market', close_on_trigger: false, reduce_only: true, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
         });

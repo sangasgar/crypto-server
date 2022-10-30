@@ -15,6 +15,7 @@ async function closeLongPosition(id, client, symbol) {
     console.log('202');
     period15DataCipherBwithTime.reverse();
     const vwapLast = Number(period15DataCipherBwithTime[0].vwap);
+    const openCurrent = Number(period15DataCipherBwithTime[0].open);
     // const vwapMax = Math.max(period15DataCipherBwithTime[1].vwap, period15DataCipherBwithTime[2].vwap, period15DataCipherBwithTime[3].vwap, period15DataCipherBwithTime[4].vwap);
     // const currentVwap = period15DataCipherBwithTime[0].vwap;
     // let currentVwap95Change = false;
@@ -24,9 +25,12 @@ async function closeLongPosition(id, client, symbol) {
     console.log('203');
     const positioByBit = await client.getPosition({ symbol });
     const positionSize = Number(positioByBit.result[0].size);
+    const priceBybit = await client.getTickers({ symbol });
+    // Получение данных о последней цене
+    const lastPrice = Number(priceBybit.result[0].last_price);
     if (positionSize > 0) {
       console.log(`Проверка на возможность закрытия позиции лонг ${symbol} для ${id}`);
-      if (vwapLast <= 1) {
+      if (vwapLast <= 1.5 && openCurrent > lastPrice) {
         const closePosition = await client.placeActiveOrder({
           symbol, side: 'Sell', qty: positionSize, order_type: 'Market', close_on_trigger: false, reduce_only: true, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
         });
