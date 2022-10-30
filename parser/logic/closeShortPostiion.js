@@ -27,7 +27,7 @@ async function closeShortPosition(id, client, symbol) {
     console.log('304');
     if (positionSize > 0) {
       console.log(`Проверка на возможность закрытия позиции шорт ${symbol} для ${id}`);
-      if (vwapLast > -1) {
+      if (vwapLast >= -1) {
         const closePosition = await client.placeActiveOrder({
           symbol, side: 'Buy', qty: positionSize, order_type: 'Market', close_on_trigger: false, reduce_only: true, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
         });

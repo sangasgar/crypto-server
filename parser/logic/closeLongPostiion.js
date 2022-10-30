@@ -26,7 +26,7 @@ async function closeLongPosition(id, client, symbol) {
     const positionSize = Number(positioByBit.result[0].size);
     if (positionSize > 0) {
       console.log(`Проверка на возможность закрытия позиции лонг ${symbol} для ${id}`);
-      if (vwapLast < 1) {
+      if (vwapLast <= 1) {
         const closePosition = await client.placeActiveOrder({
           symbol, side: 'Sell', qty: positionSize, order_type: 'Market', close_on_trigger: false, reduce_only: true, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
         });

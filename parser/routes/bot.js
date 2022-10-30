@@ -40,6 +40,16 @@ router.route('/bot-status-check')
       res.json({ error: 'connection error' });
     }
   });
+router.route('/stop-loss-clear')
+  .put(async (req, res) => {
+    const { id } = req.body;
+    try {
+      await storage.addItem(`positionEnter_${id}`, false);
+      res.json({ status: true });
+    } catch (error) {
+      res.json({ status: false });
+    }
+  });
 
 router.route('/bot-status')
   .put(async (req, res) => {
@@ -115,7 +125,7 @@ router.route('/bot-status')
               console.log('8');
               const sizies = sizesSymbol.result.reduce((prev, el) => prev + el.data.size, 0);
               const positionEnter = storage.getItem(`positionEnter_${id}`);
-              if ((sizies === 0 && positionEnter === undefined) || (sizies === 0 && positionEnter === null)) {
+              if ((sizies === 0 && positionEnter === undefined) || (sizies === 0 && positionEnter === null) || (sizies === 0 && positionEnter === false)) {
                 console.log(`Есть возможность зайти в позицию  у id ${id}`);
                 postition.forEach((symbol) => {
                   setTimeout(async () => {
