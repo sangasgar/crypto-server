@@ -137,9 +137,9 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
       // Количество покупаемого актива
       const countActive = (shortDeposit / lastPrice).toFixed(2);
       console.log(`Количество актива_${id}_${symbol}`, countActive);
-      const stopLossCount = (stoploss * shortDeposit) / 100;
+      const stopLossTrade = (lastPrice + ((stoploss * lastPrice) / 100) / leverage).toFixed(2);
       // Расчет стоп-лоса
-      const stopLossTrade = lastPrice + (((stopLossCount * lastPrice) / (shortDeposit * leverage)) / 2).toFixed(2);
+      console.log(stopLossTrade);
       console.log(`Стоп лосс id ${id} символ ${symbol}`, stopLossTrade);
       console.log('503');
       const period6hData = storage.getItem(`period6hData_${id}_${symbol}`);

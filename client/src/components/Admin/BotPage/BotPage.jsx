@@ -22,6 +22,7 @@ function BotPage() {
   const [save, setSave] = useState(false);
   const [update, setUpdate] = useState(false);
   const [sizeDeposit, setSizeDeposit] = useState('');
+  const [stopLossClear, setStopLossClear] = useState(false);
   let symbolArray = [];
 
   useEffect(() => {
@@ -51,6 +52,14 @@ function BotPage() {
   }, [save]);
   const botHandler = () => {
     axios.put('/bot/bot-status', { id: user.id, botStatus: !value }).then((res) => setValue(res.data.botStatus));
+  };
+  const clearStopLoss = () => {
+    axios.put('/bot/stop-loss-clear', { id: user.id }).then((res) => {
+      setStopLossClear(res.data.status);
+      setTimeout(() => {
+        setStopLossClear(false);
+      }, 2000);
+    });
   };
   const sizeDepositChangeHandler = (val) => {
     setSizeDeposit(val);
@@ -253,9 +262,14 @@ function BotPage() {
       </div>
       {!value ? <img src={Bot} alt="Бот" width={200} /> : <img src={BotPrint} alt="Бот" width={200} />}
       {!value ? <Text className="botText" type="warning">Бот выключен </Text> : <Text className="botText" type="success">Бот запущен</Text>}
-      <Button type="primary" onClick={botHandler} shape="round" size="large">
-        {!value ? <>Запустить бота</> : <> Остановить бота</>}
-      </Button>
+      <div className="buttonBot">
+        <Button type="primary" onClick={clearStopLoss} shape="round" size="large">
+          {!stopLossClear ? <>Очистить стоп-лосс</> : <> Стоп-лосс очищен</>}
+        </Button>
+        <Button type="primary" onClick={botHandler} shape="round" size="large">
+          {!value ? <>Запустить бота</> : <> Остановить бота</>}
+        </Button>
+      </div>
     </div>
   );
 }

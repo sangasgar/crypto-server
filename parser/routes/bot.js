@@ -40,6 +40,16 @@ router.route('/bot-status-check')
       res.json({ error: 'connection error' });
     }
   });
+router.route('/stop-loss-clear')
+  .put(async (req, res) => {
+    const { id } = req.body;
+    try {
+      await storage.addItem(`positionEnter_${id}`, false);
+      res.json({ status: true });
+    } catch (error) {
+      res.json({ status: false });
+    }
+  });
 
 router.route('/bot-status')
   .put(async (req, res) => {
@@ -104,24 +114,18 @@ router.route('/bot-status')
                 setTimeout(async () => {
                   console.log('2');
                   await playBot(id, client, symbol);
-                }, 1000);
-                setTimeout(async () => {
                   console.log('3');
                   await closeLongPosition(id, client, symbol);
-                }, 1000);
-                setTimeout(async () => {
                   console.log('4');
                   await closeShortPosition(id, client, symbol);
-                }, 1000);
+                }, 4000);
               });
               console.log('5');
-              let sizesSymbol = [];
-              console.log('6');
-              sizesSymbol = await client.getPosition();
+              const sizesSymbol = await client.getPosition();
               console.log('8');
               const sizies = sizesSymbol.result.reduce((prev, el) => prev + el.data.size, 0);
               const positionEnter = storage.getItem(`positionEnter_${id}`);
-              if ((sizies === 0 && positionEnter === undefined) || (sizies === 0 && positionEnter === null)) {
+              if ((sizies === 0 && positionEnter === undefined) || (sizies === 0 && positionEnter === null) || (sizies === 0 && positionEnter === false)) {
                 console.log(`Есть возможность зайти в позицию  у id ${id}`);
                 postition.forEach((symbol) => {
                   setTimeout(async () => {
@@ -142,16 +146,11 @@ router.route('/bot-status')
               }
             } catch (error) {
               console.log(`Ошибка соединения у id ${id}`);
-              if (botBool === false) {
-                const timerUser = storage.getItem(`timer_${userJson.id}`);
-                console.log('Bot stop');
-                clearInterval(timerUser);
-              }
             }
           } else {
             console.log(`Проверка соединения у ${id}`);
           }
-        }, 10000);
+        }, 15000);
       } catch (error) {
         console.log(`Ошибка соединения у id вне setintervala ${id}`);
       }
