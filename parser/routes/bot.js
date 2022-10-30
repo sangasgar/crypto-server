@@ -98,9 +98,9 @@ router.route('/bot-status')
       } catch (error) {
         console.log(`Ошибка получения позиций у id ${id}`);
       }
-      let timer = null;
+
       try {
-        timer = setInterval(async () => {
+        const timer = setInterval(async () => {
           storage.addItem(`timer_${userJson.id}`, timer);
           if (botBool === false) {
             const timerUser = storage.getItem(`timer_${userJson.id}`);
@@ -118,32 +118,28 @@ router.route('/bot-status')
                   await closeLongPosition(id, client, symbol);
                   console.log('4');
                   await closeShortPosition(id, client, symbol);
-                }, 4000);
-              });
-              console.log('5');
-              const sizesSymbol = await client.getPosition();
-              console.log('8');
-              const sizies = sizesSymbol.result.reduce((prev, el) => prev + el.data.size, 0);
-              const positionEnter = storage.getItem(`positionEnter_${id}`);
-              if ((sizies === 0 && positionEnter === undefined) || (sizies === 0 && positionEnter === null) || (sizies === 0 && positionEnter === false)) {
-                console.log(`Есть возможность зайти в позицию  у id ${id}`);
-                postition.forEach((symbol) => {
-                  setTimeout(async () => {
+                  console.log('5');
+                  const sizesSymbol = await client.getPosition();
+                  console.log('8');
+                  const sizies = sizesSymbol.result.reduce((prev, el) => prev + el.data.size, 0);
+                  const positionEnter = storage.getItem(`positionEnter_${id}`);
+                  if ((sizies === 0 && positionEnter === undefined) || (sizies === 0 && positionEnter === null) || (sizies === 0 && positionEnter === false)) {
+                    console.log(`Есть возможность зайти в позицию  у id ${id}`);
                     console.log('9');
                     await longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit);
                     console.log('10');
                     await shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit);
-                  }, 10000);
-                });
-              } else if (sizies === 0 && positionEnter === true) {
-                console.log(`Бот вылетел по стоп-лоссу у id ${id}`);
-                await Bots.update({ botStatus: false }, { where: { user_id: id } });
-                const timerUser = storage.getItem(`timer_${userJson.id}`);
-                console.log('Bot stop');
-                clearInterval(timerUser);
-              } else if (sizies > 0) {
-                console.log(`Есть купленные позиции объемом ${sizies} у id ${id}`);
-              }
+                  } else if (sizies === 0 && positionEnter === true) {
+                    console.log(`Бот вылетел по стоп-лоссу у id ${id}`);
+                    await Bots.update({ botStatus: false }, { where: { user_id: id } });
+                    const timerUser = storage.getItem(`timer_${userJson.id}`);
+                    console.log('Bot stop');
+                    clearInterval(timerUser);
+                  } else if (sizies > 0) {
+                    console.log(`Есть купленные позиции объемом ${sizies} у id ${id}`);
+                  }
+                }, 7000);
+              });
             } catch (error) {
               console.log(`Ошибка соединения у id ${id}`);
             }
