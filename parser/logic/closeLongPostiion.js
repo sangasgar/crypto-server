@@ -14,7 +14,7 @@ async function closeLongPosition(id, client, symbol) {
     }));
     console.log('202');
     period15DataCipherBwithTime.reverse();
-    const vwapLast = Number(period15DataCipherBwithTime[1].vwap);
+    const vwapLast = Number(period15DataCipherBwithTime[0].vwap);
     // const vwapMax = Math.max(period15DataCipherBwithTime[1].vwap, period15DataCipherBwithTime[2].vwap, period15DataCipherBwithTime[3].vwap, period15DataCipherBwithTime[4].vwap);
     // const currentVwap = period15DataCipherBwithTime[0].vwap;
     // let currentVwap95Change = false;

@@ -23,7 +23,7 @@ async function closeShortPosition(id, client, symbol) {
     // }
     console.log('303');
     const positioByBit = await client.getPosition({ symbol });
-    const positionSize = Number(positioByBit.result[1].size);
+    const positionSize = Number(positioByBit.result[0].size);
     console.log('304');
     if (positionSize > 0) {
       console.log(`Проверка на возможность закрытия позиции шорт ${symbol} для ${id}`);
