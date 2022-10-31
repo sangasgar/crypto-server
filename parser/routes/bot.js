@@ -124,36 +124,40 @@ router.route('/bot-status')
             try {
               console.log('1');
               setTimeout(async () => {
-                controllerCycle(postition, id);
-                const count = storage.getItem(`count_${id}`);
-                const symbol = postition[count];
-                console.log('Цикл', count);
-                console.log(symbol);
-                console.log('2');
-                await playBot(id, client, symbol);
-                console.log('3');
-                await closeLongPosition(id, client, symbol);
-                console.log('4');
-                await closeShortPosition(id, client, symbol);
-                console.log('5');
-                const sizesSymbol = await client.getPosition();
-                console.log('8');
-                const sizies = sizesSymbol.result.reduce((prev, el) => prev + el.data.size, 0);
-                const positionEnter = storage.getItem(`positionEnter_${id}`);
-                if ((sizies === 0 && positionEnter === undefined) || (sizies === 0 && positionEnter === null) || (sizies === 0 && positionEnter === false)) {
-                  console.log(`Есть возможность зайти в позицию  у id ${id}`);
-                  console.log('9');
-                  await longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit);
-                  console.log('10');
-                  await shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit);
-                } else if (sizies === 0 && positionEnter === true) {
-                  console.log(`Бот вылетел по стоп-лоссу у id ${id}`);
-                  await Bots.update({ botStatus: false }, { where: { user_id: id } });
-                  const timerUser = storage.getItem(`timer_${id}`);
-                  console.log('Bot stop');
-                  clearInterval(timerUser);
-                } else if (sizies > 0) {
-                  console.log(`Есть купленные позиции объемом ${sizies} у id ${id}`);
+                try {
+                  controllerCycle(postition, id);
+                  const count = storage.getItem(`count_${id}`);
+                  const symbol = postition[count];
+                  console.log('Цикл', count);
+                  console.log(symbol);
+                  console.log('2');
+                  await playBot(id, client, symbol);
+                  console.log('3');
+                  await closeLongPosition(id, client, symbol);
+                  console.log('4');
+                  await closeShortPosition(id, client, symbol);
+                  console.log('5');
+                  const sizesSymbol = await client.getPosition();
+                  console.log('8');
+                  const sizies = sizesSymbol.result.reduce((prev, el) => prev + el.data.size, 0);
+                  const positionEnter = storage.getItem(`positionEnter_${id}`);
+                  if ((sizies === 0 && positionEnter === undefined) || (sizies === 0 && positionEnter === null) || (sizies === 0 && positionEnter === false)) {
+                    console.log(`Есть возможность зайти в позицию  у id ${id}`);
+                    console.log('9');
+                    await longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit);
+                    console.log('10');
+                    await shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit);
+                  } else if (sizies === 0 && positionEnter === true) {
+                    console.log(`Бот вылетел по стоп-лоссу у id ${id}`);
+                    await Bots.update({ botStatus: false }, { where: { user_id: id } });
+                    const timerUser = storage.getItem(`timer_${id}`);
+                    console.log('Bot stop');
+                    clearInterval(timerUser);
+                  } else if (sizies > 0) {
+                    console.log(`Есть купленные позиции объемом ${sizies} у id ${id}`);
+                  }
+                } catch (error) {
+                  console.log(`Ошибка соединения у id ${id}`);
                 }
               }, 3000);
             } catch (error) {
