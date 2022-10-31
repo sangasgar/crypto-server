@@ -23,9 +23,17 @@ async function closeLongPosition(id, client, symbol) {
     //   currentVwap95Change = true;
     // }
     console.log('203');
-    const positioByBit = await client.getPosition({ symbol });
-    const positionSize = Number(positioByBit.result[0].size);
-    const priceBybit = await client.getTickers({ symbol });
+    let positioByBit = null;
+    let positionSize = null;
+    let priceBybit = null;
+    try {
+      positioByBit = await client.getPosition({ symbol });
+      positionSize = Number(positioByBit.result[0].size);
+      console.log('304');
+      priceBybit = await client.getTickers({ symbol });
+    } catch (error) {
+      console.log('Ошибка получения данных о позиции');
+    }
     // Получение данных о последней цене
     const lastPrice = Number(priceBybit.result[0].last_price);
     if (positionSize > 0) {

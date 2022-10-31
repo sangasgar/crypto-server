@@ -90,7 +90,7 @@ async function shortTrade15(array, client, symbol) {
 }
 
 function crossowerLast5mShort(array) {
-  for (let i = 1; i < 4; i += 1) {
+  for (let i = 2; i < 5; i += 1) {
     if (array[i].vwap >= 0) {
       return true;
     }
@@ -115,14 +115,14 @@ async function shortTrade5m(array, client, symbol) {
   array.reverse();
   const lastPrice = await lastPriceFunc(client, symbol);
   const openPrice = array[0].open;
-  const vwapLogic = array[0].vwap;
-  const vwapLogicLast = array[1].vwap;
-  const { mf } = array[0];
-  const mfLast = array[1].mf;
-  const scoreCurrent = array[0].score;
-  const lastScore = array[1].score;
-  const bw2Current = array[0].bw2;
-  const bw2last = array[1].bw2;
+  const vwapLogic = array[1].vwap;
+  const vwapLogicLast = array[2].vwap;
+  const { mf } = array[1];
+  const mfLast = array[2].mf;
+  const scoreCurrent = array[1].score;
+  const lastScore = array[2].score;
+  const bw2Current = array[1].bw2;
+  const bw2last = array[2].bw2;
   if (vwapLogic <= -3.5 && openPrice > lastPrice && chandleTrendMfiVwapComparison5mShort(vwapLogicLast, vwapLogic, bw2last, bw2Current, mfLast, mf, lastScore, scoreCurrent, array)) {
     return true;
   }
