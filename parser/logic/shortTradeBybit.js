@@ -6,7 +6,7 @@ const chandeTrendScore = require('../indicators/chandeTrendScore');
 const searchLastTime = (array, id, symbol) => {
   array.reverse();
   const arrayTime = [];
-  for (let i = 1; i < array.length; i += 1) {
+  for (let i = 1; i < 6; i += 1) {
     arrayTime.push(arrayTime[i].time);
   }
   storage.addItem(`arrayTime__${id}_${symbol}`, arrayTime);
