@@ -3,6 +3,15 @@ const storage = require('../storage/storage');
 const cipherB = require('../indicators/cipherB');
 const chandeTrendScore = require('../indicators/chandeTrendScore');
 
+const searchLastTime = (array, id, symbol) => {
+  array.reverse();
+  const arrayTime = [];
+  for (let i = 1; i < array.length; i += 1) {
+    arrayTime.push(arrayTime[i].time);
+  }
+  storage.addItem(`arrayTime__${id}_${symbol}`, arrayTime);
+};
+
 async function lastPriceFunc(client, symbol) {
   const priceBybit = await client.getTickers({ symbol });
   // Получение данных о последней цене
@@ -261,6 +270,7 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
           console.log(longPosition);
           if (longPosition.ret_msg === 'OK') {
             console.log(`Позиция лонг открыта для id ${id}`);
+            searchLastTime(period15DataCipherBwithTime, id, symbol);
             await storage.addItem(`positionEnter_${id}`, true);
           }
         }

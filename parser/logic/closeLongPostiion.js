@@ -3,6 +3,21 @@ const cipherB = require('../indicators/cipherB');
 const storage = require('../storage/storage');
 const { Bots } = require('../db/models');
 
+const checkTimes = (array, currentTime) => {
+  try {
+    let checkBoolean = false;
+    if (array !== null || array !== undefined) {
+      for (let i = 0; i < array.length; i += 1) {
+        if (array[i] === currentTime) {
+          checkBoolean = true;
+        }
+      }
+    }
+    return checkBoolean;
+  } catch (error) {
+    return true;
+  }
+};
 async function closeLongPosition(id, client, symbol) {
   try {
   // console.log(`Проверка на возможность закрытия позиции лонг ${symbol} для ${id}`);
@@ -14,7 +29,9 @@ async function closeLongPosition(id, client, symbol) {
     }));
     console.log('202');
     period15DataCipherBwithTime.reverse();
-    const vwapLast = Number(period15DataCipherBwithTime[0].vwap);
+    const vwapLast = Number(period15DataCipherBwithTime[1].vwap);
+    const lastTime = Number(period15DataCipherBwithTime[1].time);
+    const arrayTimes = storage.getItem(`arrayTime__${id}_${symbol}`);
     const openCurrent = Number(period15DataCipherBwithTime[0].open);
     // const vwapMax = Math.max(period15DataCipherBwithTime[1].vwap, period15DataCipherBwithTime[2].vwap, period15DataCipherBwithTime[3].vwap, period15DataCipherBwithTime[4].vwap);
     // const currentVwap = period15DataCipherBwithTime[0].vwap;
@@ -38,7 +55,7 @@ async function closeLongPosition(id, client, symbol) {
     const lastPrice = Number(priceBybit.result[0].last_price);
     if (positionSize > 0) {
       console.log(`Проверка на возможность закрытия позиции лонг ${symbol} для ${id}`);
-      if (vwapLast <= 1.5 && openCurrent > lastPrice) {
+      if (vwapLast <= 1.5 && checkTimes(arrayTimes, lastTime) === false) {
         const closePosition = await client.placeActiveOrder({
           symbol, side: 'Sell', qty: positionSize, order_type: 'Market', close_on_trigger: false, reduce_only: true, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
         });
