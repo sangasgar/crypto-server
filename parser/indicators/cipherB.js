@@ -87,7 +87,7 @@ async function cipherB(arrayValue, timeframe, useCurrentRes = true, customRes = 
       const mfRes = [];
       const countLen = arrayMf.length - results[0].length;
       const mf = [...Array(countLen).fill(null), ...results[0]];
-      for (let i = 0; i < array.length; i += 1) {
+      for (let i = 0; i < mf.length; i += 1) {
         mfRes.push((mf[i] - y));
       }
       return mfRes;

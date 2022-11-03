@@ -1,4 +1,5 @@
 /* eslint-disable max-len */
+
 const storage = require('../storage/storage');
 const cipherB = require('../indicators/cipherB');
 const chandeTrendScore = require('../indicators/chandeTrendScore');
@@ -6,34 +7,49 @@ const chandeTrendScore = require('../indicators/chandeTrendScore');
 const searchLastTime = (array, id, symbol) => {
   array.reverse();
   const arrayTime = [];
-  for (let i = 1; i < 6; i += 1) {
-    arrayTime.push(arrayTime[i].time);
+  for (let i = 1; i < array.length - 1; i += 1) {
+    arrayTime.push(array[i].time);
   }
-  storage.addItem(`arrayTime__${id}_${symbol}`, arrayTime);
+  storage.addItem(`arrayTime_${id}_${symbol}`, arrayTime);
+  return arrayTime;
 };
 
-async function lastPriceFunc(client, symbol) {
-  const priceBybit = await client.getTickers({ symbol });
-  // Получение данных о последней цене
-  const lastPrice = Number(priceBybit.result[0].last_price);
-  return lastPrice;
-}
-async function longTrade6h(array, client, symbol) {
+// async function lastPriceFunc(object) {
+//   // const priceBybit = await client.getTickers({ symbol });
+//   // console.log(priceBybit);
+//   // Получение данных о последней цене
+//   // const lastPrice = Number(priceBybit.result[0].last_price);
+//   const result = HeikinAshi([{
+//     time: object.time,
+//     close: object.close,
+//     high: object.high,
+//     low: object.low,
+//     open: object.open,
+//     volume: object.volume,
+//   }], {
+//     overWrite: false, // overwrites the original data or create a new array
+//     formatNumbers: false, // formats the numbers and reduces their significant digits based on the values
+//     decimals: 4, // number of significant digits
+//     forceExactDecimals: false, // force the number of significant digits or reduce them if the number is high
+//   });
+//   return result[0].close;
+// }
+async function longTrade6h(array) {
   array.reverse();
-  const lastPrice = await lastPriceFunc(client, symbol);
+  const { mf } = array[0];
+  const moneyflowLast = array[1].mf;
   const openPrice = array[0].open;
+  const lastPrice = array[0].close;
   const vwapLogic = array[0].vwap;
   // const vwapLogicLast = array[1].vwap;
-  const { mf } = array[0];
-  const mfLast = array[1].mf;
-  if (vwapLogic >= 3.5 && mfLast < mf && openPrice < lastPrice) {
+  if (vwapLogic >= 3.5 && moneyflowLast < mf && openPrice < lastPrice) {
     return true;
   }
   return false;
 }
-async function longTrade2h(array, client, symbol) {
+async function longTrade2h(array) {
   array.reverse();
-  const lastPrice = await lastPriceFunc(client, symbol);
+  const lastPrice = array[0].close;
   const openPrice = array[0].open;
   const vwapLogic = array[0].vwap;
   const vwapLogicLast = array[1].vwap;
@@ -50,9 +66,9 @@ function chandleTrendMfiVwapComparison(vwapLogicLast, vwapLogic, mfLast, mf, las
   }
   return false;
 }
-async function longTrade1h(array, client, symbol) {
+async function longTrade1h(array) {
   array.reverse();
-  const lastPrice = await lastPriceFunc(client, symbol);
+  const lastPrice = array[0].close;
   const openPrice = array[0].open;
   const vwapLogic = array[0].vwap;
   const vwapLogicLast = array[1].vwap;
@@ -74,30 +90,30 @@ function crossowerLast15m(array) {
   }
   return false;
 }
-function chandleTrendMfiVwapComparison15m(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent, array) {
-  if ((vwapLogicLast < vwapLogic || mfLast < mf) && crossowerLast15m(array) && (lastScore < scoreCurrent || (lastScore === 10 && scoreCurrent === 10))) {
+function chandleTrendMfiVwapComparison15m(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent) {
+  if ((vwapLogicLast < vwapLogic || mfLast < mf) && (lastScore < scoreCurrent || (lastScore === 10 && scoreCurrent === 10))) {
     return true;
   }
   return false;
 }
-async function longTrade15(array, client, symbol) {
+async function longTrade15(array) {
   array.reverse();
   const vwapLogic = array[0].vwap;
-  const lastPrice = await lastPriceFunc(client, symbol);
+  const lastPrice = array[0].close;
   const openPrice = array[0].open;
   const vwapLogicLast = array[1].vwap;
   const { mf } = array[0];
   const mfLast = array[1].mf;
   const scoreCurrent = array[0].score;
   const lastScore = array[1].score;
-  if (vwapLogic >= 2 && openPrice < lastPrice && chandleTrendMfiVwapComparison15m(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent, array)) {
+  if (vwapLogic >= 2 && openPrice < lastPrice && crossowerLast15m(array) && chandleTrendMfiVwapComparison15m(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
     return true;
   }
   return false;
 }
 
 function crossowerLast5m(array) {
-  for (let i = 2; i < 5; i += 1) {
+  for (let i = 1; i < 4; i += 1) {
     if (array[i].vwap <= 0) {
       return true;
     }
@@ -111,17 +127,17 @@ function bw2Func(bw2last, bw2Current) {
   }
   return false;
 }
-function chandleTrendMfiVwapComparison5m(vwapLogicLast, vwapLogic, bw2last, bw2Current, mfLast, mf, lastScore, scoreCurrent, array) {
-  if ((vwapLogicLast < vwapLogic || mfLast < mf) && bw2Func(bw2last, bw2Current) && crossowerLast5m(array) && (lastScore < scoreCurrent || (lastScore === 10 && scoreCurrent === 10))) {
+function chandleTrendMfiVwapComparison5m(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent) {
+  if ((vwapLogicLast < vwapLogic || mfLast < mf) && (lastScore < scoreCurrent || (lastScore === 10 && scoreCurrent === 10))) {
     return true;
   }
   return false;
 }
 
-async function longTrade5m(array, client, symbol) {
+async function longTrade5m(array) {
   array.reverse();
-  const lastPrice = await lastPriceFunc(client, symbol);
-  const openPrice = array[0].open;
+  const lastPrice = array[1].close;
+  const openPrice = array[1].open;
   const vwapLogic = array[1].vwap;
   const vwapLogicLast = array[2].vwap;
   const { mf } = array[1];
@@ -130,30 +146,42 @@ async function longTrade5m(array, client, symbol) {
   const lastScore = array[2].score;
   const bw2Current = array[1].bw2;
   const bw2last = array[2].bw2;
-  if (vwapLogic >= 3.5 && openPrice < lastPrice && chandleTrendMfiVwapComparison5m(vwapLogicLast, vwapLogic, bw2last, bw2Current, mfLast, mf, lastScore, scoreCurrent, array)) {
+  console.log('Время', array[1].time);
+  console.log('Последняя цена', lastPrice);
+  console.log('Цена открытия', openPrice);
+  console.log('вивап цена', vwapLogic);
+  console.log('вивап предыдущая цена', vwapLogicLast);
+  console.log('мф цена', mf);
+  console.log('мф предыдущая цена', mfLast);
+  console.log('scoreCurrent цена', scoreCurrent);
+  console.log('lastScore предыдущая цена', lastScore);
+  console.log('bw2Current ', bw2Current);
+  console.log('bw2last', bw2last);
+  console.log('Кроссовер ', crossowerLast5m(array));
+  console.log('bw2 сравнение ', bw2Func(bw2last, bw2Current));
+  console.log('chandleTrendMfiVwapComparison5m ', chandleTrendMfiVwapComparison5m(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent));
+  if (vwapLogic >= 3.5 && openPrice < lastPrice && bw2Func(bw2last, bw2Current) && crossowerLast5m(array) && chandleTrendMfiVwapComparison5m(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
+    console.log('логика true');
     return true;
   }
+  console.log('логика false');
   return false;
 }
 
 async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit) {
-  console.log('400');
   let getapikey = null;
   try {
     getapikey = await client.getApiKeyInfo();
   } catch (error) {
     console.log('Ошибка получения ключей');
   }
-  console.log('401');
   try {
     if (getapikey.ret_msg === 'OK') {
       console.log('Ключи подтверждены');
       // Получение данных о балансе
-      console.log('402');
       const balance = await client.getWalletBalance({ symbol });
       const balanceUSDT = Number(balance.result.USDT.available_balance);
       const longDeposit = (balanceUSDT * sizeDeposit) / 100;
-      console.log('403');
       console.log(`Баланс id ${id} символ ${symbol}`, balanceUSDT);
       console.log(`Сумма позиции id ${id} символ ${symbol}`, longDeposit);
       const priceBybit = await client.getTickers({ symbol });
@@ -167,15 +195,14 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       // Расчет стоп-лоса
       console.log(stopLossTrade);
       console.log(`Стоп лосс id ${id} символ ${symbol}`, stopLossTrade);
-      console.log('403');
       const period6hData = storage.getItem(`period6hData_${id}_${symbol}`);
       const period6hDataCipherB = await cipherB(period6hData);
       const period6hDataChandeTrendScore = await chandeTrendScore(period6hData);
       const period6hDataCipherBwithTime = await period6hData.map((el, i) => ({
         time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period6hDataCipherB[0][i], bw2: period6hDataCipherB[1][i], vwap: period6hDataCipherB[2][i], mf: period6hDataCipherB[3][i], score: period6hDataChandeTrendScore[i],
       }));
-      console.log('404');
-      const period6Hresult = await longTrade6h(period6hDataCipherBwithTime, client, symbol);
+      const array6H = period6hDataCipherBwithTime.filter((el, index) => index > period6hDataCipherBwithTime.length - 3);
+      const period6Hresult = await longTrade6h(array6H);
       await storage.addItem(`period6hLongBoolean_${id}_${symbol}`, period6Hresult);
       const time6h = Number(period6hDataCipherBwithTime[period6hDataCipherBwithTime.length - 1].time);
       const milliseconds6h = time6h * 1000;
@@ -183,15 +210,14 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       const humanDateFormat6h = dateObject6h.toLocaleString('ru-RU', { timeZoneName: 'short' });
       console.log('Время: ', humanDateFormat6h);
       console.log(`Проверка входа на 6 часов для id ${id}`, storage.getItem(`period6hLongBoolean_${id}_${symbol}`));
-      console.log('405');
       const period2hData = storage.getItem(`period2hData_${id}_${symbol}`);
       const period2hDataCipherB = await cipherB(period2hData);
       const period2hDataChandeTrendScore = await chandeTrendScore(period2hData);
       const period2hDataCipherBwithTime = await period2hData.map((el, i) => ({
         time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period2hDataCipherB[0][i], bw2: period2hDataCipherB[1][i], vwap: period2hDataCipherB[2][i], mf: period2hDataCipherB[3][i], score: period2hDataChandeTrendScore[i],
       }));
-      console.log('406');
-      const period2Hresult = await longTrade2h(period2hDataCipherBwithTime, client, symbol);
+      const array2H = period2hDataCipherBwithTime.filter((el, index) => index > period2hDataCipherBwithTime.length - 3);
+      const period2Hresult = await longTrade2h(array2H);
       await storage.addItem(`period2hLongBoolean_${id}_${symbol}`, period2Hresult);
       const time2h = Number(period2hDataCipherBwithTime[period2hDataCipherBwithTime.length - 1].time);
       const milliseconds2h = time2h * 1000;
@@ -205,8 +231,8 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       const period1hDataCipherBwithTime = await period1hData.map((el, i) => ({
         time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period1hDataCipherB[0][i], bw2: period1hDataCipherB[1][i], vwap: period1hDataCipherB[2][i], mf: period1hDataCipherB[3][i], score: period1hDataChandeTrendScore[i],
       }));
-      console.log('407');
-      const period1Hresult = await longTrade1h(period1hDataCipherBwithTime, client, symbol);
+      const array1H = period1hDataCipherBwithTime.filter((el, index) => index > period1hDataCipherBwithTime.length - 3);
+      const period1Hresult = await longTrade1h(array1H);
       await storage.addItem(`period1hLongBoolean_${id}_${symbol}`, period1Hresult);
       const time1h = Number(period1hDataCipherBwithTime[period1hDataCipherBwithTime.length - 1].time);
       const milliseconds1h = time1h * 1000;
@@ -220,16 +246,15 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       const period15DataCipherBwithTime = await period15Data.map((el, i) => ({
         time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period15DataCipherB[0][i], bw2: period15DataCipherB[1][i], vwap: period15DataCipherB[2][i], mf: period15DataCipherB[3][i], score: period15DataChandeTrendScore[i],
       }));
-      console.log('408');
       console.log('Символ', symbol);
-      const period15result = await longTrade15(period15DataCipherBwithTime, client, symbol);
+      const array15 = period15DataCipherBwithTime.filter((el, index) => index > period15DataCipherBwithTime.length - 5);
+      const period15result = await longTrade15(array15);
       await storage.addItem(`period15LongBoolean_${id}_${symbol}`, period15result);
       const time15 = Number(period15DataCipherBwithTime[period15DataCipherBwithTime.length - 1].time);
       const milliseconds15 = time15 * 1000;
       const dateObject15 = new Date(milliseconds15);
       const humanDateFormat15 = dateObject15.toLocaleString('ru-RU', { timeZoneName: 'short' });
       console.log('Время: ', humanDateFormat15);
-      console.log('409');
       console.log(`Проверка входа на 15 минут для id ${id}`, storage.getItem(`period15LongBoolean_${id}_${symbol}`));
 
       const period5mData = storage.getItem(`period5Data_${id}_${symbol}`);
@@ -238,16 +263,15 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       const period5mDataCipherBwithTime = await period5mData.map((el, i) => ({
         time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period5mDataCipherB[0][i], bw2: period5mDataCipherB[1][i], vwap: period5mDataCipherB[2][i], mf: period5mDataCipherB[3][i], score: period5mDataChandeTrendScore[i],
       }));
-      console.log('408');
       console.log('Символ', symbol);
-      const period5mresult = await longTrade5m(period5mDataCipherBwithTime, client, symbol);
+      const array5 = period5mDataCipherBwithTime.filter((el, index) => index > period5mDataCipherBwithTime.length - 5);
+      const period5mresult = await longTrade5m(array5);
       await storage.addItem(`period5LongBoolean_${id}_${symbol}`, period5mresult);
       const time5 = Number(period5mDataCipherBwithTime[period5mDataCipherBwithTime.length - 1].time);
       const milliseconds5 = time5 * 1000;
       const dateObject5 = new Date(milliseconds5);
       const humanDateFormat5 = dateObject5.toLocaleString('ru-RU', { timeZoneName: 'short' });
       console.log('Время: ', humanDateFormat5);
-      console.log('409');
       console.log(`Проверка входа на 5 минут для id ${id}`, storage.getItem(`period5LongBoolean_${id}_${symbol}`));
 
       const Long6hBoolean = storage.getItem(`period6hLongBoolean_${id}_${symbol}`);
@@ -255,6 +279,8 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       const Long1hBoolean = storage.getItem(`period1hLongBoolean_${id}_${symbol}`);
       const Long15Boolean = storage.getItem(`period15LongBoolean_${id}_${symbol}`);
       const Long5Boolean = storage.getItem(`period5LongBoolean_${id}_${symbol}`);
+      const arrayLongTime = period15DataCipherBwithTime.filter((el, index) => index > period15DataCipherBwithTime.length - 7);
+
       if ((Long6hBoolean && Long1hBoolean && Long15Boolean && Long5Boolean) || (Long2hBoolean && Long1hBoolean && Long15Boolean && Long5Boolean)) {
         console.log(`Проверка возможности входа в позицию для id ${id}`);
         await client.setMarginSwitch({
@@ -270,7 +296,7 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
           console.log(longPosition);
           if (longPosition.ret_msg === 'OK') {
             console.log(`Позиция лонг открыта для id ${id}`);
-            searchLastTime(period15DataCipherBwithTime, id, symbol);
+            searchLastTime(arrayLongTime, id, symbol);
             await storage.addItem(`positionEnter_${id}`, true);
           }
         }
