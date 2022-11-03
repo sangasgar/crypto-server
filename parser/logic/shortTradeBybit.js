@@ -270,7 +270,6 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
       const short5Boolean = storage.getItem(`period5ShortBoolean_${id}_${symbol}`);
       const arrayShortTime = period15DataCipherBwithTime.filter((el, index) => index > period15DataCipherBwithTime.length - 7);
 
-      searchLastTime(arrayShortTime, id, symbol);
       if ((short6hBoolean && short1hBoolean && short15Boolean && short5Boolean) || (short2hBoolean && short1hBoolean && short15Boolean && short5Boolean)) {
         console.log(`Проверка возможности входа в позицию для id ${id}`);
         await client.setMarginSwitch({
@@ -286,7 +285,7 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
           console.log(shortPosition);
           if (shortPosition.ret_msg === 'OK') {
             console.log(`Позиция шорт открыта для id ${id}`);
-            searchLastTime(arrayLongTime, id, symbol);
+            searchLastTime(arrayShortTime, id, symbol);
             await storage.addItem(`positionEnter_${id}`, true);
           }
         }

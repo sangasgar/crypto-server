@@ -81,7 +81,7 @@ router.route('/bot-status')
       const API_KEY = userJson.publicKey;
       const PRIVATE_KEY = userJson.privateKey;
       const restClientOptions = { recv_window: 20000 };
-      const useLivenet = true;
+      const useLivenet = false;
       let client = null;
       try {
         client = new LinearClient(
