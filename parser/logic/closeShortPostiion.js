@@ -30,12 +30,13 @@ async function closeShortPosition(id, client, symbol) {
     period15DataCipherBwithTime.reverse();
     const vwapLast = Number(period15DataCipherBwithTime[1].vwap);
     const lastTime = Number(period15DataCipherBwithTime[1].time);
-    const arrayTimes = storage.getItem(`arrayShortTime_${id}_${symbol}`);
+    const arrayTimes = storage.getItem(`arrayTime_${id}`);
     console.log('Шорт массив', arrayTimes);
     console.log('Последнее время ', lastTime);
     console.log('Вивап ', vwapLast);
     console.log(checkTimes(arrayTimes, lastTime));
     const timeCheck = checkTimes(arrayTimes, lastTime);
+    console.log('массив ', timeCheck);
     console.log('Проверка времени шорт ', timeCheck);
     const openCurrent = Number(period15DataCipherBwithTime[0].open);
     // const vwapMin = Math.min(period15DataCipherBwithTime[1].vwap, period15DataCipherBwithTime[2].vwap, period15DataCipherBwithTime[3].vwap, period15DataCipherBwithTime[4].vwap);

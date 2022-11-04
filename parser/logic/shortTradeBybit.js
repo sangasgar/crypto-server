@@ -3,13 +3,13 @@ const storage = require('../storage/storage');
 const cipherB = require('../indicators/cipherB');
 const chandeTrendScore = require('../indicators/chandeTrendScore');
 
-const searchLastTime = (array, id, symbol) => {
+const searchLastTime = (array, id) => {
   array.reverse();
   const arrayTime = [];
   for (let i = 1; i < array.length - 1; i += 1) {
     arrayTime.push(array[i].time);
   }
-  storage.addItem(`arrayShortTime_${id}_${symbol}`, arrayTime);
+  storage.addItem(`arrayTime_${id}`, arrayTime);
   return arrayTime;
 };
 
@@ -284,8 +284,8 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
           });
           console.log(shortPosition);
           if (shortPosition.ret_msg === 'OK') {
+            searchLastTime(arrayShortTime, id);
             console.log(`Позиция шорт открыта для id ${id}`);
-            searchLastTime(arrayShortTime, id, symbol);
             await storage.addItem(`positionEnter_${id}`, true);
           }
         }

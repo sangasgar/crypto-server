@@ -20,7 +20,7 @@ const checkTimes = (array, currentTime) => {
 };
 async function closeLongPosition(id, client, symbol) {
   try {
-  // console.log(`Проверка на возможность закрытия позиции лонг ${symbol} для ${id}`);
+    console.log(`Проверка на возможность закрытия позиции лонг ${symbol} для ${id}`);
     const period15Data = storage.getItem(`period15Data_${id}_${symbol}`);
     const period15DataCipherB = await cipherB(period15Data);
     const period15DataCipherBwithTime = await period15Data.map((el, i) => ({
@@ -29,11 +29,12 @@ async function closeLongPosition(id, client, symbol) {
     period15DataCipherBwithTime.reverse();
     const vwapLast = Number(period15DataCipherBwithTime[1].vwap);
     const lastTime = Number(period15DataCipherBwithTime[1].time);
-    const arrayTimes = storage.getItem(`arrayTime_${id}_${symbol}`);
+    const arrayTimes = storage.getItem(`arrayTime_${id}`);
     console.log('Последнее время ', lastTime);
     console.log('Вивап ', vwapLast);
     console.log(checkTimes(arrayTimes, lastTime));
     const timeCheck = checkTimes(arrayTimes, lastTime);
+    console.log('массив ', arrayTimes);
     const openCurrent = Number(period15DataCipherBwithTime[0].open);
     // const vwapMax = Math.max(period15DataCipherBwithTime[1].vwap, period15DataCipherBwithTime[2].vwap, period15DataCipherBwithTime[3].vwap, period15DataCipherBwithTime[4].vwap);
     // const currentVwap = period15DataCipherBwithTime[0].vwap;
