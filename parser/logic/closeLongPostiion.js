@@ -61,6 +61,7 @@ async function closeLongPosition(id, client, symbol) {
         });
         if (closePosition.ret_msg === 'OK') {
           console.log(`Позиция лонг закрыта ${symbol} для ${id}`);
+          await storage.addItem(`positionEnter_${id}`, false);
         } else {
           console.log(`Позиция лонг не закрыта ${symbol} для ${id}`);
         }

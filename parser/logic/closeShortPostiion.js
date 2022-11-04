@@ -64,6 +64,7 @@ async function closeShortPosition(id, client, symbol) {
         });
         if (closePosition.ret_msg === 'OK') {
           console.log(`Позиция шорт закрыта ${symbol} для ${id}`);
+          await storage.addItem(`positionEnter_${id}`, false);
         } else {
           console.log(`Позиция шорт не закрыта ${symbol} для ${id}`);
         }
