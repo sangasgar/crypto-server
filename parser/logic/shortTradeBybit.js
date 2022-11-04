@@ -71,7 +71,7 @@ async function shortTrade1h(array) {
 }
 
 function crossowerLast15mShort(array) {
-  for (let i = 1; i < 4; i += 1) {
+  for (let i = 2; i < 5; i += 1) {
     if (array[i].vwap >= 0) {
       return true;
     }
@@ -88,14 +88,14 @@ function chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast,
 
 async function shortTrade15(array) {
   array.reverse();
-  const vwapLogic = array[0].vwap;
-  const lastPrice = array[0].close;
-  const openPrice = array[0].open;
-  const vwapLogicLast = array[1].vwap;
-  const { mf } = array[0];
-  const mfLast = array[1].mf;
-  const scoreCurrent = array[0].score;
-  const lastScore = array[1].score;
+  const vwapLogic = array[1].vwap;
+  const lastPrice = array[1].close;
+  const openPrice = array[1].open;
+  const vwapLogicLast = array[2].vwap;
+  const { mf } = array[1];
+  const mfLast = array[2].mf;
+  const scoreCurrent = array[1].score;
+  const lastScore = array[2].score;
   if (vwapLogic <= -2 && openPrice > lastPrice && crossowerLast15mShort(array) && chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
     return true;
   }
@@ -236,7 +236,7 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
         time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period15DataCipherB[0][i], bw2: period15DataCipherB[1][i], vwap: period15DataCipherB[2][i], mf: period15DataCipherB[3][i], score: period15DataChandeTrendScore[i],
       }));
       console.log('Символ', symbol);
-      const array15 = period15DataCipherBwithTime.filter((el, index) => index > period15DataCipherBwithTime.length - 5);
+      const array15 = period15DataCipherBwithTime.filter((el, index) => index > period15DataCipherBwithTime.length - 10);
       const period15result = await shortTrade15(array15);
       await storage.addItem(`period15ShortBoolean_${id}_${symbol}`, period15result);
       const time15 = Number(period15DataCipherBwithTime[period15DataCipherBwithTime.length - 1].time);
