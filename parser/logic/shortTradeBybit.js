@@ -103,7 +103,7 @@ async function shortTrade15(array) {
 }
 
 function crossowerLast5mShort(array) {
-  for (let i = 1; i < 4; i += 1) {
+  for (let i = 2; i < 5; i += 1) {
     if (array[i].vwap >= 0) {
       return true;
     }
@@ -253,7 +253,7 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
         time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period5mDataCipherB[0][i], bw2: period5mDataCipherB[1][i], vwap: period5mDataCipherB[2][i], mf: period5mDataCipherB[3][i], score: period5mDataChandeTrendScore[i],
       }));
       console.log('Символ', symbol);
-      const array5 = period5mDataCipherBwithTime.filter((el, index) => index > period5mDataCipherBwithTime.length - 5);
+      const array5 = period5mDataCipherBwithTime.filter((el, index) => index > period5mDataCipherBwithTime.length - 10);
       const period5mresult = await shortTrade5m(array5);
       await storage.addItem(`period5ShortBoolean_${id}_${symbol}`, period5mresult);
       const time5 = Number(period5mDataCipherBwithTime[period5mDataCipherBwithTime.length - 1].time);
