@@ -50,11 +50,13 @@ async function closeShortPosition(id, client, symbol) {
     let priceBybit = null;
     try {
       positioByBit = await client.getPosition({ symbol });
-      positionSize = Number(positioByBit.result[0].size);
+      positionSize = Number(positioByBit.result[1].size);
+      console.log('Шорт размер', positionSize);
       priceBybit = await client.getTickers({ symbol });
     } catch (error) {
       console.log('Ошибка получения данных о позиции');
     }
+    console.log('Шорт размер', positionSize);
     // Получение данных о последней цене
     const lastPrice = Number(priceBybit.result[0].last_price);
     if (positionSize > 0) {

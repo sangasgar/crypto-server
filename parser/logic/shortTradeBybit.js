@@ -6,7 +6,7 @@ const chandeTrendScore = require('../indicators/chandeTrendScore');
 const searchLastTime = (array, id) => {
   array.reverse();
   const arrayTime = [];
-  for (let i = 1; i < array.length - 1; i += 1) {
+  for (let i = 0; i < array.length - 1; i += 1) {
     arrayTime.push(array[i].time);
   }
   storage.addItem(`arrayTime_${id}`, arrayTime);
@@ -71,7 +71,7 @@ async function shortTrade1h(array) {
 }
 
 function crossowerLast15mShort(array) {
-  for (let i = 2; i < 5; i += 1) {
+  for (let i = 1; i < 6; i += 1) {
     if (array[i].vwap >= 0) {
       return true;
     }
@@ -88,14 +88,14 @@ function chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast,
 
 async function shortTrade15(array) {
   array.reverse();
-  const vwapLogic = array[1].vwap;
-  const lastPrice = array[1].close;
-  const openPrice = array[1].open;
-  const vwapLogicLast = array[2].vwap;
-  const { mf } = array[1];
-  const mfLast = array[2].mf;
-  const scoreCurrent = array[1].score;
-  const lastScore = array[2].score;
+  const vwapLogic = array[0].vwap;
+  const lastPrice = array[0].close;
+  const openPrice = array[0].open;
+  const vwapLogicLast = array[1].vwap;
+  const { mf } = array[0];
+  const mfLast = array[1].mf;
+  const scoreCurrent = array[0].score;
+  const lastScore = array[1].score;
   if (vwapLogic <= -2 && openPrice > lastPrice && crossowerLast15mShort(array) && chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
     return true;
   }
@@ -103,7 +103,7 @@ async function shortTrade15(array) {
 }
 
 function crossowerLast5mShort(array) {
-  for (let i = 2; i < 5; i += 1) {
+  for (let i = 1; i < 6; i += 1) {
     if (array[i].vwap >= 0) {
       return true;
     }
@@ -125,17 +125,17 @@ function chandleTrendMfiVwapComparison5mShort(vwapLogicLast, vwapLogic, mfLast, 
 
 async function shortTrade5m(array) {
   array.reverse();
-  const lastPrice = array[1].close;
-  const openPrice = array[1].open;
-  const vwapLogic = array[1].vwap;
-  const vwapLogicLast = array[2].vwap;
-  const { mf } = array[1];
-  const mfLast = array[2].mf;
-  const scoreCurrent = array[1].score;
-  const lastScore = array[2].score;
-  const bw2Current = array[1].bw2;
-  const bw2last = array[2].bw2;
-  console.log('Шорт Время', array[1].time);
+  const lastPrice = array[0].close;
+  const openPrice = array[0].open;
+  const vwapLogic = array[0].vwap;
+  const vwapLogicLast = array[1].vwap;
+  const { mf } = array[0];
+  const mfLast = array[1].mf;
+  const scoreCurrent = array[0].score;
+  const lastScore = array[1].score;
+  const bw2Current = array[0].bw2;
+  const bw2last = array[1].bw2;
+  console.log('Шорт Время', array[0].time);
   console.log('Шорт Последняя цена', lastPrice);
   console.log('Шорт Цена открытия', openPrice);
   console.log('Шорт вивап цена', vwapLogic);
