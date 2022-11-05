@@ -96,6 +96,33 @@ function chandleTrendMfiVwapComparison15m(vwapLogicLast, vwapLogic, mfLast, mf, 
   }
   return false;
 }
+
+async function longTrade15Last(array) {
+  array.reverse();
+  console.log('Предыдущие 15 минут', array[1].time);
+  const vwapLogic = array[1].vwap;
+  const lastPrice = array[1].close;
+  const openPrice = array[1].open;
+  const vwapLogicLast = array[2].vwap;
+  const { mf } = array[1];
+  const mfLast = array[2].mf;
+  const scoreCurrent = array[1].score;
+  const lastScore = array[2].score;
+  console.log('Время', array[1].time);
+  console.log('Последняя цена', lastPrice);
+  console.log('Цена открытия', openPrice);
+  console.log('вивап цена', vwapLogic);
+  console.log('вивап предыдущая цена', vwapLogicLast);
+  console.log('мф цена', mf);
+  console.log('мф предыдущая цена', mfLast);
+  console.log('scoreCurrent цена', scoreCurrent);
+  console.log('lastScore предыдущая цена', lastScore);
+  if (vwapLogic >= 2 && openPrice < lastPrice && chandleTrendMfiVwapComparison15m(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
+    return true;
+  }
+  return false;
+}
+
 async function longTrade15(array) {
   array.reverse();
   const vwapLogic = array[0].vwap;
@@ -134,8 +161,42 @@ function chandleTrendMfiVwapComparison5m(vwapLogicLast, vwapLogic, mfLast, mf, l
   return false;
 }
 
+async function longTrade5mLast(array) {
+  array.reverse();
+  console.log('Предыдущие 5 минут', array[1].time);
+  const lastPrice = array[1].close;
+  const openPrice = array[1].open;
+  const vwapLogic = array[1].vwap;
+  const vwapLogicLast = array[2].vwap;
+  const { mf } = array[1];
+  const mfLast = array[2].mf;
+  const scoreCurrent = array[1].score;
+  const lastScore = array[2].score;
+  const bw2Current = array[1].bw2;
+  const bw2last = array[2].bw2;
+  console.log('Время', array[1].time);
+  console.log('Последняя цена', lastPrice);
+  console.log('Цена открытия', openPrice);
+  console.log('вивап цена', vwapLogic);
+  console.log('вивап предыдущая цена', vwapLogicLast);
+  console.log('мф цена', mf);
+  console.log('мф предыдущая цена', mfLast);
+  console.log('scoreCurrent цена', scoreCurrent);
+  console.log('lastScore предыдущая цена', lastScore);
+  console.log('bw2Current ', bw2Current);
+  console.log('bw2last', bw2last);
+  console.log('bw2 сравнение ', bw2Func(bw2last, bw2Current));
+  console.log('chandleTrendMfiVwapComparison5m ', chandleTrendMfiVwapComparison5m(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent));
+  if (vwapLogic >= 3.5 && openPrice < lastPrice && bw2Func(bw2last, bw2Current) && chandleTrendMfiVwapComparison5m(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
+    console.log('логика true');
+    return true;
+  }
+  console.log('логика false');
+  return false;
+}
 async function longTrade5m(array) {
   array.reverse();
+  console.log('Текущие 5 минут', array[0].time);
   const lastPrice = array[0].close;
   const openPrice = array[0].open;
   const vwapLogic = array[0].vwap;
@@ -248,8 +309,11 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       }));
       console.log('Символ', symbol);
       const array15 = period15DataCipherBwithTime.filter((el, index) => index > period15DataCipherBwithTime.length - 10);
+      const array15Last = period15DataCipherBwithTime.filter((el, index) => index > period15DataCipherBwithTime.length - 10);
       const period15result = await longTrade15(array15);
+      const period15resultLast = await longTrade15Last(array15Last);
       await storage.addItem(`period15LongBoolean_${id}_${symbol}`, period15result);
+      await storage.addItem(`period15LongBooleanLast_${id}_${symbol}`, period15resultLast);
       const time15 = Number(period15DataCipherBwithTime[period15DataCipherBwithTime.length - 1].time);
       const milliseconds15 = time15 * 1000;
       const dateObject15 = new Date(milliseconds15);
@@ -265,8 +329,11 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       }));
       console.log('Символ', symbol);
       const array5 = period5mDataCipherBwithTime.filter((el, index) => index > period5mDataCipherBwithTime.length - 10);
+      const array5Last = period5mDataCipherBwithTime.filter((el, index) => index > period5mDataCipherBwithTime.length - 10);
       const period5mresult = await longTrade5m(array5);
+      const period5mresultLast = await longTrade5mLast(array5Last);
       await storage.addItem(`period5LongBoolean_${id}_${symbol}`, period5mresult);
+      await storage.addItem(`period5LongBooleanLast_${id}_${symbol}`, period5mresultLast);
       const time5 = Number(period5mDataCipherBwithTime[period5mDataCipherBwithTime.length - 1].time);
       const milliseconds5 = time5 * 1000;
       const dateObject5 = new Date(milliseconds5);
@@ -278,10 +345,20 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       const Long2hBoolean = storage.getItem(`period2hLongBoolean_${id}_${symbol}`);
       const Long1hBoolean = storage.getItem(`period1hLongBoolean_${id}_${symbol}`);
       const Long15Boolean = storage.getItem(`period15LongBoolean_${id}_${symbol}`);
+      const Long15BooleanLast = storage.getItem(`period15LongBooleanLast_${id}_${symbol}`);
       const Long5Boolean = storage.getItem(`period5LongBoolean_${id}_${symbol}`);
+      const period5LongBooleanLast = storage.getItem(`period5LongBooleanLast_${id}_${symbol}`);
+      console.log('Логика входов лонг 6 часов', Long6hBoolean);
+      console.log('Логика входов лонг 2 часов', Long2hBoolean);
+      console.log('Логика входов лонг 1 час', Long1hBoolean);
+      console.log('Логика входов лонг 15 минут', Long15Boolean);
+      console.log('Логика входов лонг предыдущие 15 минут', Long15BooleanLast);
+      console.log('Логика входов лонг 5 минут', Long5Boolean);
+      console.log('Логика входов лонг предыдущие 5 минут', period5LongBooleanLast);
+
       const arrayLongTime = period15DataCipherBwithTime.filter((el, index) => index > period15DataCipherBwithTime.length - 7);
 
-      if ((Long6hBoolean && Long1hBoolean && Long15Boolean && Long5Boolean) || (Long2hBoolean && Long1hBoolean && Long15Boolean && Long5Boolean)) {
+      if ((Long6hBoolean && Long1hBoolean && Long15Boolean && Long15BooleanLast && Long5Boolean && period5LongBooleanLast) || (Long2hBoolean && Long1hBoolean && Long15Boolean && Long15BooleanLast && Long5Boolean && period5LongBooleanLast)) {
         console.log(`Проверка возможности входа в позицию для id ${id}`);
         await client.setMarginSwitch({
           symbol, buy_leverage: leverage, sell_leverage: leverage, is_isolated: false,
