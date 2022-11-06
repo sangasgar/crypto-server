@@ -85,6 +85,14 @@ function chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast,
   }
   return false;
 }
+
+function bw2FuncShort(bw2last, bw2Current) {
+  if (bw2Current < 150 && bw2Current > -50 && bw2Current < bw2last) {
+    return true;
+  }
+  return false;
+}
+
 async function shortTrade15Last(array) {
   array.reverse();
   console.log('Предыдущие 15 минут', array[1].time);
@@ -105,7 +113,9 @@ async function shortTrade15Last(array) {
   console.log('мф предыдущая цена', mfLast);
   console.log('scoreCurrent цена', scoreCurrent);
   console.log('lastScore предыдущая цена', lastScore);
-  if (vwapLogic <= -2 && openPrice > lastPrice && chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
+  const bw2Current = array[1].bw2;
+  const bw2last = array[2].bw2;
+  if (vwapLogic <= -2 && openPrice > lastPrice && bw2FuncShort(bw2last, bw2Current) && chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
     return true;
   }
   return false;
@@ -121,23 +131,19 @@ async function shortTrade15(array) {
   const mfLast = array[1].mf;
   const scoreCurrent = array[0].score;
   const lastScore = array[1].score;
-  if (vwapLogic <= -2 && openPrice > lastPrice && crossowerLast15mShort(array) && chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
+  const bw2Current = array[0].bw2;
+  const bw2last = array[1].bw2;
+  if (vwapLogic <= -2 && openPrice > lastPrice && bw2FuncShort(bw2last, bw2Current) && crossowerLast15mShort(array) && chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
     return true;
   }
   return false;
 }
 
 function crossowerLast5mShort(array) {
-  for (let i = 1; i < 6; i += 1) {
+  for (let i = 1; i < 4; i += 1) {
     if (array[i].vwap >= 0) {
       return true;
     }
-  }
-  return false;
-}
-function bw2FuncShort(bw2last, bw2Current) {
-  if (bw2Current < 150 && bw2Current > -50 && bw2Current < bw2last) {
-    return true;
   }
   return false;
 }
@@ -160,7 +166,7 @@ async function shortTrade5mLast(array) {
   const lastScore = array[2].score;
   const bw2Current = array[1].bw2;
   const bw2last = array[2].bw2;
-  console.log('Шорт Время', array[0].time);
+  console.log('Шорт Время', array[1].time);
   console.log('Шорт Последняя цена', lastPrice);
   console.log('Шорт Цена открытия', openPrice);
   console.log('Шорт вивап цена', vwapLogic);
@@ -173,7 +179,7 @@ async function shortTrade5mLast(array) {
   console.log('Шорт bw2last', bw2last);
   console.log('Шорт bw2 сравнение ', bw2FuncShort(bw2last, bw2Current));
   console.log('Шорт chandleTrendMfiVwapComparison5m ', chandleTrendMfiVwapComparison5mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent));
-  if (vwapLogic <= -3.5 && openPrice > lastPrice && bw2FuncShort(bw2last, bw2Current) && chandleTrendMfiVwapComparison5mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
+  if (vwapLogic <= -3.5 && openPrice > lastPrice && chandleTrendMfiVwapComparison5mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
     console.log('логика true');
     return true;
   }
@@ -207,7 +213,7 @@ async function shortTrade5m(array) {
   console.log('Шорт Кроссовер ', crossowerLast5mShort(array));
   console.log('Шорт bw2 сравнение ', bw2FuncShort(bw2last, bw2Current));
   console.log('Шорт chandleTrendMfiVwapComparison5m ', chandleTrendMfiVwapComparison5mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent));
-  if (vwapLogic <= -3.5 && openPrice > lastPrice && bw2FuncShort(bw2last, bw2Current) && crossowerLast5mShort(array) && chandleTrendMfiVwapComparison5mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
+  if (vwapLogic <= -3.5 && openPrice > lastPrice && crossowerLast5mShort(array) && chandleTrendMfiVwapComparison5mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
     console.log('логика true');
     return true;
   }
@@ -240,7 +246,7 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
       console.log(`Количество актива_${id}_${symbol}`, countActive);
       const stopLossTrade = (lastPrice + ((stoploss * lastPrice) / 100) / leverage).toFixed(2);
       // Расчет стоп-лоса
-      console.log(stopLossTrade);
+      console.log('Размер стоп лосса', stopLossTrade);
       console.log(`Стоп лосс id ${id} символ ${symbol}`, stopLossTrade);
       const period6hData = storage.getItem(`period6hData_${id}_${symbol}`);
       const period6hDataCipherB = await cipherB(period6hData);

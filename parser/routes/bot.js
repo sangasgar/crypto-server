@@ -114,6 +114,7 @@ router.route('/bot-status')
 
       try {
         const timer = setInterval(async () => {
+          console.clear();
           storage.addItem(`timer_${userJson.id}`, timer);
           if (botBool === false) {
             const timerUser = storage.getItem(`timer_${userJson.id}`);
