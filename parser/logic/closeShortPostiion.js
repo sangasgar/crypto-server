@@ -29,13 +29,15 @@ async function closeShortPosition(id, client, symbol) {
     }));
     period15DataCipherBwithTime.reverse();
     const vwapLast = Number(period15DataCipherBwithTime[1].vwap);
+    const vwapCurrent = Number(period15DataCipherBwithTime[0].vwap);
     const lastTime = Number(period15DataCipherBwithTime[1].time);
-    const arrayTimes = storage.getItem(`arrayShortTime_${id}_${symbol}`);
+    const arrayTimes = storage.getItem(`arrayTime_${id}`);
     console.log('Шорт массив', arrayTimes);
     console.log('Последнее время ', lastTime);
     console.log('Вивап ', vwapLast);
     console.log(checkTimes(arrayTimes, lastTime));
     const timeCheck = checkTimes(arrayTimes, lastTime);
+    console.log('массив ', timeCheck);
     console.log('Проверка времени шорт ', timeCheck);
     const openCurrent = Number(period15DataCipherBwithTime[0].open);
     // const vwapMin = Math.min(period15DataCipherBwithTime[1].vwap, period15DataCipherBwithTime[2].vwap, period15DataCipherBwithTime[3].vwap, period15DataCipherBwithTime[4].vwap);
@@ -49,21 +51,24 @@ async function closeShortPosition(id, client, symbol) {
     let priceBybit = null;
     try {
       positioByBit = await client.getPosition({ symbol });
-      positionSize = Number(positioByBit.result[0].size);
+      positionSize = Number(positioByBit.result[1].size);
+      console.log('Шорт размер', positionSize);
       priceBybit = await client.getTickers({ symbol });
     } catch (error) {
       console.log('Ошибка получения данных о позиции');
     }
+    console.log('Шорт размер', positionSize);
     // Получение данных о последней цене
     const lastPrice = Number(priceBybit.result[0].last_price);
     if (positionSize > 0) {
       console.log(`Проверка на возможность закрытия позиции шорт ${symbol} для ${id}`);
-      if (vwapLast >= -1.5 && timeCheck === false) {
+      if (vwapCurrent >= -1.5 && vwapLast >= -1.5 && timeCheck === false) {
         const closePosition = await client.placeActiveOrder({
           symbol, side: 'Buy', qty: positionSize, order_type: 'Market', close_on_trigger: false, reduce_only: true, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
         });
         if (closePosition.ret_msg === 'OK') {
           console.log(`Позиция шорт закрыта ${symbol} для ${id}`);
+          await storage.addItem(`positionEnter_${id}`, false);
         } else {
           console.log(`Позиция шорт не закрыта ${symbol} для ${id}`);
         }
