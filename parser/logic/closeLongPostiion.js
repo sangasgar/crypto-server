@@ -1,3 +1,4 @@
+const fs = require('fs').promises;
 /* eslint-disable max-len */
 const cipherB = require('../indicators/cipherB');
 const storage = require('../storage/storage');
@@ -20,6 +21,7 @@ const checkTimes = (array, currentTime) => {
 };
 async function closeLongPosition(id, client, symbol) {
   try {
+    await fs.appendFile('logs.txt', `Проверка на возможность закрытия позиции лонг ${symbol} для ${id}\n`);
     console.log(`Проверка на возможность закрытия позиции лонг ${symbol} для ${id}`);
     const period15Data = storage.getItem(`period15Data_${id}_${symbol}`);
     const period15DataCipherB = await cipherB(period15Data);
@@ -31,10 +33,13 @@ async function closeLongPosition(id, client, symbol) {
     const vwapCurrent = Number(period15DataCipherBwithTime[0].vwap);
     const lastTime = Number(period15DataCipherBwithTime[1].time);
     const arrayTimes = storage.getItem(`arrayTime_${id}`);
+    await fs.appendFile('logs.txt', `Последнее время ${lastTime}\n`);
     console.log('Последнее время ', lastTime);
+    await fs.appendFile('logs.txt', `Вивап ${vwapLast}\n`);
     console.log('Вивап ', vwapLast);
     console.log(checkTimes(arrayTimes, lastTime));
     const timeCheck = checkTimes(arrayTimes, lastTime);
+    await fs.appendFile('logs.txt', `arrayTimes ${arrayTimes}\n`);
     console.log('массив ', arrayTimes);
     const openCurrent = Number(period15DataCipherBwithTime[0].open);
     // const vwapMax = Math.max(period15DataCipherBwithTime[1].vwap, period15DataCipherBwithTime[2].vwap, period15DataCipherBwithTime[3].vwap, period15DataCipherBwithTime[4].vwap);

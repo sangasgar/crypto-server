@@ -242,7 +242,7 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
       const lastPrice = Number(priceBybit.result[0].last_price);
       console.log(`Последняя цена id ${id} символ ${symbol}`, lastPrice);
       // Количество покупаемого актива
-      const countActive = (shortDeposit / lastPrice).toFixed(5);
+      const countActive = (shortDeposit / lastPrice).toFixed(3);
       console.log(`Количество актива_${id}_${symbol}`, countActive);
       let stopLossRes = null;
       let stopLossTrade = null;
