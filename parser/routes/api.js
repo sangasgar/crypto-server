@@ -15,7 +15,7 @@ router.route('/data-5m')
     const API_KEY = userJson.publicKey;
     const PRIVATE_KEY = userJson.privateKey;
     const restClientOptions = { recv_window: 20000 };
-    const useLivenet = false;
+    const useLivenet = true;
     let client = null;
     try {
       client = new LinearClient(
@@ -48,7 +48,7 @@ router.route('/data-15m')
     const API_KEY = userJson.publicKey;
     const PRIVATE_KEY = userJson.privateKey;
     const restClientOptions = { recv_window: 20000 };
-    const useLivenet = false;
+    const useLivenet = true;
     let client = null;
     try {
       client = new LinearClient(
@@ -81,7 +81,7 @@ router.route('/data-30m')
     const API_KEY = userJson.publicKey;
     const PRIVATE_KEY = userJson.privateKey;
     const restClientOptions = { recv_window: 20000 };
-    const useLivenet = false;
+    const useLivenet = true;
     let client = null;
     try {
       client = new LinearClient(
@@ -114,7 +114,7 @@ router.route('/data-1h')
     const API_KEY = userJson.publicKey;
     const PRIVATE_KEY = userJson.privateKey;
     const restClientOptions = { recv_window: 20000 };
-    const useLivenet = false;
+    const useLivenet = true;
     let client = null;
     try {
       client = new LinearClient(
@@ -147,7 +147,7 @@ router.route('/data-2h')
     const API_KEY = userJson.publicKey;
     const PRIVATE_KEY = userJson.privateKey;
     const restClientOptions = { recv_window: 20000 };
-    const useLivenet = false;
+    const useLivenet = true;
     let client = null;
     try {
       client = new LinearClient(
@@ -180,7 +180,7 @@ router.route('/data-6h')
     const API_KEY = userJson.publicKey;
     const PRIVATE_KEY = userJson.privateKey;
     const restClientOptions = { recv_window: 20000 };
-    const useLivenet = false;
+    const useLivenet = true;
     let client = null;
     try {
       client = new LinearClient(

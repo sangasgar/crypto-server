@@ -254,9 +254,11 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       console.log(`Последняя цена  id ${id} символ ${symbol}`, lastPrice);
       // Количество покупаемого актива
       // Стоимость стоп лосса  =  стоимость актива - (стоп лосс % * стоимость актива/100)/кредитное плечо
-      const countActive = (longDeposit / lastPrice).toFixed(2);
+      const countActive = (longDeposit / lastPrice).toFixed(5);
       console.log(`Количество актива_${id}_${symbol}`, countActive);
-      const stopLossTrade = (lastPrice - ((stoploss * lastPrice) / 100) / leverage).toFixed(2);
+      const stopLossRes = (((stoploss * lastPrice) / 100) * countActive).toFixed(2);
+      console.log('Стоп лосс без учета кредитного плеча ', stopLossRes);
+      const stopLossTrade = (lastPrice - stopLossRes / leverage).toFixed(2);
       // Расчет стоп-лоса
       console.log('Размер стоп лосса', stopLossTrade);
       console.log(`Стоп лосс id ${id} символ ${symbol}`, stopLossTrade);

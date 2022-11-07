@@ -242,9 +242,11 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
       const lastPrice = Number(priceBybit.result[0].last_price);
       console.log(`Последняя цена id ${id} символ ${symbol}`, lastPrice);
       // Количество покупаемого актива
-      const countActive = (shortDeposit / lastPrice).toFixed(2);
+      const countActive = (shortDeposit / lastPrice).toFixed(5);
       console.log(`Количество актива_${id}_${symbol}`, countActive);
-      const stopLossTrade = (lastPrice + ((stoploss * lastPrice) / 100) / leverage).toFixed(2);
+      const stopLossRes = (((stoploss * lastPrice) / 100) * countActive).toFixed(2);
+      console.log('Стоп лосс без учета кредитного плеча ', stopLossRes);
+      const stopLossTrade = (lastPrice + stopLossRes / leverage).toFixed(2);
       // Расчет стоп-лоса
       console.log('Размер стоп лосса', stopLossTrade);
       console.log(`Стоп лосс id ${id} символ ${symbol}`, stopLossTrade);
