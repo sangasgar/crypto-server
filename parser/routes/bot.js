@@ -102,9 +102,9 @@ router.route('/bot-status')
       }
       let getapikey = null;
       try {
-        await fs.appendFile('logs.txt', `getapikey ${getapikey}\n`);
         getapikey = await client.getApiKeyInfo();
         console.log(getapikey);
+        await fs.appendFile('logs.txt', `getapikey ${JSON.stringify(getapikey)}\n`);
       } catch (error) {
         await fs.appendFile('logs.txt', `Ошибка получения данных у id ${id}\n`);
         console.log(`Ошибка получения данных у id ${id}`);
@@ -167,7 +167,7 @@ router.route('/bot-status')
                 }
               }, 3000);
             } catch (error) {
-              await fs.м('logs.txt', `Ошибка соединения у id ${id}\n`);
+              await fs.appendFile('logs.txt', `Ошибка соединения у id ${id}\n`);
               console.log(`Ошибка соединения у id ${id}`);
             }
           } else {
