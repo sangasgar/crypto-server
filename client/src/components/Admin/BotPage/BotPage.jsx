@@ -207,6 +207,7 @@ function BotPage() {
               <Option value="1">1x</Option>
               <Option value="3">3x</Option>
               <Option value="5">5x</Option>
+              <Option value="7">7x</Option>
               <Option value="10">10x</Option>
               <Option value="15">15x</Option>
               <Option value="20">20x</Option>

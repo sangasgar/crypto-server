@@ -1,5 +1,7 @@
 /* eslint-disable max-len */
 /* eslint-disable no-restricted-syntax */
+const fs = require('fs').promises;
+
 const router = require('express').Router();
 const { LinearClient } = require('bybit-api');
 const https = require('https');
@@ -95,13 +97,16 @@ router.route('/bot-status')
           // requestLibraryOptions
         );
       } catch (error) {
+        await fs.appendFile('logs.txt', `Ошибка получения данных у id ${id}\n`);
         console.log(`Ошибка получения данных у id ${id}`);
       }
       let getapikey = null;
       try {
         getapikey = await client.getApiKeyInfo();
         console.log(getapikey);
+        await fs.appendFile('logs.txt', `getapikey ${JSON.stringify(getapikey)}\n`);
       } catch (error) {
+        await fs.appendFile('logs.txt', `Ошибка получения данных у id ${id}\n`);
         console.log(`Ошибка получения данных у id ${id}`);
       }
       let postition = null;
@@ -118,6 +123,7 @@ router.route('/bot-status')
           storage.addItem(`timer_${userJson.id}`, timer);
           if (botBool === false) {
             const timerUser = storage.getItem(`timer_${userJson.id}`);
+            await fs.appendFile('logs.txt', 'Bot stop\n');
             console.log('Bot stop');
             clearInterval(timerUser);
           }
@@ -128,7 +134,9 @@ router.route('/bot-status')
                   controllerCycle(postition, id);
                   const count = storage.getItem(`count_${id}`);
                   const symbol = postition[count];
+                  await fs.appendFile('logs.txt', `Цикл ${count}\n`);
                   console.log('Цикл', count);
+                  await fs.appendFile('logs.txt', `symbol ${symbol}\n`);
                   console.log(symbol);
                   await playBot(id, client, symbol);
                   await closeLongPosition(id, client, symbol);
@@ -137,34 +145,43 @@ router.route('/bot-status')
                   const sizies = sizesSymbol.result.reduce((prev, el) => prev + el.data.size, 0);
                   const positionEnter = storage.getItem(`positionEnter_${id}`);
                   if ((sizies === 0 && positionEnter === undefined) || (sizies === 0 && positionEnter === null) || (sizies === 0 && positionEnter === false)) {
+                    await fs.appendFile('logs.txt', `Есть возможность зайти в позицию  у id ${id}\n`);
                     console.log(`Есть возможность зайти в позицию  у id ${id}`);
                     await longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit);
                     await shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposit);
                   } else if (sizies === 0 && positionEnter === true) {
+                    await fs.appendFile('logs.txt', `Бот вылетел по стоп-лоссу у id ${id}\n`);
                     console.log(`Бот вылетел по стоп-лоссу у id ${id}`);
                     await Bots.update({ botStatus: false }, { where: { user_id: id } });
                     const timerUser = storage.getItem(`timer_${id}`);
+                    await fs.appendFile('logs.txt', 'Bot stop\n');
                     console.log('Bot stop');
                     clearInterval(timerUser);
                   } else if (sizies > 0) {
+                    await fs.appendFile('logs.txt', `Есть купленные позиции объемом ${sizies} у id ${id}\n`);
                     console.log(`Есть купленные позиции объемом ${sizies} у id ${id}`);
                   }
                 } catch (error) {
+                  await fs.appendFile('logs.txt', `Ошибка соединения у id ${id}\n`);
                   console.log(`Ошибка соединения у id ${id}`);
                 }
               }, 3000);
             } catch (error) {
+              await fs.appendFile('logs.txt', `Ошибка соединения у id ${id}\n`);
               console.log(`Ошибка соединения у id ${id}`);
             }
           } else {
+            await fs.appendFile('logs.txt', `Проверка соединения у ${id}\n`);
             console.log(`Проверка соединения у ${id}`);
           }
         }, 8000);
       } catch (error) {
+        await fs.appendFile('logs.txt', `Ошибка соединения у id вне setintervala ${id}\n`);
         console.log(`Ошибка соединения у id вне setintervala ${id}`);
       }
     } else {
       const timerUser = storage.getItem(`timer_${userJson.id}`);
+      await fs.appendFile('logs.txt', 'Bot stop\n');
       console.log('Bot stop');
       clearInterval(timerUser);
     }
