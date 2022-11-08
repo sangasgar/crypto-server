@@ -40,7 +40,8 @@ async function closeShortPosition(id, client, symbol) {
     await fs.appendFile('logs.txt', `checkTimes ${checkTimes(arrayTimes, lastTime)}\n`);
     console.log('Шорт массив', arrayTimes);
     console.log('Последнее время ', lastTime);
-    console.log('Вивап ', vwapLast);
+    console.log('Вивап ', vwapCurrent);
+    console.log('Вивап ласт', vwapLast);
     console.log(checkTimes(arrayTimes, lastTime));
     const timeCheck = checkTimes(arrayTimes, lastTime);
     console.log('массив ', timeCheck);

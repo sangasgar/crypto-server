@@ -36,7 +36,8 @@ async function closeLongPosition(id, client, symbol) {
     await fs.appendFile('logs.txt', `Последнее время ${lastTime}\n`);
     console.log('Последнее время ', lastTime);
     await fs.appendFile('logs.txt', `Вивап ${vwapLast}\n`);
-    console.log('Вивап ', vwapLast);
+    console.log('Вивап ', vwapCurrent);
+    console.log('Вивап ласт', vwapLast);
     console.log(checkTimes(arrayTimes, lastTime));
     const timeCheck = checkTimes(arrayTimes, lastTime);
     await fs.appendFile('logs.txt', `шорт массив ${JSON.stringify(arrayTimes)}\n`);
