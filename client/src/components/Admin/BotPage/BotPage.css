@@ -20,3 +20,11 @@
   flex-direction: column;
   margin: 1%;
 }
+  .buttonBot {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+  }
+.buttonItem {
+  padding: 1%;
+}
