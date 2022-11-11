@@ -18,7 +18,7 @@ import { checkUser } from './Redux/Actions/userAction';
 import Symbol from './components/Admin/Symbol/Symbol';
 
 function App() {
-  axios.defaults.baseURL = 'http://localhost:3010';
+  axios.defaults.baseURL = 'http://31.172.73.217:3010';
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(checkUser());

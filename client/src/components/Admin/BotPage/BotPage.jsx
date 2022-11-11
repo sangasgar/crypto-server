@@ -264,12 +264,16 @@ function BotPage() {
       {!value ? <img src={Bot} alt="Бот" width={200} /> : <img src={BotPrint} alt="Бот" width={200} />}
       {!value ? <Text className="botText" type="warning">Бот выключен </Text> : <Text className="botText" type="success">Бот запущен</Text>}
       <div className="buttonBot">
-        <Button type="primary" onClick={clearStopLoss} shape="round" size="large">
-          {!stopLossClear ? <>Очистить стоп-лосс</> : <> Стоп-лосс очищен</>}
-        </Button>
-        <Button type="primary" onClick={botHandler} shape="round" size="large">
-          {!value ? <>Запустить бота</> : <> Остановить бота</>}
-        </Button>
+        <div className="buttonItem">
+          <Button type="primary" onClick={clearStopLoss} shape="round" size="large">
+            {!stopLossClear ? <>Очистить стоп-лосс</> : <> Стоп-лосс очищен</>}
+          </Button>
+        </div>
+        <div className="buttonItem">
+          <Button type="primary" onClick={botHandler} shape="round" size="large">
+            {!value ? <>Запустить бота</> : <> Остановить бота</>}
+          </Button>
+        </div>
       </div>
     </div>
   );

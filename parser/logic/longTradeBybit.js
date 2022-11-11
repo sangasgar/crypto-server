@@ -38,6 +38,7 @@ async function longTrade6h(array) {
   array.reverse();
   const { mf } = array[0];
   const moneyflowLast = array[1].mf;
+  const vwapLogicLast = array[1].vwap;
   const openPrice = array[0].open;
   const lastPrice = array[0].close;
   const vwapLogic = array[0].vwap;
@@ -47,13 +48,14 @@ async function longTrade6h(array) {
   console.log('Цена открытия', openPrice);
   console.log('вивап цена', vwapLogic);
   console.log('мф цена', mf);
+  console.log('мф предыдущие цена', moneyflowLast);
   await fs.appendFile('logs.txt', `Время ${array[0].time}\n`);
   await fs.appendFile('logs.txt', `Последняя цена ${lastPrice}\n`);
   await fs.appendFile('logs.txt', `Цена открытия ${openPrice}\n`);
   await fs.appendFile('logs.txt', `вивап цена ${vwapLogic}\n`);
   await fs.appendFile('logs.txt', `мф цена ${mf}\n`);
-  await fs.appendFile('logs.txt', `Время ${array[0].time}\n`);
-  if (vwapLogic >= 3.5 && moneyflowLast < mf && openPrice < lastPrice) {
+  await fs.appendFile('logs.txt', `мф предыдущие цена ${moneyflowLast}\n`);
+  if (vwapLogic >= 3.5 && openPrice < lastPrice && (vwapLogicLast < vwapLogic || moneyflowLast < mf)) {
     return true;
   }
   return false;
@@ -179,7 +181,7 @@ async function longTrade15Last(array) {
   await fs.appendFile('logs.txt', `bw2Current ${bw2Current}\n`);
   await fs.appendFile('logs.txt', `bw2last ${bw2last}\n`);
   await fs.appendFile('logs.txt', `bw2 сравнение ${bw2Func(bw2last, bw2Current)}\n`);
-  if (vwapLogic >= 2 && openPrice < lastPrice && bw2Func(bw2last, bw2Current) && chandleTrendMfiVwapComparison15m(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
+  if ((vwapLogic >= 2 && vwapLogicLast < vwapLogic) || (vwapLogic >= 2 && mfLast < mf)) {
     return true;
   }
   return false;
@@ -279,11 +281,9 @@ async function longTrade5mLast(array) {
   await fs.appendFile('logs.txt', `bw2last ${bw2last}\n`);
   await fs.appendFile('logs.txt', `Кроссовер ${crossowerLast5m(array)}\n`);
   await fs.appendFile('logs.txt', `bw2 сравнение ${bw2Func(bw2last, bw2Current)}\n`);
-  if (vwapLogic >= 3.5 && openPrice < lastPrice && chandleTrendMfiVwapComparison5m(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
-    console.log('логика true');
+  if ((vwapLogic >= 3.5 && vwapLogicLast < vwapLogic) || (vwapLogic >= 3.5 && mfLast < mf)) {
     return true;
   }
-  console.log('логика false');
   return false;
 }
 async function longTrade5m(array) {
@@ -327,10 +327,8 @@ async function longTrade5m(array) {
   await fs.appendFile('logs.txt', `Кроссовер ${crossowerLast5m(array)}\n`);
   await fs.appendFile('logs.txt', `bw2 сравнение ${bw2Func(bw2last, bw2Current)}\n`);
   if (vwapLogic >= 3.5 && openPrice < lastPrice && crossowerLast5m(array) && chandleTrendMfiVwapComparison5m(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
-    console.log('логика true');
     return true;
   }
-  console.log('логика false');
   return false;
 }
 
@@ -376,6 +374,9 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       // Расчет стоп-лоса
       console.log(`Стоп лосс id ${id} символ ${symbol}`, stopLossTrade);
       await fs.appendFile('logs.txt', `Стоп лосс id ${id} символ ${symbol}  ${stopLossTrade}\n`);
+      await fs.appendFile('logs.txt', '--------------\n');
+      await fs.appendFile('logs.txt', `Начало стратегии лонг 6 часов id ${id}\n`);
+      await fs.appendFile('logs.txt', '--------------\n');
       const period6hData = storage.getItem(`period6hData_${id}_${symbol}`);
       const period6hDataCipherB = await cipherB(period6hData);
       const period6hDataChandeTrendScore = await chandeTrendScore(period6hData);
@@ -393,6 +394,9 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       console.log(`Проверка входа на 6 часов для id ${id}`, storage.getItem(`period6hLongBoolean_${id}_${symbol}`));
       await fs.appendFile('logs.txt', `Время  ${humanDateFormat6h} \n`);
       await fs.appendFile('logs.txt', `Проверка входа на 6 часов для id ${id}\n`);
+      await fs.appendFile('logs.txt', '--------------\n');
+      await fs.appendFile('logs.txt', `Начало стратегии лонг 2 часа id ${id}\n`);
+      await fs.appendFile('logs.txt', '--------------\n');
       const period2hData = storage.getItem(`period2hData_${id}_${symbol}`);
       const period2hDataCipherB = await cipherB(period2hData);
       const period2hDataChandeTrendScore = await chandeTrendScore(period2hData);
@@ -410,6 +414,9 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       console.log(`Проверка входа на 2 часов для id ${id}`, storage.getItem(`period2hLongBoolean_${id}_${symbol}`));
       await fs.appendFile('logs.txt', `Время  ${humanDateFormat2h} \n`);
       await fs.appendFile('logs.txt', `Проверка входа на 2 часа для id ${id}\n`);
+      await fs.appendFile('logs.txt', '--------------\n');
+      await fs.appendFile('logs.txt', `Начало стратегии лонг 1 час id ${id}\n`);
+      await fs.appendFile('logs.txt', '--------------\n');
       const period1hData = storage.getItem(`period1hData_${id}_${symbol}`);
       const period1hDataCipherB = await cipherB(period1hData);
       const period1hDataChandeTrendScore = await chandeTrendScore(period1hData);
@@ -427,6 +434,10 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       console.log(`Проверка входа на 1 час для id ${id}`, storage.getItem(`period1hLongBoolean_${id}_${symbol}`));
       await fs.appendFile('logs.txt', `Время  ${humanDateFormat1h} \n`);
       await fs.appendFile('logs.txt', `Проверка входа на 1 час для id ${id}\n`);
+      await fs.appendFile('logs.txt', '--------------\n');
+      await fs.appendFile('logs.txt', `Начало стратегии лонг 15 минут id ${id}\n`);
+      await fs.appendFile('logs.txt', '--------------\n');
+
       const period15Data = storage.getItem(`period15Data_${id}_${symbol}`);
       const period15DataCipherB = await cipherB(period15Data);
       const period15DataChandeTrendScore = await chandeTrendScore(period15Data);
@@ -437,9 +448,7 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       const array15 = period15DataCipherBwithTime.filter((el, index) => index > period15DataCipherBwithTime.length - 10);
       const array15Last = period15DataCipherBwithTime.filter((el, index) => index > period15DataCipherBwithTime.length - 10);
       const period15result = await longTrade15(array15);
-      const period15resultLast = await longTrade15Last(array15Last);
       await storage.addItem(`period15LongBoolean_${id}_${symbol}`, period15result);
-      await storage.addItem(`period15LongBooleanLast_${id}_${symbol}`, period15resultLast);
       const time15 = Number(period15DataCipherBwithTime[period15DataCipherBwithTime.length - 1].time);
       const milliseconds15 = time15 * 1000;
       const dateObject15 = new Date(milliseconds15);
@@ -448,6 +457,22 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       console.log(`Проверка входа на 15 минут для id ${id}`, storage.getItem(`period15LongBoolean_${id}_${symbol}`));
       await fs.appendFile('logs.txt', `Время  ${humanDateFormat15} \n`);
       await fs.appendFile('logs.txt', `Проверка входа на 15 минут для id ${id}\n`);
+      await fs.appendFile('logs.txt', '--------------\n');
+      await fs.appendFile('logs.txt', `Начало стратегии лонг предыдущие 15 минут id ${id}\n`);
+      await fs.appendFile('logs.txt', '--------------\n');
+      const period15resultLast = await longTrade15Last(array15Last);
+      await storage.addItem(`period15LongBooleanLast_${id}_${symbol}`, period15resultLast);
+      const time15Last = Number(period15DataCipherBwithTime[period15DataCipherBwithTime.length - 2].time);
+      const milliseconds15Last = time15Last * 1000;
+      const dateObject15Last = new Date(milliseconds15Last);
+      const humanDateFormat15Last = dateObject15Last.toLocaleString('ru-RU', { timeZoneName: 'short' });
+      console.log('Время: ', humanDateFormat15Last);
+      console.log(`Проверка входа на 15 минут для id ${id}`, storage.getItem(`period15LongBooleanLast_${id}_${symbol}`));
+      await fs.appendFile('logs.txt', `Время  ${humanDateFormat15} \n`);
+      await fs.appendFile('logs.txt', `Проверка входа на предыдущие 15 минут для id ${id}\n`);
+      await fs.appendFile('logs.txt', '--------------\n');
+      await fs.appendFile('logs.txt', `Начало стратегии лонг 5 минут id ${id}\n`);
+      await fs.appendFile('logs.txt', '--------------\n');
       const period5mData = storage.getItem(`period5Data_${id}_${symbol}`);
       const period5mDataCipherB = await cipherB(period5mData);
       const period5mDataChandeTrendScore = await chandeTrendScore(period5mData);
@@ -458,9 +483,7 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       const array5 = period5mDataCipherBwithTime.filter((el, index) => index > period5mDataCipherBwithTime.length - 10);
       const array5Last = period5mDataCipherBwithTime.filter((el, index) => index > period5mDataCipherBwithTime.length - 10);
       const period5mresult = await longTrade5m(array5);
-      const period5mresultLast = await longTrade5mLast(array5Last);
       await storage.addItem(`period5LongBoolean_${id}_${symbol}`, period5mresult);
-      await storage.addItem(`period5LongBooleanLast_${id}_${symbol}`, period5mresultLast);
       const time5 = Number(period5mDataCipherBwithTime[period5mDataCipherBwithTime.length - 1].time);
       const milliseconds5 = time5 * 1000;
       const dateObject5 = new Date(milliseconds5);
@@ -469,6 +492,19 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       console.log(`Проверка входа на 5 минут для id ${id}`, storage.getItem(`period5LongBoolean_${id}_${symbol}`));
       await fs.appendFile('logs.txt', `Время  ${humanDateFormat5} \n`);
       await fs.appendFile('logs.txt', `Проверка входа на 5 минут для id ${id}\n`);
+      await fs.appendFile('logs.txt', '--------------\n');
+      await fs.appendFile('logs.txt', `Начало стратегии лонг предыдущие 5 минут id ${id}\n`);
+      await fs.appendFile('logs.txt', '--------------\n');
+      const period5mresultLast = await longTrade5mLast(array5Last);
+      await storage.addItem(`period5LongBooleanLast_${id}_${symbol}`, period5mresultLast);
+      const time5Last = Number(period5mDataCipherBwithTime[period5mDataCipherBwithTime.length - 2].time);
+      const milliseconds5Last = time5Last * 1000;
+      const dateObject5Last = new Date(milliseconds5Last);
+      const humanDateFormat5Last = dateObject5Last.toLocaleString('ru-RU', { timeZoneName: 'short' });
+      console.log('Время: ', humanDateFormat5Last);
+      console.log(`Проверка входа на предыдущие 5 минут для id ${id}`, storage.getItem(`period5LongBooleanLast_${id}_${symbol}`));
+      await fs.appendFile('logs.txt', `Время  ${humanDateFormat5Last} \n`);
+      await fs.appendFile('logs.txt', `Проверка входа на предыдущие 5 минут для id ${id}\n`);
       const Long6hBoolean = storage.getItem(`period6hLongBoolean_${id}_${symbol}`);
       const Long2hBoolean = storage.getItem(`period2hLongBoolean_${id}_${symbol}`);
       const Long1hBoolean = storage.getItem(`period1hLongBoolean_${id}_${symbol}`);
