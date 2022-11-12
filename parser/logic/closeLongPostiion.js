@@ -40,7 +40,7 @@ async function closeLongPosition(id, client, symbol) {
     console.log('Вивап ласт', vwapLast);
     console.log(checkTimes(arrayTimes, lastTime));
     const timeCheck = checkTimes(arrayTimes, lastTime);
-    await fs.appendFile('logs.txt', `шорт массив ${JSON.stringify(arrayTimes)}\n`);
+    await fs.appendFile('logs.txt', `лонг массив ${JSON.stringify(arrayTimes)}\n`);
     await fs.appendFile('logs.txt', `checkTimes ${checkTimes(arrayTimes, lastTime)}\n`);
     console.log('массив ', arrayTimes);
     // const vwapMax = Math.max(period15DataCipherBwithTime[1].vwap, period15DataCipherBwithTime[2].vwap, period15DataCipherBwithTime[3].vwap, period15DataCipherBwithTime[4].vwap);
@@ -54,6 +54,8 @@ async function closeLongPosition(id, client, symbol) {
     try {
       positioByBit = await client.getPosition({ symbol });
       positionSize = Number(positioByBit.result[0].size);
+      console.log('лонг размер', positionSize);
+      await fs.appendFile('logs.txt', `лонг размер ${positionSize}\n`);
     } catch (error) {
       console.log('Ошибка получения данных о позиции');
     }
