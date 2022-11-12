@@ -33,15 +33,17 @@ async function closeLongPosition(id, client, symbol) {
     const vwapCurrent = Number(arrayRes[0].vwap);
     const lastTime = Number(arrayRes[0].time);
     const arrayTimes = storage.getItem(`arrayTime_${id}`);
+    await fs.appendFile('logs.txt', `Шорт массив ${JSON.stringify(arrayTimes)}\n`);
     await fs.appendFile('logs.txt', `Последнее время ${lastTime}\n`);
+    await fs.appendFile('logs.txt', `Вивап ${symbol} для ${id} ${vwapCurrent}\n`);
+    await fs.appendFile('logs.txt', `Вивап ласт ${symbol} для ${id} ${vwapLast}\n`);
+    await fs.appendFile('logs.txt', `checkTimes ${checkTimes(arrayTimes, lastTime)}\n`);
     console.log('Последнее время ', lastTime);
     await fs.appendFile('logs.txt', `Вивап ${vwapLast}\n`);
     console.log('Вивап ', vwapCurrent);
     console.log('Вивап ласт', vwapLast);
     console.log(checkTimes(arrayTimes, lastTime));
     const timeCheck = checkTimes(arrayTimes, lastTime);
-    await fs.appendFile('logs.txt', `лонг массив ${JSON.stringify(arrayTimes)}\n`);
-    await fs.appendFile('logs.txt', `checkTimes ${checkTimes(arrayTimes, lastTime)}\n`);
     console.log('массив ', arrayTimes);
     // const vwapMax = Math.max(period15DataCipherBwithTime[1].vwap, period15DataCipherBwithTime[2].vwap, period15DataCipherBwithTime[3].vwap, period15DataCipherBwithTime[4].vwap);
     // const currentVwap = period15DataCipherBwithTime[0].vwap;
@@ -66,6 +68,7 @@ async function closeLongPosition(id, client, symbol) {
         const closePosition = await client.placeActiveOrder({
           symbol, side: 'Sell', qty: positionSize, order_type: 'Market', close_on_trigger: false, reduce_only: true, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
         });
+        await fs.appendFile('logs.txt', `Информация о закрытии позиции лонг $${JSON.stringify(closePosition)}\n`);
         if (closePosition.ret_msg === 'OK') {
           await fs.appendFile('logs.txt', `Позиция лонг закрыта ${symbol} для ${id}\n`);
           console.log(`Позиция лонг закрыта ${symbol} для ${id}`);

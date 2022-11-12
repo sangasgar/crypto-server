@@ -36,7 +36,8 @@ async function closeShortPosition(id, client, symbol) {
     const arrayTimes = storage.getItem(`arrayTime_${id}`);
     await fs.appendFile('logs.txt', `Шорт массив ${JSON.stringify(arrayTimes)}\n`);
     await fs.appendFile('logs.txt', `Последнее время ${lastTime}\n`);
-    await fs.appendFile('logs.txt', `Вивап ${symbol} для ${id}\n`);
+    await fs.appendFile('logs.txt', `Вивап ${symbol} для ${id} ${vwapCurrent}\n`);
+    await fs.appendFile('logs.txt', `Вивап ласт ${symbol} для ${id} ${vwapLast}\n`);
     await fs.appendFile('logs.txt', `checkTimes ${checkTimes(arrayTimes, lastTime)}\n`);
     console.log('Шорт массив', arrayTimes);
     console.log('Последнее время ', lastTime);
@@ -72,6 +73,7 @@ async function closeShortPosition(id, client, symbol) {
         const closePosition = await client.placeActiveOrder({
           symbol, side: 'Buy', qty: positionSize, order_type: 'Market', close_on_trigger: false, reduce_only: true, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
         });
+        await fs.appendFile('logs.txt', `Информация о закрытии позиции шорт $${JSON.stringify(closePosition)}\n`);
         if (closePosition.ret_msg === 'OK') {
           console.log(`Позиция шорт закрыта ${symbol} для ${id}`);
           await fs.appendFile('logs.txt', `Позиция шорт закрыта ${symbol} для ${id}\n`);
