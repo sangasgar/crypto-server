@@ -541,10 +541,10 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
           const longPosition = await client.placeActiveOrder({
             symbol, side: 'Buy', qty: countActive, order_type: 'Market', close_on_trigger: false, reduce_only: false, stop_loss: stopLossTrade, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
           });
-          searchLastTime(arrayLongTime, id);
           console.log(longPosition);
           await fs.appendFile('logs.txt', `Попытка открыта позицию лонг ${id} ${longPosition} \n`);
           if (longPosition.ret_msg === 'OK') {
+            searchLastTime(arrayLongTime, id);
             await fs.appendFile('logs.txt', `Позиция лонг открыта для id ${id} \n`);
             console.log(`Позиция лонг открыта для id ${id}`);
             await storage.addItem(`positionEnter_${id}`, true);

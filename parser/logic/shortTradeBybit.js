@@ -501,10 +501,10 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
           const shortPosition = await client.placeActiveOrder({
             symbol, side: 'Sell', qty: countActive, order_type: 'Market', close_on_trigger: false, reduce_only: false, stop_loss: stopLossTrade, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
           });
-          searchLastTime(arrayShortTime, id);
           console.log(shortPosition);
           await fs.appendFile('logs.txt', `Попытка открыта позицию шорт ${id} ${shortPosition} \n`);
           if (shortPosition.ret_msg === 'OK') {
+            searchLastTime(arrayShortTime, id);
             await fs.appendFile('logs.txt', `Позиция шорт открыта для id ${id} \n`);
             console.log(`Позиция шорт открыта для id ${id}`);
             await storage.addItem(`positionEnter_${id}`, true);
