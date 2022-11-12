@@ -528,7 +528,7 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
       await fs.appendFile('logs.txt', `Логика входов лонг предыдущие 5 минут  ${period5LongBooleanLast} \n`);
       const arrayLongTime = period15DataCipherBwithTime.filter((el, index) => index > period15DataCipherBwithTime.length - 7);
 
-      if ((Long6hBoolean && Long1hBoolean && Long15Boolean && Long15BooleanLast && Long5Boolean && period5LongBooleanLast) || (Long2hBoolean && Long1hBoolean && Long15Boolean && Long15BooleanLast && Long5Boolean && period5LongBooleanLast)) {
+      if ((Long6hBoolean && Long1hBoolean && Long15Boolean && Long15BooleanLast && Long5Boolean) || (Long2hBoolean && Long1hBoolean && Long15Boolean && Long15BooleanLast && Long5Boolean)) {
         console.log(`Проверка возможности входа в позицию для id ${id}`);
         await fs.appendFile('logs.txt', `Проверка возможности входа в позицию для id ${id} \n`);
         await client.setMarginSwitch({

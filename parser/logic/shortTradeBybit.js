@@ -488,7 +488,7 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
       await fs.appendFile('logs.txt', `Логика входов шорт предыдущие 15 минут  ${short15BooleanLast} \n`);
       await fs.appendFile('logs.txt', `Логика входов шорт 5 минут  ${short5Boolean} \n`);
       await fs.appendFile('logs.txt', `Логика входов шорт предыдущие 5 минут  ${short5BooleanLast} \n`);
-      if ((short6hBoolean && short1hBoolean && short15Boolean && short15BooleanLast && short5BooleanLast && short5Boolean) || (short2hBoolean && short1hBoolean && short15Boolean && short15BooleanLast && short5BooleanLast && short5Boolean)) {
+      if ((short6hBoolean && short1hBoolean && short15Boolean && short15BooleanLast && short5Boolean) || (short2hBoolean && short1hBoolean && short15Boolean && short15BooleanLast && short5Boolean)) {
         console.log(`Проверка возможности входа в позицию для id ${id}`);
         await fs.appendFile('logs.txt', `Проверка возможности входа в позицию для id ${id} \n`);
         await client.setMarginSwitch({
