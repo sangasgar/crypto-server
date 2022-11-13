@@ -21,26 +21,8 @@ const searchLastTime = (array, id) => {
 //   return lastPrice;
 // }
 
-async function checkCandleShort(array) {
-  const openPriceCurrent = array[0].open;
-  const openPriceLast = array[1].open;
-  const closePriceCurrent = array[0].close;
-  const closePriceLast = array[1].close;
-  const lowPriceCurrent = array[0].low;
-  const lowPriceLast = array[1].low;
-  const highPriceCurrent = array[0].high;
-  const highPriceLast = array[1].high;
-  const last = closePriceLast - openPriceLast;
-  const current = closePriceCurrent - openPriceCurrent;
-  await fs.appendFile('logs.txt', `openPriceCurrent цена ${openPriceCurrent}\n`);
-  await fs.appendFile('logs.txt', `openPriceLast предыдущая цена ${openPriceLast}\n`);
-  await fs.appendFile('logs.txt', `closePriceCurrent цена ${closePriceCurrent}\n`);
-  await fs.appendFile('logs.txt', `closePriceLast предыдущая цена ${closePriceLast}\n`);
-  await fs.appendFile('logs.txt', `lowPriceCurrent цена ${lowPriceCurrent}\n`);
-  await fs.appendFile('logs.txt', `lowPriceLast цена ${lowPriceLast}\n`);
-  await fs.appendFile('logs.txt', `highPriceCurrent предыдущая цена ${highPriceCurrent}\n`);
-  await fs.appendFile('logs.txt', `highPriceLast предыдущая цена ${highPriceLast}\n`);
-  if (highPriceCurrent < highPriceLast && last > current && openPriceCurrent === highPriceCurrent) {
+async function checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent) {
+  if (lowPriceCurrent < lowPriceLast && last > current && openPriceCurrent >= highPriceCurrent) {
     return true;
   }
   return false;
@@ -54,6 +36,18 @@ async function shortTrade6h(array) {
   const openPrice = array[0].open;
   const lastPrice = array[0].close;
   const vwapLogic = array[0].vwap;
+
+  const openPriceCurrent = array[0].open;
+  const openPriceLast = array[1].open;
+  const closePriceCurrent = array[0].close;
+  const closePriceLast = array[1].close;
+  const lowPriceCurrent = array[0].low;
+  const lowPriceLast = array[1].low;
+  const highPriceCurrent = array[0].high;
+  const highPriceLast = array[1].high;
+  const last = closePriceLast - openPriceLast;
+  const current = closePriceCurrent - openPriceCurrent;
+
   console.log('Время', array[0].time);
   console.log('Последняя цена', lastPrice);
   console.log('Цена открытия', openPrice);
@@ -67,7 +61,15 @@ async function shortTrade6h(array) {
   await fs.appendFile('logs.txt', `вивап цена ${vwapLogic}\n`);
   await fs.appendFile('logs.txt', `мф цена ${mf}\n`);
   await fs.appendFile('logs.txt', `мф предыдущие цена ${moneyflowLast}\n`);
-  const candle = checkCandleShort(array);
+  await fs.appendFile('logs.txt', `openPriceCurrent цена ${openPriceCurrent}\n`);
+  await fs.appendFile('logs.txt', `openPriceLast предыдущая цена ${openPriceLast}\n`);
+  await fs.appendFile('logs.txt', `closePriceCurrent цена ${closePriceCurrent}\n`);
+  await fs.appendFile('logs.txt', `closePriceLast предыдущая цена ${closePriceLast}\n`);
+  await fs.appendFile('logs.txt', `lowPriceCurrent цена ${lowPriceCurrent}\n`);
+  await fs.appendFile('logs.txt', `lowPriceLast цена ${lowPriceLast}\n`);
+  await fs.appendFile('logs.txt', `highPriceCurrent предыдущая цена ${highPriceCurrent}\n`);
+  await fs.appendFile('logs.txt', `highPriceLast предыдущая цена ${highPriceLast}\n`);
+  const candle = checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
   if (vwapLogic <= -3.5 && openPrice > lastPrice && candle === true && (vwapLogicLast > vwapLogic || moneyflowLast > mf)) {
     return true;
   }
@@ -82,6 +84,18 @@ async function shortTrade2h(array) {
   const vwapLogicLast = array[1].vwap;
   const { mf } = array[0];
   const mfLast = array[1].mf;
+
+  const openPriceCurrent = array[0].open;
+  const openPriceLast = array[1].open;
+  const closePriceCurrent = array[0].close;
+  const closePriceLast = array[1].close;
+  const lowPriceCurrent = array[0].low;
+  const lowPriceLast = array[1].low;
+  const highPriceCurrent = array[0].high;
+  const highPriceLast = array[1].high;
+  const last = closePriceLast - openPriceLast;
+  const current = closePriceCurrent - openPriceCurrent;
+
   await fs.appendFile('logs.txt', `Время ${array[0].time}\n`);
   await fs.appendFile('logs.txt', `Последняя цена ${lastPrice}\n`);
   await fs.appendFile('logs.txt', `Цена открытия ${openPrice}\n`);
@@ -89,7 +103,15 @@ async function shortTrade2h(array) {
   await fs.appendFile('logs.txt', `вивап предыдущая цена ${vwapLogicLast}\n`);
   await fs.appendFile('logs.txt', `мф цена ${mf}\n`);
   await fs.appendFile('logs.txt', `мф предыдущая цена ${mfLast}\n`);
-  const candle = checkCandleShort(array);
+  await fs.appendFile('logs.txt', `openPriceCurrent цена ${openPriceCurrent}\n`);
+  await fs.appendFile('logs.txt', `openPriceLast предыдущая цена ${openPriceLast}\n`);
+  await fs.appendFile('logs.txt', `closePriceCurrent цена ${closePriceCurrent}\n`);
+  await fs.appendFile('logs.txt', `closePriceLast предыдущая цена ${closePriceLast}\n`);
+  await fs.appendFile('logs.txt', `lowPriceCurrent цена ${lowPriceCurrent}\n`);
+  await fs.appendFile('logs.txt', `lowPriceLast цена ${lowPriceLast}\n`);
+  await fs.appendFile('logs.txt', `highPriceCurrent предыдущая цена ${highPriceCurrent}\n`);
+  await fs.appendFile('logs.txt', `highPriceLast предыдущая цена ${highPriceLast}\n`);
+  const candle = checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
   if (vwapLogic <= -3.5 && openPrice > lastPrice && candle === true && (vwapLogicLast > vwapLogic || mfLast > mf)) {
     return true;
   }
@@ -113,6 +135,18 @@ async function shortTrade1h(array) {
   const mfLast = array[1].mf;
   const scoreCurrent = array[0].score;
   const lastScore = array[1].score;
+
+  const openPriceCurrent = array[0].open;
+  const openPriceLast = array[1].open;
+  const closePriceCurrent = array[0].close;
+  const closePriceLast = array[1].close;
+  const lowPriceCurrent = array[0].low;
+  const lowPriceLast = array[1].low;
+  const highPriceCurrent = array[0].high;
+  const highPriceLast = array[1].high;
+  const last = closePriceLast - openPriceLast;
+  const current = closePriceCurrent - openPriceCurrent;
+
   await fs.appendFile('logs.txt', `Время ${array[0].time}\n`);
   await fs.appendFile('logs.txt', `Последняя цена ${lastPrice}\n`);
   await fs.appendFile('logs.txt', `Цена открытия ${openPrice}\n`);
@@ -122,7 +156,15 @@ async function shortTrade1h(array) {
   await fs.appendFile('logs.txt', `мф предыдущая цена ${mfLast}\n`);
   await fs.appendFile('logs.txt', `scoreCurrent цена ${scoreCurrent}\n`);
   await fs.appendFile('logs.txt', `lastScore предыдущая цена ${lastScore}\n`);
-  const candle = checkCandleShort(array);
+  await fs.appendFile('logs.txt', `openPriceCurrent цена ${openPriceCurrent}\n`);
+  await fs.appendFile('logs.txt', `openPriceLast предыдущая цена ${openPriceLast}\n`);
+  await fs.appendFile('logs.txt', `closePriceCurrent цена ${closePriceCurrent}\n`);
+  await fs.appendFile('logs.txt', `closePriceLast предыдущая цена ${closePriceLast}\n`);
+  await fs.appendFile('logs.txt', `lowPriceCurrent цена ${lowPriceCurrent}\n`);
+  await fs.appendFile('logs.txt', `lowPriceLast цена ${lowPriceLast}\n`);
+  await fs.appendFile('logs.txt', `highPriceCurrent предыдущая цена ${highPriceCurrent}\n`);
+  await fs.appendFile('logs.txt', `highPriceLast предыдущая цена ${highPriceLast}\n`);
+  const candle = checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
   if (vwapLogic <= -3.5 && openPrice > lastPrice && candle === true && chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
     return true;
   }
