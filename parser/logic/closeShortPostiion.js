@@ -33,11 +33,15 @@ async function closeShortPosition(id, client, symbol) {
     const vwapLast = Number(arrayShort[1].vwap);
     const vwapCurrent = Number(arrayShort[0].vwap);
     const lastTime = Number(arrayShort[0].time);
+    const closeLast = Number(arrayShort[1].close);
+    const openLast = Number(arrayShort[1].open);
     const arrayTimes = storage.getItem(`arrayTime_${id}`);
     await fs.appendFile('logs.txt', `Шорт массив ${JSON.stringify(arrayTimes)}\n`);
     await fs.appendFile('logs.txt', `Последнее время ${lastTime}\n`);
     await fs.appendFile('logs.txt', `Вивап ${symbol} для ${id} ${vwapCurrent}\n`);
     await fs.appendFile('logs.txt', `Вивап ласт ${symbol} для ${id} ${vwapLast}\n`);
+    await fs.appendFile('logs.txt', `Цена закрытия предыдущей свечи ${symbol} для ${id} ${closeLast}\n`);
+    await fs.appendFile('logs.txt', `Цена открытия предыдущей свечи ${symbol} для ${id} ${openLast}\n`);
     await fs.appendFile('logs.txt', `checkTimes ${checkTimes(arrayTimes, lastTime)}\n`);
     console.log('Шорт массив', arrayTimes);
     console.log('Последнее время ', lastTime);
@@ -69,7 +73,7 @@ async function closeShortPosition(id, client, symbol) {
     if (positionSize > 0) {
       console.log(`Проверка на возможность закрытия позиции шорт ${symbol} для ${id}`);
       await fs.appendFile('logs.txt', `Проверка на возможность закрытия позиции шорт ${symbol} для ${id}\n`);
-      if (vwapCurrent >= -1.5 && vwapLast >= -1.5 && timeCheck === false) {
+      if (vwapCurrent >= -2 && vwapLast >= -2 && closeLast > openLast && timeCheck === false) {
         const closePosition = await client.placeActiveOrder({
           symbol, side: 'Buy', qty: positionSize, order_type: 'Market', close_on_trigger: false, reduce_only: true, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
         });

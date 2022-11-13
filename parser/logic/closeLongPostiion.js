@@ -32,11 +32,15 @@ async function closeLongPosition(id, client, symbol) {
     const vwapLast = Number(arrayRes[1].vwap);
     const vwapCurrent = Number(arrayRes[0].vwap);
     const lastTime = Number(arrayRes[0].time);
+    const closeLast = Number(arrayRes[1].close);
+    const openLast = Number(arrayRes[1].open);
     const arrayTimes = storage.getItem(`arrayTime_${id}`);
     await fs.appendFile('logs.txt', `Шорт массив ${JSON.stringify(arrayTimes)}\n`);
     await fs.appendFile('logs.txt', `Последнее время ${lastTime}\n`);
     await fs.appendFile('logs.txt', `Вивап ${symbol} для ${id} ${vwapCurrent}\n`);
     await fs.appendFile('logs.txt', `Вивап ласт ${symbol} для ${id} ${vwapLast}\n`);
+    await fs.appendFile('logs.txt', `Цена закрытия предыдущей свечи ${symbol} для ${id} ${closeLast}\n`);
+    await fs.appendFile('logs.txt', `Цена открытия предыдущей свечи ${symbol} для ${id} ${openLast}\n`);
     await fs.appendFile('logs.txt', `checkTimes ${checkTimes(arrayTimes, lastTime)}\n`);
     console.log('Последнее время ', lastTime);
     await fs.appendFile('logs.txt', `Вивап ${vwapLast}\n`);
@@ -64,7 +68,7 @@ async function closeLongPosition(id, client, symbol) {
     if (positionSize > 0) {
       await fs.appendFile('logs.txt', `Проверка на возможность закрытия позиции лонг ${symbol} для ${id}\n`);
       console.log(`Проверка на возможность закрытия позиции лонг ${symbol} для ${id}`);
-      if (vwapCurrent <= 1.5 && vwapLast <= 1.5 && timeCheck === false) {
+      if (vwapCurrent <= 2 && vwapLast <= 2 && closeLast < openLast && timeCheck === false) {
         const closePosition = await client.placeActiveOrder({
           symbol, side: 'Sell', qty: positionSize, order_type: 'Market', close_on_trigger: false, reduce_only: true, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
         });
