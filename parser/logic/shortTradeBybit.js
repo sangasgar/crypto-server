@@ -67,7 +67,8 @@ async function shortTrade6h(array) {
   await fs.appendFile('logs.txt', `вивап цена ${vwapLogic}\n`);
   await fs.appendFile('logs.txt', `мф цена ${mf}\n`);
   await fs.appendFile('logs.txt', `мф предыдущие цена ${moneyflowLast}\n`);
-  if (vwapLogic <= -3.5 && openPrice > lastPrice && checkCandleShort(array) && (vwapLogicLast > vwapLogic || moneyflowLast > mf)) {
+  const candle = checkCandleShort(array);
+  if (vwapLogic <= -3.5 && openPrice > lastPrice && candle === true && (vwapLogicLast > vwapLogic || moneyflowLast > mf)) {
     return true;
   }
   return false;
@@ -88,7 +89,8 @@ async function shortTrade2h(array) {
   await fs.appendFile('logs.txt', `вивап предыдущая цена ${vwapLogicLast}\n`);
   await fs.appendFile('logs.txt', `мф цена ${mf}\n`);
   await fs.appendFile('logs.txt', `мф предыдущая цена ${mfLast}\n`);
-  if (vwapLogic <= -3.5 && openPrice > lastPrice && checkCandleShort(array) && (vwapLogicLast > vwapLogic || mfLast > mf)) {
+  const candle = checkCandleShort(array);
+  if (vwapLogic <= -3.5 && openPrice > lastPrice && candle === true && (vwapLogicLast > vwapLogic || mfLast > mf)) {
     return true;
   }
   return false;
@@ -120,7 +122,8 @@ async function shortTrade1h(array) {
   await fs.appendFile('logs.txt', `мф предыдущая цена ${mfLast}\n`);
   await fs.appendFile('logs.txt', `scoreCurrent цена ${scoreCurrent}\n`);
   await fs.appendFile('logs.txt', `lastScore предыдущая цена ${lastScore}\n`);
-  if (vwapLogic <= -3.5 && openPrice > lastPrice && checkCandleShort(array) && chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
+  const candle = checkCandleShort(array);
+  if (vwapLogic <= -3.5 && openPrice > lastPrice && candle === true && chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
     return true;
   }
   return false;
