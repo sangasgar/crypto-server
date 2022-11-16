@@ -35,7 +35,7 @@ function checkCandleShort15Short(lowPriceCurrent, lowPriceLast, last, current, o
 }
 
 function crossowerLast15mShort(array) {
-  for (let i = 1; i < 2; i += 1) {
+  for (let i = 2; i < 3; i += 1) {
     if (array[i].vwap >= 0) {
       return true;
     }
@@ -225,6 +225,17 @@ async function shortTrade15Last(array) {
   console.log('мф предыдущая цена', mfLast);
   console.log('scoreCurrent цена', scoreCurrent);
   console.log('lastScore предыдущая цена', lastScore);
+
+  const openPriceCurrent = array[1].open;
+  const openPriceLast = array[2].open;
+  const closePriceCurrent = array[1].close;
+  const closePriceLast = array[2].close;
+  const lowPriceCurrent = array[1].low;
+  const lowPriceLast = array[2].low;
+  const highPriceCurrent = array[1].high;
+  const highPriceLast = array[2].high;
+  const last = closePriceLast - openPriceLast;
+  const current = closePriceCurrent - openPriceCurrent;
   await fs.appendFile('logs.txt', `Время ${array[1].time}\n`);
   await fs.appendFile('logs.txt', `Последняя цена ${lastPrice}\n`);
   await fs.appendFile('logs.txt', `Цена открытия ${openPrice}\n`);
@@ -237,7 +248,18 @@ async function shortTrade15Last(array) {
   await fs.appendFile('logs.txt', `bw2Current ${bw2Current}\n`);
   await fs.appendFile('logs.txt', `bw2last ${bw2last}\n`);
   await fs.appendFile('logs.txt', `Кроссовер ${bw2FuncShort(bw2last, bw2Current)}\n`);
-  if (vwapLogic <= -1 && bw2FuncShort(bw2last, bw2Current) && ((vwapLogicLast > vwapLogic) || (mfLast > mf))) {
+
+  await fs.appendFile('logs.txt', `openPriceCurrent цена ${openPriceCurrent}\n`);
+  await fs.appendFile('logs.txt', `openPriceLast предыдущая цена ${openPriceLast}\n`);
+  await fs.appendFile('logs.txt', `closePriceCurrent цена ${closePriceCurrent}\n`);
+  await fs.appendFile('logs.txt', `closePriceLast предыдущая цена ${closePriceLast}\n`);
+  await fs.appendFile('logs.txt', `lowPriceCurrent цена ${lowPriceCurrent}\n`);
+  await fs.appendFile('logs.txt', `lowPriceLast цена ${lowPriceLast}\n`);
+  await fs.appendFile('logs.txt', `highPriceCurrent предыдущая цена ${highPriceCurrent}\n`);
+  await fs.appendFile('logs.txt', `highPriceLast предыдущая цена ${highPriceLast}\n`);
+  const candle = await checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
+  console.log('candle', candle);
+  if (vwapLogic <= -1 && openPrice > lastPrice && candle === true && bw2FuncShort(bw2last, bw2Current) && crossowerLast15mShort(array) && chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
     return true;
   }
   return false;
@@ -591,7 +613,7 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
       await fs.appendFile('logs.txt', `Логика входов шорт предыдущие 15 минут  ${short15BooleanLast} \n`);
       await fs.appendFile('logs.txt', `Логика входов шорт 5 минут  ${short5Boolean} \n`);
       await fs.appendFile('logs.txt', `Логика входов шорт предыдущие 5 минут  ${short5BooleanLast} \n`);
-      if (short2hBoolean && short1hBoolean && short15Boolean && short15BooleanLast) {
+      if (short2hBoolean && short1hBoolean && short15BooleanLast) {
         console.log(`Проверка возможности входа в позицию для id ${id}`);
         await fs.appendFile('logs.txt', `Проверка возможности входа в позицию для id ${id} \n`);
         await client.setMarginSwitch({
