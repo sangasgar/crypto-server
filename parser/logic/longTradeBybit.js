@@ -64,6 +64,16 @@ function checkCandleLong15(highPriceCurrent, highPriceLast, last, current, openP
   }
   return false;
 }
+
+function crossowerLast15m(array) {
+  for (let i = 1; i < 2; i += 1) {
+    if (array[i].vwap <= 0) {
+      return true;
+    }
+  }
+  return false;
+}
+
 async function longTrade6h(array) {
   array.reverse();
   const { mf } = array[0];
@@ -218,15 +228,6 @@ async function longTrade1h(array) {
   return false;
 }
 
-function crossowerLast15m(array) {
-  for (let i = 1; i < 2; i += 1) {
-    if (array[i].vwap <= 0) {
-      return true;
-    }
-  }
-  return false;
-}
-
 async function longTrade15Last(array) {
   array.reverse();
   console.log('Предыдущие 15 минут', array[1].time);
@@ -322,7 +323,7 @@ async function longTrade15(array) {
   await fs.appendFile('logs.txt', `lowPriceLast цена ${lowPriceLast}\n`);
   await fs.appendFile('logs.txt', `highPriceCurrent предыдущая цена ${highPriceCurrent}\n`);
   await fs.appendFile('logs.txt', `highPriceLast предыдущая цена ${highPriceLast}\n`);
-  const candle = await checkCandleLong(highPriceCurrent, highPriceLast, last, current, openPriceCurrent, lowPriceCurrent);
+  const candle = checkCandleLong(highPriceCurrent, highPriceLast, last, current, openPriceCurrent, lowPriceCurrent);
   console.log('candle', candle);
   if (vwapLogic >= 1 && candle === true && openPrice < lastPrice && bw2Func(bw2last, bw2Current) && crossowerLast15m(array) && chandleTrendMfiVwapComparison15m(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
     return true;

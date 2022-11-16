@@ -27,8 +27,37 @@ async function checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, op
   }
   return false;
 }
-async function checkCandleShort15(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent) {
+function checkCandleShort15Short(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent) {
   if (lowPriceCurrent < lowPriceLast && last > current && openPriceCurrent >= highPriceCurrent) {
+    return true;
+  }
+  return false;
+}
+
+function crossowerLast15mShort(array) {
+  for (let i = 1; i < 2; i += 1) {
+    if (array[i].vwap >= 0) {
+      return true;
+    }
+  }
+  return false;
+}
+function chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent) {
+  if ((vwapLogicLast > vwapLogic || mfLast > mf) && (lastScore > scoreCurrent || (lastScore === -10 && scoreCurrent === -10))) {
+    return true;
+  }
+  return false;
+}
+
+function chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent) {
+  if ((vwapLogicLast > vwapLogic || mfLast > mf) && (lastScore > scoreCurrent || (lastScore === -10 && scoreCurrent === -10))) {
+    return true;
+  }
+  return false;
+}
+
+function bw2FuncShort(bw2last, bw2Current) {
+  if (bw2Current < bw2last && bw2Current > 1) {
     return true;
   }
   return false;
@@ -74,7 +103,7 @@ async function shortTrade6h(array) {
   await fs.appendFile('logs.txt', `lowPriceLast цена ${lowPriceLast}\n`);
   await fs.appendFile('logs.txt', `highPriceCurrent предыдущая цена ${highPriceCurrent}\n`);
   await fs.appendFile('logs.txt', `highPriceLast предыдущая цена ${highPriceLast}\n`);
-  const candle = await checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
+  const candle = checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
   console.log('candle', candle);
   if (vwapLogic <= -0.1 && openPrice > lastPrice && candle === true && (vwapLogicLast > vwapLogic || moneyflowLast > mf)) {
     return true;
@@ -117,16 +146,10 @@ async function shortTrade2h(array) {
   await fs.appendFile('logs.txt', `lowPriceLast цена ${lowPriceLast}\n`);
   await fs.appendFile('logs.txt', `highPriceCurrent предыдущая цена ${highPriceCurrent}\n`);
   await fs.appendFile('logs.txt', `highPriceLast предыдущая цена ${highPriceLast}\n`);
-  const candle = await checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
+  const candle = checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
+  const chandleTrendMfiVwapComparison2hShort = chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent);
   console.log('candle', candle);
-  if (vwapLogic <= -0.1 && openPrice > lastPrice && candle === true && (vwapLogicLast > vwapLogic || mfLast > mf)) {
-    return true;
-  }
-  return false;
-}
-
-function chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent) {
-  if ((vwapLogicLast > vwapLogic || mfLast > mf) && (lastScore > scoreCurrent || (lastScore === -10 && scoreCurrent === -10))) {
+  if (vwapLogic <= -0.1 && chandleTrendMfiVwapComparison2hShort === true) {
     return true;
   }
   return false;
@@ -171,32 +194,10 @@ async function shortTrade1h(array) {
   await fs.appendFile('logs.txt', `lowPriceLast цена ${lowPriceLast}\n`);
   await fs.appendFile('logs.txt', `highPriceCurrent предыдущая цена ${highPriceCurrent}\n`);
   await fs.appendFile('logs.txt', `highPriceLast предыдущая цена ${highPriceLast}\n`);
-  const candle = await checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
+  const candle = checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
+  const chandleTrendMfiVwapComparison1hShort = chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent);
   console.log('candle', candle);
-  if (vwapLogic <= -0.1 && openPrice > lastPrice && candle === true && chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
-    return true;
-  }
-  return false;
-}
-
-function crossowerLast15mShort(array) {
-  for (let i = 1; i < 6; i += 1) {
-    if (array[i].vwap >= 0) {
-      return true;
-    }
-  }
-  return false;
-}
-
-function chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent) {
-  if ((vwapLogicLast > vwapLogic || mfLast > mf) && (lastScore > scoreCurrent || (lastScore === -10 && scoreCurrent === -10))) {
-    return true;
-  }
-  return false;
-}
-
-function bw2FuncShort(bw2last, bw2Current) {
-  if (bw2Current < bw2last) {
+  if (vwapLogic <= -0.1 && chandleTrendMfiVwapComparison1hShort === true) {
     return true;
   }
   return false;
@@ -236,7 +237,7 @@ async function shortTrade15Last(array) {
   await fs.appendFile('logs.txt', `bw2Current ${bw2Current}\n`);
   await fs.appendFile('logs.txt', `bw2last ${bw2last}\n`);
   await fs.appendFile('logs.txt', `Кроссовер ${bw2FuncShort(bw2last, bw2Current)}\n`);
-  if ((vwapLogic <= -3.5 && vwapLogicLast > vwapLogic) || (vwapLogic <= -3.5 && mfLast > mf)) {
+  if (vwapLogic <= -1 && bw2FuncShort(bw2last, bw2Current) && ((vwapLogicLast > vwapLogic) || (mfLast > mf))) {
     return true;
   }
   return false;
@@ -289,7 +290,7 @@ async function shortTrade15(array) {
   await fs.appendFile('logs.txt', `highPriceLast предыдущая цена ${highPriceLast}\n`);
   const candle = await checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
   console.log('candle', candle);
-  if (vwapLogic <= -3.5 && openPrice > lastPrice && candle === true && bw2FuncShort(bw2last, bw2Current) && crossowerLast15mShort(array) && chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
+  if (vwapLogic <= -1 && openPrice > lastPrice && candle === true && bw2FuncShort(bw2last, bw2Current) && crossowerLast15mShort(array) && chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
     return true;
   }
   return false;
