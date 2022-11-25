@@ -21,7 +21,7 @@ const searchLastTime = (array, id) => {
 //   return lastPrice;
 // }
 
-async function checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent) {
+function checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent) {
   if (lowPriceCurrent < lowPriceLast && last > current) {
     return true;
   }
@@ -57,7 +57,7 @@ function chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf
 }
 
 function bw2FuncShort(bw2last, bw2Current) {
-  if (bw2Current < bw2last && bw2Current > 1) {
+  if (bw2Current < bw2last && bw2Current > 8) {
     return true;
   }
   return false;
@@ -128,6 +128,10 @@ async function shortTrade2h(array) {
   const lowPriceLast = array[1].low;
   const highPriceCurrent = array[0].high;
   const highPriceLast = array[1].high;
+
+  const scoreCurrent = array[0].score;
+  const lastScore = array[1].score;
+
   const last = closePriceLast - openPriceLast;
   const current = closePriceCurrent - openPriceCurrent;
 
@@ -149,7 +153,7 @@ async function shortTrade2h(array) {
   const candle = checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
   const chandleTrendMfiVwapComparison2hShort = chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent);
   console.log('candle', candle);
-  if (vwapLogic <= -0.1 && chandleTrendMfiVwapComparison2hShort === true) {
+  if (vwapLogic <= -2 && chandleTrendMfiVwapComparison2hShort === true) {
     return true;
   }
   return false;
@@ -197,7 +201,7 @@ async function shortTrade1h(array) {
   const candle = checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
   const chandleTrendMfiVwapComparison1hShort = chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent);
   console.log('candle', candle);
-  if (vwapLogic <= -0.1 && chandleTrendMfiVwapComparison1hShort === true) {
+  if (vwapLogic <= -3 && chandleTrendMfiVwapComparison1hShort === true) {
     return true;
   }
   return false;
@@ -257,9 +261,9 @@ async function shortTrade15Last(array) {
   await fs.appendFile('logs.txt', `lowPriceLast цена ${lowPriceLast}\n`);
   await fs.appendFile('logs.txt', `highPriceCurrent предыдущая цена ${highPriceCurrent}\n`);
   await fs.appendFile('logs.txt', `highPriceLast предыдущая цена ${highPriceLast}\n`);
-  const candle = await checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
+  const candle = checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
   console.log('candle', candle);
-  if (vwapLogic <= -1 && openPrice > lastPrice && candle === true && bw2FuncShort(bw2last, bw2Current) && crossowerLast15mShort(array) && chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
+  if (vwapLogic <= -3 && openPrice > lastPrice && candle === true && bw2FuncShort(bw2last, bw2Current) && crossowerLast15mShort(array) && chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
     return true;
   }
   return false;
@@ -310,7 +314,7 @@ async function shortTrade15(array) {
   await fs.appendFile('logs.txt', `lowPriceLast цена ${lowPriceLast}\n`);
   await fs.appendFile('logs.txt', `highPriceCurrent предыдущая цена ${highPriceCurrent}\n`);
   await fs.appendFile('logs.txt', `highPriceLast предыдущая цена ${highPriceLast}\n`);
-  const candle = await checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
+  const candle = checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
   console.log('candle', candle);
   if (vwapLogic <= -1 && openPrice > lastPrice && candle === true && bw2FuncShort(bw2last, bw2Current) && crossowerLast15mShort(array) && chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
     return true;
@@ -598,7 +602,7 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
       const short15BooleanLast = storage.getItem(`period15ShortBooleanLast_${id}_${symbol}`);
       const short5Boolean = storage.getItem(`period5ShortBoolean_${id}_${symbol}`);
       const short5BooleanLast = storage.getItem(`period15ShortBooleanLast_${id}_${symbol}`);
-      const arrayShortTime = period15DataCipherBwithTime.filter((el, index) => index > period15DataCipherBwithTime.length - 7);
+      const arrayShortTime = period1hDataCipherBwithTime.filter((el, index) => index > period1hDataCipherBwithTime.length - 7);
       console.log('Логика входов 6 часов', short6hBoolean);
       console.log('Логика входов 2 часов', short2hBoolean);
       console.log('Логика входов 1 час', short1hBoolean);

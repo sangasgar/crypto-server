@@ -23,12 +23,12 @@ async function closeLongPosition(id, client, symbol) {
   try {
     await fs.appendFile('logs.txt', `Проверка на возможность закрытия позиции лонг ${symbol} для ${id}\n`);
     console.log(`Проверка на возможность закрытия позиции лонг ${symbol} для ${id}`);
-    const period15Data = storage.getItem(`period15Data_${id}_${symbol}`);
-    const period15DataCipherB = await cipherB(period15Data);
-    const closePeriod15DataCipherBwithTime = await period15Data.map((el, i) => ({
-      time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period15DataCipherB[0][i], bw2: period15DataCipherB[1][i], vwap: period15DataCipherB[2][i], mf: period15DataCipherB[3][i],
+    const period1hData = storage.getItem(`period1hData_${id}_${symbol}`);
+    const period1hDataCipherB = await cipherB(period1hData);
+    const closePeriod1hDataCipherBwithTime = await period1hData.map((el, i) => ({
+      time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period1hDataCipherB[0][i], bw2: period1hDataCipherB[1][i], vwap: period1hDataCipherB[2][i], mf: period1hDataCipherB[3][i],
     }));
-    const arrayRes = closePeriod15DataCipherBwithTime.reverse();
+    const arrayRes = closePeriod1hDataCipherBwithTime.reverse();
     const vwapLast = Number(arrayRes[1].vwap);
     const vwapCurrent = Number(arrayRes[0].vwap);
     const lastTime = Number(arrayRes[0].time);
@@ -68,7 +68,7 @@ async function closeLongPosition(id, client, symbol) {
     if (positionSize > 0) {
       await fs.appendFile('logs.txt', `Проверка на возможность закрытия позиции лонг ${symbol} для ${id}\n`);
       console.log(`Проверка на возможность закрытия позиции лонг ${symbol} для ${id}`);
-      if (vwapCurrent <= 2 && vwapLast <= 2 && closeLast < openLast && timeCheck === false) {
+      if (vwapLast < 3.5 && closeLast <= openLast && timeCheck === false) {
         const closePosition = await client.placeActiveOrder({
           symbol, side: 'Sell', qty: positionSize, order_type: 'Market', close_on_trigger: false, reduce_only: true, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
         });
