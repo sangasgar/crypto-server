@@ -24,19 +24,24 @@ async function closeShortPosition(id, client, symbol) {
   try {
     await fs.appendFile('logs.txt', `Проверка на возможность закрытия позиции шорт ${symbol} для ${id}\n`);
     console.log(`Проверка на возможность закрытия позиции шорт ${symbol} для ${id}`);
-    const period15Data = storage.getItem(`period15Data_${id}_${symbol}`);
-    const period15DataCipherB = await cipherB(period15Data);
-    const period15DataCipherBwithTime = await period15Data.map((el, i) => ({
-      time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period15DataCipherB[0][i], bw2: period15DataCipherB[1][i], vwap: period15DataCipherB[2][i], mf: period15DataCipherB[3][i],
+    const period1hData = storage.getItem(`period1hData_${id}_${symbol}`);
+    const period1hDataCipherB = await cipherB(period1hData);
+    const period1hDataCipherBwithTime = await period1hData.map((el, i) => ({
+      time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period1hDataCipherB[0][i], bw2: period1hDataCipherB[1][i], vwap: period1hDataCipherB[2][i], mf: period1hDataCipherB[3][i],
     }));
-    const arrayShort = period15DataCipherBwithTime.reverse();
+    const arrayShort = period1hDataCipherBwithTime.reverse();
     const vwapLast = Number(arrayShort[1].vwap);
     const vwapCurrent = Number(arrayShort[0].vwap);
     const lastTime = Number(arrayShort[0].time);
+    const closeLast = Number(arrayShort[1].close);
+    const openLast = Number(arrayShort[1].open);
     const arrayTimes = storage.getItem(`arrayTime_${id}`);
     await fs.appendFile('logs.txt', `Шорт массив ${JSON.stringify(arrayTimes)}\n`);
     await fs.appendFile('logs.txt', `Последнее время ${lastTime}\n`);
-    await fs.appendFile('logs.txt', `Вивап ${symbol} для ${id}\n`);
+    await fs.appendFile('logs.txt', `Вивап ${symbol} для ${id} ${vwapCurrent}\n`);
+    await fs.appendFile('logs.txt', `Вивап ласт ${symbol} для ${id} ${vwapLast}\n`);
+    await fs.appendFile('logs.txt', `Цена закрытия предыдущей свечи ${symbol} для ${id} ${closeLast}\n`);
+    await fs.appendFile('logs.txt', `Цена открытия предыдущей свечи ${symbol} для ${id} ${openLast}\n`);
     await fs.appendFile('logs.txt', `checkTimes ${checkTimes(arrayTimes, lastTime)}\n`);
     console.log('Шорт массив', arrayTimes);
     console.log('Последнее время ', lastTime);
@@ -68,10 +73,11 @@ async function closeShortPosition(id, client, symbol) {
     if (positionSize > 0) {
       console.log(`Проверка на возможность закрытия позиции шорт ${symbol} для ${id}`);
       await fs.appendFile('logs.txt', `Проверка на возможность закрытия позиции шорт ${symbol} для ${id}\n`);
-      if (vwapCurrent >= -1.5 && vwapLast >= -1.5 && timeCheck === false) {
+      if (vwapLast > -3.5 && closeLast >= openLast && timeCheck === false) {
         const closePosition = await client.placeActiveOrder({
           symbol, side: 'Buy', qty: positionSize, order_type: 'Market', close_on_trigger: false, reduce_only: true, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
         });
+        await fs.appendFile('logs.txt', `Информация о закрытии позиции шорт $${JSON.stringify(closePosition)}\n`);
         if (closePosition.ret_msg === 'OK') {
           console.log(`Позиция шорт закрыта ${symbol} для ${id}`);
           await fs.appendFile('logs.txt', `Позиция шорт закрыта ${symbol} для ${id}\n`);
