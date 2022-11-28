@@ -3,6 +3,7 @@ const fs = require('fs').promises;
 const storage = require('../storage/storage');
 const cipherB = require('../indicators/cipherB');
 const chandeTrendScore = require('../indicators/chandeTrendScore');
+const bullTv = require('../indicators/bullTv');
 
 const searchLastTime = (array, id) => {
   array.reverse();
@@ -132,9 +133,19 @@ async function shortTrade2h(array) {
   const scoreCurrent = array[0].score;
   const lastScore = array[1].score;
 
+  const bullLogicCurrent = Number(array[0].bullTV);
+
   const last = closePriceLast - openPriceLast;
   const current = closePriceCurrent - openPriceCurrent;
 
+  console.log('Время', array[0].time);
+  console.log('Последняя цена', lastPrice);
+  console.log('Цена открытия', openPrice);
+  console.log('вивап цена', vwapLogic);
+  console.log('вивап предыдущая цена', vwapLogicLast);
+  console.log('мф цена', mf);
+  console.log('мф предыдущая цена', mfLast);
+  console.log('bullLogicCurrent', bullLogicCurrent);
   await fs.appendFile('logs.txt', `Время ${array[0].time}\n`);
   await fs.appendFile('logs.txt', `Последняя цена ${lastPrice}\n`);
   await fs.appendFile('logs.txt', `Цена открытия ${openPrice}\n`);
@@ -142,6 +153,7 @@ async function shortTrade2h(array) {
   await fs.appendFile('logs.txt', `вивап предыдущая цена ${vwapLogicLast}\n`);
   await fs.appendFile('logs.txt', `мф цена ${mf}\n`);
   await fs.appendFile('logs.txt', `мф предыдущая цена ${mfLast}\n`);
+  await fs.appendFile('logs.txt', `bullLogicCurrent  ${bullLogicCurrent}\n`);
   await fs.appendFile('logs.txt', `openPriceCurrent цена ${openPriceCurrent}\n`);
   await fs.appendFile('logs.txt', `openPriceLast предыдущая цена ${openPriceLast}\n`);
   await fs.appendFile('logs.txt', `closePriceCurrent цена ${closePriceCurrent}\n`);
@@ -153,7 +165,7 @@ async function shortTrade2h(array) {
   const candle = checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
   const chandleTrendMfiVwapComparison2hShort = chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent);
   console.log('candle', candle);
-  if (vwapLogic <= -2 && chandleTrendMfiVwapComparison2hShort === true) {
+  if (vwapLogic <= -2 && chandleTrendMfiVwapComparison2hShort === true && bullLogicCurrent === 4) {
     return true;
   }
   return false;
@@ -181,6 +193,18 @@ async function shortTrade1h(array) {
   const last = closePriceLast - openPriceLast;
   const current = closePriceCurrent - openPriceCurrent;
 
+  const bullLogicCurrent = Number(array[0].bullTV);
+
+  console.log('Время', array[0].time);
+  console.log('Последняя цена', lastPrice);
+  console.log('Цена открытия', openPrice);
+  console.log('вивап цена', vwapLogic);
+  console.log('вивап предыдущая цена', vwapLogicLast);
+  console.log('мф цена', mf);
+  console.log('мф предыдущая цена', mfLast);
+  console.log('scoreCurrent цена', scoreCurrent);
+  console.log('lastScore предыдущая цена', lastScore);
+  console.log('bullLogicCurrent', bullLogicCurrent);
   await fs.appendFile('logs.txt', `Время ${array[0].time}\n`);
   await fs.appendFile('logs.txt', `Последняя цена ${lastPrice}\n`);
   await fs.appendFile('logs.txt', `Цена открытия ${openPrice}\n`);
@@ -188,6 +212,7 @@ async function shortTrade1h(array) {
   await fs.appendFile('logs.txt', `вивап предыдущая цена ${vwapLogicLast}\n`);
   await fs.appendFile('logs.txt', `мф цена ${mf}\n`);
   await fs.appendFile('logs.txt', `мф предыдущая цена ${mfLast}\n`);
+  await fs.appendFile('logs.txt', `bullLogicCurrent  ${bullLogicCurrent}\n`);
   await fs.appendFile('logs.txt', `scoreCurrent цена ${scoreCurrent}\n`);
   await fs.appendFile('logs.txt', `lastScore предыдущая цена ${lastScore}\n`);
   await fs.appendFile('logs.txt', `openPriceCurrent цена ${openPriceCurrent}\n`);
@@ -201,7 +226,7 @@ async function shortTrade1h(array) {
   const candle = checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
   const chandleTrendMfiVwapComparison1hShort = chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent);
   console.log('candle', candle);
-  if (vwapLogic <= -3 && chandleTrendMfiVwapComparison1hShort === true) {
+  if (vwapLogic <= -3 && chandleTrendMfiVwapComparison1hShort === true && bullLogicCurrent === 4) {
     return true;
   }
   return false;
@@ -490,9 +515,10 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
       await fs.appendFile('logs.txt', `Проверка входа на 6 часов для id ${id}\n`);
       const period2hData = storage.getItem(`period2hData_${id}_${symbol}`);
       const period2hDataCipherB = await cipherB(period2hData);
+      const period2hDataBullTv = await bullTv(period2hData);
       const period2hDataChandeTrendScore = await chandeTrendScore(period2hData);
       const period2hDataCipherBwithTime = await period2hData.map((el, i) => ({
-        time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period2hDataCipherB[0][i], bw2: period2hDataCipherB[1][i], vwap: period2hDataCipherB[2][i], mf: period2hDataCipherB[3][i], score: period2hDataChandeTrendScore[i],
+        time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period2hDataCipherB[0][i], bw2: period2hDataCipherB[1][i], vwap: period2hDataCipherB[2][i], mf: period2hDataCipherB[3][i], score: period2hDataChandeTrendScore[i], bullTV: period2hDataBullTv[i],
       }));
       const array2H = period2hDataCipherBwithTime.filter((el, index) => index > period2hDataCipherBwithTime.length - 3);
       const period2Hresult = await shortTrade2h(array2H);
@@ -510,9 +536,10 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
       await fs.appendFile('logs.txt', '--------------\n');
       const period1hData = storage.getItem(`period1hData_${id}_${symbol}`);
       const period1hDataCipherB = await cipherB(period1hData);
+      const period1hDataBullTv = await bullTv(period1hData);
       const period1hDataChandeTrendScore = await chandeTrendScore(period1hData);
       const period1hDataCipherBwithTime = await period1hData.map((el, i) => ({
-        time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period1hDataCipherB[0][i], bw2: period1hDataCipherB[1][i], vwap: period1hDataCipherB[2][i], mf: period1hDataCipherB[3][i], score: period1hDataChandeTrendScore[i],
+        time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period1hDataCipherB[0][i], bw2: period1hDataCipherB[1][i], vwap: period1hDataCipherB[2][i], mf: period1hDataCipherB[3][i], score: period1hDataChandeTrendScore[i], bullTV: period1hDataBullTv[i],
       }));
       const array1H = period1hDataCipherBwithTime.filter((el, index) => index > period1hDataCipherBwithTime.length - 3);
       const period1Hresult = await shortTrade1h(array1H);
