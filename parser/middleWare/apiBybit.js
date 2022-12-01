@@ -31,6 +31,9 @@ async function playBot(id, client, symbol) {
       symbol, interval: period.fifteen, from: Math.floor((today - Number(period.fifteen) * 200 * 60 * 1000) / 1000), limit: 200,
     });
     const data15periodData = data15Period.result;
+    const data15periodDataReal = data15periodData.map((el) => ({
+      time: el.start_at, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume,
+    }));
     const period15Data = HeikinAshi(data15periodData.map((el) => ({
       time: el.start_at, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume,
     })), {
@@ -40,6 +43,7 @@ async function playBot(id, client, symbol) {
       forceExactDecimals: false,
     });
     storage.addItem(`period15Data_${id}_${symbol}`, period15Data);
+    storage.addItem(`period15DataReal_${id}_${symbol}`, data15periodDataReal);
     const data30mPeriod = await client.getKline({
       symbol, interval: period.firteen, from: Math.floor((today - Number(period.firteen) * 200 * 60 * 1000) / 1000), limit: 200,
     });

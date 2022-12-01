@@ -41,7 +41,7 @@ function controllerCycle(arrayPos, id) {
   storage.addItem(`count_${id}`, count);
 }
 async function test() {
-  const check = await checkWebsite('https://testnet.bybit.com/');
+  const check = await checkWebsite('https://bybit.com/');
   console.log(check); // true
 }
 router.route('/bot-status-check')
