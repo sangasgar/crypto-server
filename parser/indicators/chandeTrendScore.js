@@ -4,7 +4,7 @@ const tulind = require('tulind');
 const { promisify } = require('util');
 const array = require('./data');
 
-async function chandeTrendScore(arr, period = 5) {
+async function chandeTrendScore(arr, period = 9) {
   const wmaAsync = promisify(tulind.indicators.wma.indicator);
   const c = [];
   arr.forEach((element) => {

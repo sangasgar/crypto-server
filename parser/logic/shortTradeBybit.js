@@ -50,15 +50,15 @@ function chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast,
   return false;
 }
 
-function chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent) {
-  if ((vwapLogicLast > vwapLogic || mfLast > mf) && (lastScore > scoreCurrent || (lastScore === -10 && scoreCurrent === -10))) {
+function chandleTrendMfiVwapComparisonShort(vwapLogicCurrent, vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent) {
+  if ((vwapLogicLast > vwapLogic > vwapLogicCurrent || mfLast > mf) && (lastScore > scoreCurrent || (lastScore === -10 && scoreCurrent === -10))) {
     return true;
   }
   return false;
 }
 
 function bw2FuncShort(bw2last, bw2Current) {
-  if (bw2Current < bw2last && bw2Current > 8) {
+  if (bw2Current < bw2last && bw2Current > 13) {
     return true;
   }
   return false;
@@ -112,9 +112,9 @@ async function shortTrade6h(array) {
   return false;
 }
 
-async function shortTrade2h(array) {
+async function shortTrade2h(array, lastPriceCurrent) {
   array.reverse();
-  const lastPrice = array[0].close;
+  const lastPrice = lastPriceCurrent;
   const openPrice = array[0].open;
   const vwapLogic = array[0].vwap;
   const vwapLogicLast = array[1].vwap;
@@ -165,15 +165,15 @@ async function shortTrade2h(array) {
   const candle = checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
   const chandleTrendMfiVwapComparison2hShort = chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent);
   console.log('candle', candle);
-  if (vwapLogic <= -2 && chandleTrendMfiVwapComparison2hShort === true && bullLogicCurrent === 4) {
+  if (vwapLogic <= -3.5 && openPrice < lastPrice && chandleTrendMfiVwapComparison2hShort === true && bullLogicCurrent === 4) {
     return true;
   }
   return false;
 }
 
-async function shortTrade1h(array) {
+async function shortTrade1h(array, lastPriceCurrent) {
   array.reverse();
-  const lastPrice = array[0].close;
+  const lastPrice = lastPriceCurrent;
   const openPrice = array[0].open;
   const vwapLogic = array[0].vwap;
   const vwapLogicLast = array[1].vwap;
@@ -226,19 +226,22 @@ async function shortTrade1h(array) {
   const candle = checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
   const chandleTrendMfiVwapComparison1hShort = chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent);
   console.log('candle', candle);
-  if (vwapLogic <= -3 && chandleTrendMfiVwapComparison1hShort === true && bullLogicCurrent === 4) {
+  if (vwapLogic <= -3 && openPrice < lastPrice && chandleTrendMfiVwapComparison1hShort === true && bullLogicCurrent === 4) {
     return true;
   }
   return false;
 }
 
-async function shortTrade15Last(array) {
+async function shortTrade15Last(array, lastPriceCurrent) {
   array.reverse();
   console.log('Предыдущие 15 минут', array[1].time);
-  const vwapLogic = array[1].vwap;
-  const lastPrice = array[1].close;
-  const openPrice = array[1].open;
   const vwapLogicLast = array[2].vwap;
+  const vwapLogic = array[1].vwap;
+  const vwapLogicCurrent = array[0].vwap;
+
+  const lastPrice = lastPriceCurrent;
+  const openPrice = array[0].open;
+
   const { mf } = array[1];
   const mfLast = array[2].mf;
   const scoreCurrent = array[1].score;
@@ -265,6 +268,7 @@ async function shortTrade15Last(array) {
   const highPriceLast = array[2].high;
   const last = closePriceLast - openPriceLast;
   const current = closePriceCurrent - openPriceCurrent;
+  const bullLogicCurrent = Number(array[1].bullTV);
   await fs.appendFile('logs.txt', `Время ${array[1].time}\n`);
   await fs.appendFile('logs.txt', `Последняя цена ${lastPrice}\n`);
   await fs.appendFile('logs.txt', `Цена открытия ${openPrice}\n`);
@@ -288,16 +292,16 @@ async function shortTrade15Last(array) {
   await fs.appendFile('logs.txt', `highPriceLast предыдущая цена ${highPriceLast}\n`);
   const candle = checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
   console.log('candle', candle);
-  if (vwapLogic <= -3 && openPrice > lastPrice && candle === true && bw2FuncShort(bw2last, bw2Current) && crossowerLast15mShort(array) && chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
+  if (vwapLogic <= -3 && bullLogicCurrent === 4 && openPrice < lastPrice && bw2FuncShort(bw2last, bw2Current) && crossowerLast15mShort(array) && chandleTrendMfiVwapComparison15mShort(vwapLogicCurrent, vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
     return true;
   }
   return false;
 }
 
-async function shortTrade15(array) {
+async function shortTrade15(array, lastPriceCurrent) {
   array.reverse();
   const vwapLogic = array[0].vwap;
-  const lastPrice = array[0].close;
+  const lastPrice = lastPriceCurrent;
   const openPrice = array[0].open;
   const vwapLogicLast = array[1].vwap;
   const { mf } = array[0];
@@ -521,7 +525,7 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
         time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period2hDataCipherB[0][i], bw2: period2hDataCipherB[1][i], vwap: period2hDataCipherB[2][i], mf: period2hDataCipherB[3][i], score: period2hDataChandeTrendScore[i], bullTV: period2hDataBullTv[i],
       }));
       const array2H = period2hDataCipherBwithTime.filter((el, index) => index > period2hDataCipherBwithTime.length - 3);
-      const period2Hresult = await shortTrade2h(array2H);
+      const period2Hresult = await shortTrade2h(array2H, lastPrice);
       await storage.addItem(`period2hShortBoolean_${id}_${symbol}`, period2Hresult);
       const time2h = Number(period2hDataCipherBwithTime[period2hDataCipherBwithTime.length - 1].time);
       const milliseconds2h = time2h * 1000;
@@ -542,7 +546,7 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
         time: el.time, open: el.open, high: el.high, low: el.low, close: el.close, volume: el.volume, bw1: period1hDataCipherB[0][i], bw2: period1hDataCipherB[1][i], vwap: period1hDataCipherB[2][i], mf: period1hDataCipherB[3][i], score: period1hDataChandeTrendScore[i], bullTV: period1hDataBullTv[i],
       }));
       const array1H = period1hDataCipherBwithTime.filter((el, index) => index > period1hDataCipherBwithTime.length - 3);
-      const period1Hresult = await shortTrade1h(array1H);
+      const period1Hresult = await shortTrade1h(array1H, lastPrice);
       await storage.addItem(`period1hShortBoolean_${id}_${symbol}`, period1Hresult);
       const time1h = Number(period1hDataCipherBwithTime[period1hDataCipherBwithTime.length - 1].time);
       const milliseconds1h = time1h * 1000;
@@ -564,7 +568,7 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
       console.log('Символ', symbol);
       const array15 = period15DataCipherBwithTime.filter((el, index) => index > period15DataCipherBwithTime.length - 10);
       const array15Last = period15DataCipherBwithTime.filter((el, index) => index > period15DataCipherBwithTime.length - 10);
-      const period15result = await shortTrade15(array15);
+      const period15result = await shortTrade15(array15, lastPrice);
       await storage.addItem(`period15ShortBoolean_${id}_${symbol}`, period15result);
       const time15 = Number(period15DataCipherBwithTime[period15DataCipherBwithTime.length - 1].time);
       const milliseconds15 = time15 * 1000;
@@ -577,7 +581,7 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
       await fs.appendFile('logs.txt', '--------------\n');
       await fs.appendFile('logs.txt', `Начало стратегии шорт предыдущие 15 минут id ${id}\n`);
       await fs.appendFile('logs.txt', '--------------\n');
-      const period15resultLast = await shortTrade15Last(array15Last);
+      const period15resultLast = await shortTrade15Last(array15Last, lastPrice);
       await storage.addItem(`period15ShortBooleanLast_${id}_${symbol}`, period15resultLast);
       const time15Last = Number(period15DataCipherBwithTime[period15DataCipherBwithTime.length - 2].time);
       const milliseconds15Last = time15Last * 1000;

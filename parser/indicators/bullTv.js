@@ -12,16 +12,20 @@ const array = require('./data');
 // ShowDivergenceLabel = input(false, 'ShowDivergenceLabel', type = input.bool);
 // ExtendSupResLines = input(false, 'ExtendLocalSup/ResLines', type = input.bool);
 const hmaAsync = promisify(tulind.indicators.hma.indicator);
-async function bullTv(arrayValue, HMA_Length = 21, lookback = 2, ShowHullSupResLines = false, ShowBuySellArrows = false, ShowDivergenceLabel = false, ExtendSupResLines = false) {
+async function bullTv(arrayValue, HMA_Length = 7, lookback = 1, ShowHullSupResLines = false, ShowBuySellArrows = false, ShowDivergenceLabel = false, ExtendSupResLines = false) {
   const h = [];
   const l = [];
+  const o = [];
+  const c = [];
   arrayValue.forEach((element) => {
     h.push(element.high);
     l.push(element.low);
+    o.push(element.low);
+    c.push(element.low);
   });
-  const hl2 = [];
+  const hloc2 = [];
   for (let i = 0; i < h.length; i += 1) {
-    hl2.push((h[i] + l[i]) / 2);
+    hloc2.push((h[i] + l[i] + o[i] + c[i]) / 4);
   }
   // HMA = hma(price, HMA_Length);
   const hmaFunc = async (data, len) => {
@@ -56,7 +60,7 @@ async function bullTv(arrayValue, HMA_Length = 21, lookback = 2, ShowHullSupResL
     return result;
   };
 
-  const hma = await hmaFunc(hl2, HMA_Length);
+  const hma = await hmaFunc(hloc2, HMA_Length);
   const result = deltaConcavity(hma, lookback);
   return result;
 }
