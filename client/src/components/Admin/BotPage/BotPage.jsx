@@ -26,8 +26,14 @@ function BotPage() {
   let symbolArray = [];
 
   useEffect(() => {
-    axios.post('/bot/bot-status-check', { id: user.id }).then((res) => setValue(res.data.botStatus));
-    axios.post('/users/settings', { id: user.id }).then((res) => {
+    const token = localStorage.getItem('token');
+    const option = {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    };
+    axios.post('/bot/bot-status-check', { id: user.id }, option).then((res) => setValue(res.data.botStatus));
+    axios.post('/users/settings', { id: user.id }, option).then((res) => {
       setSymbol(res.data.Positions);
       setSizeDeposit(res.data.sizeDeposit);
       setLeverage(res.data.leverage);
@@ -38,23 +44,41 @@ function BotPage() {
     });
   }, [update]);
   useEffect(() => {
+    const token = localStorage.getItem('token');
+    const option = {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    };
     if (sizeDeposit !== '' || leverage !== false || stoploss !== false) {
-      axios.put('/users/settings', { sizeDeposit, id: user.id }).then((res) => {
+      axios.put('/users/settings', { sizeDeposit, id: user.id }, option).then((res) => {
         setSizeDeposit(res.data.sizeDeposit);
       });
-      axios.put('/users/settings', { leverage, id: user.id }).then((res) => {
+      axios.put('/users/settings', { leverage, id: user.id }, option).then((res) => {
         setLeverage(res.data.leverage);
       });
-      axios.put('/users/settings', { stoploss, id: user.id }).then((res) => {
+      axios.put('/users/settings', { stoploss, id: user.id }, option).then((res) => {
         setStoploss(res.data.stoploss);
       });
     }
   }, [save]);
   const botHandler = () => {
-    axios.put('/bot/bot-status', { id: user.id, botStatus: !value }).then((res) => setValue(res.data.botStatus));
+    const token = localStorage.getItem('token');
+    const option = {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    };
+    axios.put('/bot/bot-status', { id: user.id, botStatus: !value }, option).then((res) => setValue(res.data.botStatus));
   };
   const clearStopLoss = () => {
-    axios.put('/bot/stop-loss-clear', { id: user.id }).then((res) => {
+    const token = localStorage.getItem('token');
+    const option = {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    };
+    axios.put('/bot/stop-loss-clear', { id: user.id }, option).then((res) => {
       setStopLossClear(res.data.status);
       setTimeout(() => {
         setStopLossClear(false);
@@ -83,8 +107,14 @@ function BotPage() {
     }, 2000);
   };
   const onChange = (checkedValues) => {
+    const token = localStorage.getItem('token');
+    const option = {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    };
     symbolArray = checkedValues.map((el) => ({ symbolId: el }));
-    axios.put('/users/settings', { symbols: symbolArray, id: user.id }).then((res) => {
+    axios.put('/users/settings', { symbols: symbolArray, id: user.id }, option).then((res) => {
       setUpdate(res.data);
       setSave(true);
       setTimeout(() => {

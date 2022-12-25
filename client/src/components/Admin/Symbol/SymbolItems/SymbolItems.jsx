@@ -7,7 +7,13 @@ function SymbolItems({
   symbol, id, setDeleteElement,
 }) {
   const clickDeleteHandler = () => {
-    axios.post('/positions/delete', { id }).then((res) => {
+    const token = localStorage.getItem('token');
+    const option = {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    };
+    axios.post('/positions/delete', { id }, option).then((res) => {
       setDeleteElement(res.data);
       setTimeout(() => {
         setDeleteElement(false);

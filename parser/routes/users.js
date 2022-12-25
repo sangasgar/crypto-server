@@ -42,7 +42,7 @@ router.route('/')
     }
     return res.json({ error: 'wrong password' });
   })
-  .put(async (req, res, next) => {
+  .put(auth, async (req, res, next) => {
     const {
       id, name, email, publicKey, privateKey, password,
     } = req.body;
@@ -77,7 +77,7 @@ router.route('/')
   });
 
 router.route('/settings')
-  .post(async (req, res) => {
+  .post(auth, async (req, res) => {
     const { id } = req.body;
     try {
       const user = await Users.findOne({ where: { id }, include: Positions });
@@ -96,7 +96,7 @@ router.route('/settings')
       res.json({ error: 'connection error' });
     }
   })
-  .put(async (req, res) => {
+  .put(auth, async (req, res) => {
     const {
       id, symbols, leverage, sizeDeposit, stoploss,
     } = req.body;

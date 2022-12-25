@@ -14,7 +14,7 @@ const longTradeBybit = require('../logic/longTradeBybit');
 const shortTradeBybit = require('../logic/shortTradeBybit');
 const { Positions } = require('../db/models');
 const storage = require('../storage/storage');
-
+const auth = require('../middleWare/auth');
 function checkWebsite(url) {
   return new Promise((resolve, reject) => {
     https
@@ -45,7 +45,7 @@ async function test() {
   console.log(check); // true
 }
 router.route('/bot-status-check')
-  .post(async (req, res) => {
+  .post(auth, async (req, res) => {
     const { id } = req.body;
     try {
       const bots = await Bots.findOne({ where: { user_id: id } });
@@ -56,7 +56,7 @@ router.route('/bot-status-check')
     }
   });
 router.route('/stop-loss-clear')
-  .put(async (req, res) => {
+  .put(auth, async (req, res) => {
     const { id } = req.body;
     try {
       await storage.addItem(`positionEnter_${id}`, false);
@@ -67,7 +67,7 @@ router.route('/stop-loss-clear')
   });
 
 router.route('/bot-status')
-  .put(async (req, res) => {
+  .put(auth, async (req, res) => {
     const { id } = req.body;
     const { botStatus } = req.body;
     await Bots.update({ botStatus }, { where: { user_id: id } });

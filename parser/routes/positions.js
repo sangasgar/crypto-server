@@ -1,10 +1,10 @@
 const express = require('express');
 const { Positions } = require('../db/models');
-
+const auth = require('../middleWare/auth');
 const router = express.Router();
 /* GET home page. */
 router.route('/')
-  .post(async (req, res, next) => {
+  .post(auth, async (req, res, next) => {
     const { input } = req.body;
     if (input) {
       try {
@@ -25,7 +25,7 @@ router.route('/')
     }
   });
 router.route('/delete')
-  .post(async (req, res) => {
+  .post(auth, async (req, res) => {
     const { id } = req.body;
     if (id) {
       try {

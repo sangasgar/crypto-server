@@ -17,7 +17,13 @@ function Symbol() {
     });
   }, [bdAlert, deleteElement]);
   const clickHandler = async () => {
-    const bd = await axios.post('/positions', { input });
+    const token = localStorage.getItem('token');
+    const option = {
+      headers: {
+        authorization: `Bearer ${token}`,
+      },
+    };
+    const bd = await axios.post('/positions', { input }, option);
     setBdAlert(bd.data);
     setTimeout(() => {
       setBdAlert(false);
