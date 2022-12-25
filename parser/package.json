@@ -4,8 +4,7 @@
   "description": "",
   "main": ".eslintrc.js",
   "scripts": {
-    "start": "node ./bin/www",
-    "lintjs": "./node_modules/.bin/eslint . --fix"
+    "start": "node ./bin/www"
   },
   "author": "",
   "license": "ISC",

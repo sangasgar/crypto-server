@@ -36,7 +36,7 @@ const searchLastTime = (array, id) => {
 //   return result[0].close;
 // }
 function chandleTrendMfiVwapComparison15m(vwapLogicCurrent, vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent) {
-  if ((vwapLogicLast < vwapLogic < vwapLogicCurrent || mfLast < mf) && (lastScore < scoreCurrent || (lastScore === 10 && scoreCurrent === 10))) {
+  if ((vwapLogicLast < vwapLogic || mfLast < mf) && (lastScore < scoreCurrent || (lastScore === 10 && scoreCurrent === 10))) {
     return true;
   }
   return false;
@@ -172,7 +172,7 @@ async function longTrade2h(array, lastPriceCurrent) {
   const candle = checkCandleLong(highPriceCurrent, highPriceLast, last, current, openPriceCurrent, lowPriceCurrent);
   const chandleTrendMfiVwapComparison2h = chandleTrendMfiVwapComparison(vwapLogicPrevious, vwapLogic, mfLast, mf, lastScore, scoreCurrent);
   console.log('candle', candle);
-  if (vwapLogic >= 3.5 && openPrice > lastPrice && chandleTrendMfiVwapComparison2h === true && bullLogicCurrent === 1) {
+  if (vwapLogic >= 3.5 && openPrice < closePriceCurrent && chandleTrendMfiVwapComparison2h === true && bullLogicCurrent === 1) {
     return true;
   }
   return false;
@@ -232,7 +232,7 @@ async function longTrade1h(array, lastPriceCurrent) {
   const candle = checkCandleLong(highPriceCurrent, highPriceLast, last, current, openPriceCurrent, lowPriceCurrent);
   console.log('candle', candle);
   const chandleTrendMfiVwapComparison1h = chandleTrendMfiVwapComparison(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent);
-  if (vwapLogic >= 3 && openPrice > lastPrice && chandleTrendMfiVwapComparison1h === true && bullLogicCurrent === 1) {
+  if (vwapLogic >= 3 && openPrice < closePriceCurrent && chandleTrendMfiVwapComparison1h === true && bullLogicCurrent === 1) {
     return true;
   }
   return false;
@@ -255,7 +255,7 @@ async function longTrade15Last(array, lastPriceCurrent) {
   const bullLogicCurrent = Number(array[0].bullTV);
   const openPriceCurrent = array[1].open;
   const openPriceLast = array[2].open;
-  const closePriceCurrent = array[1].close;
+  const closePriceCurrent = array[0].close;
   const closePriceLast = array[2].close;
   const lowPriceCurrent = array[1].low;
   const lowPriceLast = array[2].low;
@@ -296,7 +296,7 @@ async function longTrade15Last(array, lastPriceCurrent) {
   await fs.appendFile('logs.txt', `highPriceLast предыдущая цена ${highPriceLast}\n`);
   const candle = checkCandleLong(highPriceCurrent, highPriceLast, last, current, openPriceCurrent, lowPriceCurrent);
   console.log('candle', candle);
-  if (vwapLogic >= 3 && bullLogicCurrent === 1 && openPrice > lastPrice && bw2Func(bw2last, bw2Current) && crossowerLast15m(array) && chandleTrendMfiVwapComparison15m(vwapLogicCurrent, vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
+  if (vwapLogic >= 3 && bullLogicCurrent === 1 && openPrice >= closePriceCurrent && bw2Func(bw2last, bw2Current) && vwapLogic > 0 && vwapLogicLast < 0 && chandleTrendMfiVwapComparison15m(vwapLogicCurrent, vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
     return true;
   }
   return false;
@@ -680,7 +680,7 @@ async function longTradeBybit(id, client, symbol, leverage, stoploss, sizeDeposi
         });
         if (isIsolated.ret_msg === 'OK') {
           const longPosition = await client.placeActiveOrder({
-            symbol, side: 'Buy', qty: countActive, order_type: 'Market', close_on_trigger: false, reduce_only: false, stop_loss: stopLossTrade, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
+            symbol, side: 'Buy', qty: countActive * leverage, order_type: 'Market', close_on_trigger: false, reduce_only: false, stop_loss: stopLossTrade, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
           });
           console.log(longPosition);
           await fs.appendFile('logs.txt', `Попытка открыта позицию лонг ${id} ${longPosition} \n`);

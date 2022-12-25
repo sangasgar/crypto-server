@@ -165,7 +165,7 @@ async function shortTrade2h(array, lastPriceCurrent) {
   const candle = checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
   const chandleTrendMfiVwapComparison2hShort = chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent);
   console.log('candle', candle);
-  if (vwapLogic <= -3.5 && openPrice < lastPrice && chandleTrendMfiVwapComparison2hShort === true && bullLogicCurrent === 4) {
+  if (vwapLogic <= -3.5 && openPrice > closePriceCurrent && chandleTrendMfiVwapComparison2hShort === true && bullLogicCurrent === 4) {
     return true;
   }
   return false;
@@ -226,7 +226,7 @@ async function shortTrade1h(array, lastPriceCurrent) {
   const candle = checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
   const chandleTrendMfiVwapComparison1hShort = chandleTrendMfiVwapComparisonShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent);
   console.log('candle', candle);
-  if (vwapLogic <= -3 && openPrice < lastPrice && chandleTrendMfiVwapComparison1hShort === true && bullLogicCurrent === 4) {
+  if (vwapLogic <= -3 && openPrice > closePriceCurrent && chandleTrendMfiVwapComparison1hShort === true && bullLogicCurrent === 4) {
     return true;
   }
   return false;
@@ -260,7 +260,7 @@ async function shortTrade15Last(array, lastPriceCurrent) {
 
   const openPriceCurrent = array[1].open;
   const openPriceLast = array[2].open;
-  const closePriceCurrent = array[1].close;
+  const closePriceCurrent = array[0].close;
   const closePriceLast = array[2].close;
   const lowPriceCurrent = array[1].low;
   const lowPriceLast = array[2].low;
@@ -292,7 +292,7 @@ async function shortTrade15Last(array, lastPriceCurrent) {
   await fs.appendFile('logs.txt', `highPriceLast предыдущая цена ${highPriceLast}\n`);
   const candle = checkCandleShort(lowPriceCurrent, lowPriceLast, last, current, openPriceCurrent, highPriceCurrent);
   console.log('candle', candle);
-  if (vwapLogic <= -3 && bullLogicCurrent === 4 && openPrice < lastPrice && bw2FuncShort(bw2last, bw2Current) && crossowerLast15mShort(array) && chandleTrendMfiVwapComparison15mShort(vwapLogicCurrent, vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
+  if (vwapLogic <= -3 && bullLogicCurrent === 4 && openPrice <= closePriceCurrent && bw2FuncShort(bw2last, bw2Current) &&  vwapLogic < 0 && vwapLogicLast > 0  && chandleTrendMfiVwapComparison15mShort(vwapLogicLast, vwapLogic, mfLast, mf, lastScore, scoreCurrent)) {
     return true;
   }
   return false;
@@ -512,11 +512,11 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
       const humanDateFormat6h = dateObject6h.toLocaleString('ru-RU', { timeZoneName: 'short' });
       console.log('Время: ', humanDateFormat6h);
       console.log(`Проверка входа на 6 часов для id ${id}`, storage.getItem(`period6hShortBoolean_${id}_${symbol}`));
+      await fs.appendFile('logs.txt', `Время  ${humanDateFormat6h} \n`);
+      await fs.appendFile('logs.txt', `Проверка входа на 6 часов для id ${id}\n`);
       await fs.appendFile('logs.txt', '--------------\n');
       await fs.appendFile('logs.txt', `Начало стратегии шорт 2 часа id ${id}\n`);
       await fs.appendFile('logs.txt', '--------------\n');
-      await fs.appendFile('logs.txt', `Время  ${humanDateFormat6h} \n`);
-      await fs.appendFile('logs.txt', `Проверка входа на 6 часов для id ${id}\n`);
       const period2hData = storage.getItem(`period2hData_${id}_${symbol}`);
       const period2hDataCipherB = await cipherB(period2hData);
       const period2hDataBullTv = await bullTv(period2hData);
@@ -659,7 +659,7 @@ async function shortTradeBybit(id, client, symbol, leverage, stoploss, sizeDepos
         });
         if (isIsolated.ret_msg === 'OK') {
           const shortPosition = await client.placeActiveOrder({
-            symbol, side: 'Sell', qty: countActive, order_type: 'Market', close_on_trigger: false, reduce_only: false, stop_loss: stopLossTrade, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
+            symbol, side: 'Sell', qty: countActive * leverage, order_type: 'Market', close_on_trigger: false, reduce_only: false, stop_loss: stopLossTrade, sl_trigger_by: 'LastPrice', time_in_force: 'ImmediateOrCancel',
           });
           console.log(shortPosition);
           await fs.appendFile('logs.txt', `Попытка открыта позицию шорт ${id} ${shortPosition} \n`);
